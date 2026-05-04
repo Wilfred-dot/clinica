@@ -1,6 +1,6 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
+export async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem('access_token');
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',

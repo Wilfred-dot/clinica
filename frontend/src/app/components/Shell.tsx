@@ -1,0 +1,141 @@
+'use client';
+
+import { useAuth } from '@/contexts/AuthContext';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+
+const adminNav = [
+  { label: 'Dashboard', href: '/admin', icon: 'M3 3h7v7H3V3zm10 0h7v7h-7V3zM3 14h7v7H3v-7zm10 0h7v7h-7v-7z' },
+  { label: 'Utilizadores', href: '/admin/users', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 7a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75' },
+  { label: 'Médicos', href: '/admin/medics', icon: 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2zM9 22V12h6v10' },
+  { label: 'Pacientes', href: '/admin/patients', icon: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8z' },
+  { label: 'Consultas', href: '/admin/consultations', icon: 'M3 4h18v18H3V4zM16 2v4M8 2v4M3 10h18' },
+];
+
+const medicoNav = [
+  { label: 'Dashboard', href: '/medico', icon: 'M3 3h7v7H3V3zm10 0h7v7h-7V3zM3 14h7v7H3v-7zm10 0h7v7h-7v-7z' },
+  { label: 'Atendimento', href: '/medico/attend', icon: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8z' },
+  { label: 'Fichas Clínicas', href: '/medico/records', icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM14 2v6h6' },
+];
+
+const recepcionistaNav = [
+  { label: 'Dashboard', href: '/recepcionista', icon: 'M3 3h7v7H3V3zm10 0h7v7h-7V3zM3 14h7v7H3v-7zm10 0h7v7h-7v-7z' },
+  { label: 'Pacientes', href: '/recepcionista/patients', icon: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8z' },
+  { label: 'Consultas', href: '/recepcionista/consultations', icon: 'M3 4h18v18H3V4zM16 2v4M8 2v4M3 10h18' },
+];
+
+const navMap: Record<string, { label: string; href: string; icon: string }[]> = {
+  admin: adminNav,
+  medico: medicoNav,
+  recepcionista: recepcionistaNav,
+};
+
+function getInitials(name: string): string {
+  if (!name) return '?';
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
+
+function getRoleBadge(role: string) {
+  switch (role) {
+    case 'admin': return { cls: 'role-admin', text: 'Administrador' };
+    case 'medico': return { cls: 'role-medico', text: 'Médico' };
+    case 'recepcionista': return { cls: 'role-recepcao', text: 'Recepção' };
+    default: return { cls: 'role-admin', text: role };
+  }
+}
+
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+export default function Shell({ children }: { children: React.ReactNode }) {
+  const { user, logout } = useAuth();
+  const pathname = usePathname();
+
+  if (!user) return null;
+
+  const role = user.role;
+  const navItems = navMap[role] || [];
+  const badge = getRoleBadge(role);
+  const initials = getInitials(user.name);
+
+  const roleColorMap: Record<string, string> = {
+    admin: 'var(--sky)',
+    medico: 'var(--teal)',
+    recepcionista: 'var(--warn)',
+  };
+
+  return (
+    <div>
+      <div className="topbar">
+        <div className="topbar-brand" onClick={() => window.location.href = `/${role}`}>
+          <div className="topbar-mark">
+            <svg viewBox="0 0 24 24">
+              <ellipse cx="12" cy="12" rx="10" ry="6" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+          <div className="topbar-brand-text">
+            <strong>Clínica MMQ</strong>
+            <span>Oftalmologia</span>
+          </div>
+        </div>
+        <div className="topbar-spacer" />
+        <span className={`topbar-role-badge ${badge.cls}`}>
+          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round">
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          {badge.text}
+        </span>
+        <div className="topbar-user">
+          <div className="topbar-avatar" style={{ background: roleColorMap[role] || 'var(--sky)' }}>
+            {initials}
+          </div>
+          <div className="topbar-user-info">
+            <div className="u-name">{user.name}</div>
+            <div className="u-role">{capitalize(role)}</div>
+          </div>
+        </div>
+        <button className="topbar-logout-btn" onClick={logout} title="Sair">
+          <svg viewBox="0 0 24 24">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+          </svg>
+        </button>
+      </div>
+      <div className="shell">
+        <aside className="sidebar">
+          {['Principal'].map((section) => (
+            <div className="sidebar-section" key={section}>
+              <div className="sidebar-label">{section}</div>
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-item ${pathname === item.href ? 'active' : ''}`}
+                >
+                  <div className="ni">
+                    <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={item.icon} />
+                    </svg>
+                  </div>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          ))}
+          <div style={{ marginTop: 'auto', padding: '16px 18px 0', borderTop: '1px solid var(--border2)' }}>
+            <button className="btn btn-outline btn-sm" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={logout}>
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+              </svg>
+              Sair
+            </button>
+          </div>
+        </aside>
+        <main className="main">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}
