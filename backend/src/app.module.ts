@@ -22,7 +22,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     ConfigModule.forRoot({ isGlobal: true }),
     ThrottlerModule.forRoot([{
       ttl: 60000,       // 1 minuto
-      limit: 10,         // no máximo 10 pedidos por minuto por IP
+      limit: 100,         // no máximo 10 pedidos por minuto por IP
     }]),
     PrismaModule,
     AuthModule,

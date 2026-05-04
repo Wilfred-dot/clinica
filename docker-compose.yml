@@ -12,6 +12,8 @@ services:
     dns:
       - 8.8.8.8
       - 8.8.4.4
+    networks:
+      - clinica-network
 
   app:
     build:
@@ -31,35 +33,12 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     command: npm run start:dev
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.frontend
-    container_name: clinica-frontend
-    working_dir: /app
-    volumes:
-      - ./frontend:/app
-    ports:
-      - "3001:3000"
-    depends_on:
-      - app
-    environment:
-      NEXT_PUBLIC_API_URL: http://localhost:3000
-      API_URL: http://app:3000
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
-    develop:
-      watch:
-        - action: sync
-          path: ./frontend
-          target: /app
-          ignore:
-            - node_modules/
-            - .next/
-        - action: rebuild
-          path: ./frontend/package.json
+    networks:
+      - clinica-network
 
 volumes:
   pgdata:
+
+networks:
+  clinica-network:
+    external: true
