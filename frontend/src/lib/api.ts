@@ -1,5 +1,13 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+function extractErrorMessage(body: any): string {
+  if (typeof body === 'string') return body;
+  if (typeof body?.message === 'string') return body.message;
+  if (typeof body?.message?.message === 'string') return body.message.message;
+  if (typeof body?.message === 'object') return JSON.stringify(body.message);
+  return 'Erro ' + (body?.statusCode || '');
+}
+
 export async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem('access_token');
   const headers: Record<string, string> = {
@@ -16,7 +24,8 @@ export async function request<T>(url: string, options: RequestInit = {}): Promis
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ message: 'Erro de rede' }));
-    throw new Error(error.message || 'Erro ' + res.status);
+    const message = extractErrorMessage(error);
+    throw new Error(message);
   }
 
   return res.json();

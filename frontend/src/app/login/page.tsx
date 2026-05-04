@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { login, getMe } from '@/lib/api';
@@ -17,13 +17,31 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      const data = await login(email, password);
+      await login(email, password);
       const user = await getMe();
       loginSuccess(user);
-      // ⬇️ Usar window.location em vez de router.push (mais fiável neste momento)
       window.location.href = '/' + user.role;
     } catch (err: any) {
-      setError(err.message || 'Erro ao fazer login');
+      // Tenta extrair a mensagem de várias formas possíveis
+      let message = 'Erro ao fazer login';
+      if (err?.message) {
+        if (typeof err.message === 'string') {
+          message = err.message;
+        } else if (typeof err.message === 'object') {
+          // NestJS costuma devolver { message: "..." } ou { message: { message: "..." } }
+          if (err.message.message) {
+            message = typeof err.message.message === 'string'
+              ? err.message.message
+              : JSON.stringify(err.message.message);
+          } else {
+            message = JSON.stringify(err.message);
+          }
+        }
+      } else if (err?.response?.status === 401) {
+        message = 'Credenciais inválidas ou conta desactivada';
+      }
+      setError(message);
+    } finally {
       setLoading(false);
     }
   };

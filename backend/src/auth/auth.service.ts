@@ -1,4 +1,4 @@
-﻿import { Injectable, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -13,6 +13,12 @@ export class AuthService {
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.prisma.users.findUnique({ where: { email } });
     if (!user) throw new UnauthorizedException('Credenciais inválidas');
+
+    // 🔒 Verifica se a conta está ativa
+    if (!user.ativo) {
+      throw new UnauthorizedException('Conta desactivada. Contacte o administrador.');
+    }
+
     const isMatch = await bcrypt.compare(pass, user.password);
     if (!isMatch) throw new UnauthorizedException('Credenciais inválidas');
     const { password, ...result } = user;
@@ -44,7 +50,6 @@ export class AuthService {
     return { message: 'Senha redefinida com sucesso.' };
   }
 
-  // ─── novo método ──────────────────────────────────
   async getProfile(userId: number) {
     const user = await this.prisma.users.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('Utilizador não encontrado');
