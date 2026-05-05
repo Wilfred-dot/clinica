@@ -10,7 +10,8 @@ const adminNav = [
   { label: 'Médicos', href: '/admin/medics', icon: 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2zM9 22V12h6v10' },
   { label: 'Pacientes', href: '/admin/patients', icon: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8z' },
   { label: 'Consultas', href: '/admin/consultations', icon: 'M3 4h18v18H3V4zM16 2v4M8 2v4M3 10h18' },
-  { label: 'Notificações', href: '/admin/notifications', icon: 'M22 12h-4l-3 9L9 3l-3 9H2' },   // <-- novo item
+  { label: 'Notificações', href: '/admin/notifications', icon: 'M22 12h-4l-3 9L9 3l-3 9H2' },
+  { label: 'Relatórios', href: '/admin/reports', icon: 'M18 20V10M12 20V4M6 20v-6' }, // novo item
 ];
 
 const medicoNav = [
