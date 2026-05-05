@@ -10,6 +10,7 @@ const adminNav = [
   { label: 'Médicos', href: '/admin/medics', icon: 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2zM9 22V12h6v10' },
   { label: 'Pacientes', href: '/admin/patients', icon: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8z' },
   { label: 'Consultas', href: '/admin/consultations', icon: 'M3 4h18v18H3V4zM16 2v4M8 2v4M3 10h18' },
+  { label: 'Notificações', href: '/admin/notifications', icon: 'M22 12h-4l-3 9L9 3l-3 9H2' },   // <-- novo item
 ];
 
 const medicoNav = [
@@ -30,20 +31,6 @@ const navMap: Record<string, { label: string; href: string; icon: string }[]> = 
   recepcionista: recepcionistaNav,
 };
 
-function getInitials(name: string): string {
-  if (!name) return '?';
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-}
-
-function getRoleBadge(role: string) {
-  switch (role) {
-    case 'admin': return { cls: 'role-admin', text: 'Administrador' };
-    case 'medico': return { cls: 'role-medico', text: 'Médico' };
-    case 'recepcionista': return { cls: 'role-recepcao', text: 'Recepção' };
-    default: return { cls: 'role-admin', text: role };
-  }
-}
-
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -56,14 +43,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
   const role = user.role;
   const navItems = navMap[role] || [];
-  const badge = getRoleBadge(role);
-  const initials = getInitials(user.name);
-
-  const roleColorMap: Record<string, string> = {
-    admin: 'var(--sky)',
-    medico: 'var(--teal)',
-    recepcionista: 'var(--warn)',
-  };
 
   return (
     <div>
@@ -81,16 +60,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="topbar-spacer" />
-        <span className={`topbar-role-badge ${badge.cls}`}>
-          <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round">
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-          {badge.text}
-        </span>
         <div className="topbar-user">
-          <div className="topbar-avatar" style={{ background: roleColorMap[role] || 'var(--sky)' }}>
-            {initials}
-          </div>
           <div className="topbar-user-info">
             <div className="u-name">{user.name}</div>
             <div className="u-role">{capitalize(role)}</div>
