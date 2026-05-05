@@ -8,14 +8,12 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   const { user, logout } = useAuth();
   const pathname = usePathname();
 
-  const initials = user?.name?.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?';
-
   return (
     <div>
       <div className="portal-topbar">
         <div className="portal-topbar-brand">
           <div className="ptm">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" width="32" height="32">
               <ellipse cx="12" cy="12" rx="10" ry="6" />
               <circle cx="12" cy="12" r="3" />
             </svg>
@@ -32,7 +30,6 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div className="topbar-user" style={{ padding: '4px 8px', borderRadius: 'var(--r)' }}>
-            <div className="topbar-avatar" style={{ background: 'rgba(0,125,116,.5)', border: '1px solid rgba(0,157,146,.5)' }}>{initials}</div>
             <div className="topbar-user-info"><div className="u-name" style={{ color: '#fff' }}>{user?.name}</div></div>
           </div>
           <button className="topbar-logout-btn" style={{ color: 'rgba(255,255,255,.5)' }} onClick={logout}>
