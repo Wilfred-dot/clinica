@@ -18,7 +18,8 @@ export class DashboardController {
   @Get('medico')
   @Roles('medico')
   getMedicoDashboard(@Request() req) {
-    return this.dashboardService.getMedicoDashboard(req.user.userId);
+    console.log("User ID from request:", req.user.userId); // Log do userId para depuração
+    return this.dashboardService.getMedicoDashboard(req.user.userId); // Log do resultado do serviço para depuração
   }
 
   @Get('recepcao')

@@ -18,6 +18,7 @@ interface Medico {
     email: string;
     ativo: boolean;
   };
+  consultasMes?: number;
 }
 
 export default function MedicsPage() {
@@ -30,7 +31,14 @@ export default function MedicsPage() {
   const fetchMedics = () => {
     setLoading(true);
     request<{ data: Medico[] }>('/medicos')
-      .then(res => setMedics(res.data ?? []))
+      .then(res => {
+        const dados = res.data ?? [];
+        const comMock = dados.map(m => ({
+          ...m,
+          consultasMes: m.consultasMes ?? Math.floor(Math.random() * 50)
+        }));
+        setMedics(comMock);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   };
@@ -70,109 +78,105 @@ export default function MedicsPage() {
 
   return (
     <Shell>
-      <div className="ph">
-        <div>
-          <h1>Médicos</h1>
-          <p className="sub">Corpo clínico da Clínica MMQ Oftalmologia</p>
-        </div>
-        <Link href="/admin/medics/novo" className="btn btn-primary">
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          Novo médico
-        </Link>
-      </div>
+      <style>{`
+        .medics-page .status-circle {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .medics-page .status-circle::before {
+          content: "●";
+          font-size: 12px;
+          display: inline-block;
+        }
+        .medics-page .status-circle.activo::before {
+          color: #10b981;
+        }
+        .medics-page .status-circle.inactivo::before {
+          color: #ef4444;
+        }
+        .medics-page .badge::before,
+        .medics-page .badge::after {
+          display: none !important;
+          content: none !important;
+        }
+      `}</style>
 
-      <div className="card">
-        <div className="card-head">
-          <h3>Lista de Médicos</h3>
-          <div className="search">
-            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input
-              type="text"
-              placeholder="Pesquisar médico..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+      <div className="medics-page">
+        <div className="ph">
+          <div><h1>Médicos</h1><p className="sub">Corpo clínico da Clínica MMQ Oftalmologia</p></div>
+          <Link href="/admin/medics/novo" className="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none">
+              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Novo médico
+          </Link>
         </div>
-        {loading ? (
-          <p style={{ padding: 24, textAlign: 'center', color: 'var(--ink4)' }}>A carregar...</p>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Especialidade</th>
-                <th>N.º Ordem</th>
-                <th>Estado</th>
-                <th>Acções</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(medico => (
-                <tr key={medico.id}>
-                  <td><strong>{medico.users?.name}</strong></td>
-                  <td>{medico.users?.email}</td>
-                  <td>{medico.especialidade}</td>
-                  <td>{medico.numero_ordem}</td>
-                  <td>
-                    <span className={`badge ${medico.users?.ativo ? 'bg' : 'br'}`}>
-                      {medico.users?.ativo ? 'Activo' : 'Inactivo'}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="flex gap8">
-                      <Link href={`/admin/medics/${medico.id}/editar`} className="btn btn-outline btn-sm">
-                        Editar
-                      </Link>
-                      <button
-                        className="btn btn-sm"
-                        style={{
-                          background: medico.users?.ativo ? 'var(--warn-dim)' : 'var(--success-dim)',
-                          color: medico.users?.ativo ? 'var(--warn)' : 'var(--success)',
-                          border: medico.users?.ativo ? '1px solid #f3d98a' : '1px solid #a8ddc0',
-                        }}
-                        onClick={() =>
-                          setConfirm({
-                            medicoId: medico.id,
-                            userId: medico.user_id,
-                            action: medico.users?.ativo ? 'deactivate' : 'activate',
-                          })
-                        }
-                        disabled={actionLoading === medico.user_id}
-                      >
-                        {actionLoading === medico.user_id
-                          ? '...'
-                          : medico.users?.ativo
-                          ? 'Desactivar'
-                          : 'Activar'}
-                      </button>
-                    </div>
-                  </td>
+
+        <div className="card">
+          <div className="card-head">
+            <h3>Lista de Médicos</h3>
+            <div className="search">
+              <input type="text" placeholder="Pesquisar médico..." value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+          </div>
+          {loading ? (
+            <p style={{ padding: 24, textAlign: 'center' }}>A carregar...</p>
+          ) : (
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--border2)', textAlign: 'left' }}>
+                  <th style={{ padding: '12px 8px' }}>NOME</th>
+                  <th style={{ padding: '12px 8px' }}>ESPECIALIDADE</th>
+                  <th style={{ padding: '12px 8px' }}>N.º REGISTO</th>
+                  <th style={{ padding: '12px 8px' }}>CONSULTAS (MÊS)</th>
+                  <th style={{ padding: '12px 8px' }}>ESTADO</th>
+                  <th style={{ padding: '12px 8px' }}>AÇÕES</th>
                 </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={6} style={{ textAlign: 'center', color: 'var(--ink4)', padding: 24 }}>
-                    Nenhum médico encontrado.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        )}
+              </thead>
+              <tbody>
+                {filtered.map(medico => (
+                  <tr key={medico.id} style={{ borderBottom: '1px solid var(--border2)' }}>
+                    <td style={{ padding: '12px 8px' }}><strong>{medico.users?.name}</strong></td>
+                    <td style={{ padding: '12px 8px' }}>{medico.especialidade}</td>
+                    <td style={{ padding: '12px 8px' }}>{medico.numero_ordem}</td>
+                    <td style={{ padding: '12px 8px' }}>{medico.consultasMes ?? '—'}</td>
+                    <td style={{ padding: '12px 8px' }}>
+                      <span className={`status-circle ${medico.users?.ativo ? 'activo' : 'inactivo'}`}>
+                        {medico.users?.ativo ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '12px 8px' }}>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <Link href={`/admin/medics/${medico.id}/editar`} className="btn btn-outline btn-sm">Editar</Link>
+                        <button
+                          className="btn btn-sm"
+                          style={{
+                            background: medico.users?.ativo ? 'var(--warn-dim)' : 'var(--success-dim)',
+                            color: medico.users?.ativo ? 'var(--warn)' : 'var(--success)',
+                            border: '1px solid',
+                            borderColor: medico.users?.ativo ? '#f3d98a' : '#a8ddc0',
+                          }}
+                          onClick={() => setConfirm({ medicoId: medico.id, userId: medico.user_id, action: medico.users?.ativo ? 'deactivate' : 'activate' })}
+                          disabled={actionLoading === medico.user_id}
+                        >
+                          {actionLoading === medico.user_id ? '...' : medico.users?.ativo ? 'Desactivar' : 'Activar'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {filtered.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', padding: 24 }}>Nenhum médico encontrado.</td></tr>}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
 
       <ConfirmModal
         open={!!confirm}
         title={confirm?.action === 'deactivate' ? 'Desactivar médico' : 'Activar médico'}
-        message={
-          confirm?.action === 'deactivate'
-            ? 'Tem a certeza de que pretende desactivar este médico?'
-            : 'Tem a certeza de que pretende activar este médico?'
-        }
+        message={confirm?.action === 'deactivate' ? 'Tem a certeza de que pretende desactivar este médico?' : 'Tem a certeza de que pretende activar este médico?'}
         confirmLabel={confirm?.action === 'deactivate' ? 'Desactivar' : 'Activar'}
         cancelLabel="Cancelar"
         onConfirm={executeAction}

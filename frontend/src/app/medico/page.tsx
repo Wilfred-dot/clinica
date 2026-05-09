@@ -43,6 +43,7 @@ export default function MedicoDashboard() {
   }, []);
 
   if (loading) return <p className="p-8">A carregar dashboard...</p>;
+  console.log("_____",data)
   if (!data) return <p className="p-8">Erro ao carregar dados.</p>;
 
   const { consultasHoje, ultimasFichas = [] } = data;

@@ -27,7 +27,12 @@ function getWeekDays(start: Date): Date[] {
   for (let i = 0; i < 5; i++) { const d = new Date(start); d.setDate(d.getDate() + i); days.push(d); }
   return days;
 }
-const doctorColors: Record<number, string> = { 2: 'ev-teal', 5: 'ev-sky', 0: 'ev-warn' };
+
+const doctorColors: Record<number, string> = {
+  2: 'bg-[#e4f5f4] text-[#007d74] border-l-[3px] border-l-[#007d74]',
+  5: 'bg-[#e6f0fb] text-[#1258a8] border-l-[3px] border-l-[#1258a8]',
+  0: 'bg-[#fef8ec] text-[#b87a00] border-l-[3px] border-l-[#b87a00]',
+};
 
 export default function ReceptionConsultationsPage() {
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => getWeekStart(new Date()));
@@ -87,35 +92,79 @@ export default function ReceptionConsultationsPage() {
 
   return (
     <Shell>
-      <div className="ph">
-        <div><h1>Consultas</h1><p className="sub">Semana de {weekDays[0]?.toLocaleDateString('pt-MZ')} a {weekDays[4]?.toLocaleDateString('pt-MZ')}</p></div>
-        <div className="ph-actions">
-          <button className="btn btn-outline" onClick={() => goToWeek(-1)}>← Semana anterior</button>
-          <button className="btn btn-outline" onClick={() => goToWeek(1)}>Semana seguinte →</button>
-          <button className="btn btn-primary" onClick={() => window.location.href = '/recepcionista/consultations/agendar'}><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>Agendar consulta</button>
+      {/* Cabeçalho da página */}
+      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
+        <div>
+          <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Consultas</h1>
+          <p className="text-[13px] text-[#6b8299] mt-1">
+            Semana de {weekDays[0]?.toLocaleDateString('pt-MZ')} a {weekDays[4]?.toLocaleDateString('pt-MZ')}
+          </p>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          <button
+            className="inline-flex items-center justify-center rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
+            onClick={() => goToWeek(-1)}
+          >
+            ← Semana anterior
+          </button>
+          <button
+            className="inline-flex items-center justify-center rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
+            onClick={() => goToWeek(1)}
+          >
+            Semana seguinte →
+          </button>
+          <button
+            className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#007d74] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
+            onClick={() => window.location.href = '/recepcionista/consultations/agendar'}
+          >
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Agendar consulta
+          </button>
         </div>
       </div>
-      {loading ? <p style={{ textAlign:'center', color:'var(--ink4)', padding:40 }}>A carregar agenda...</p> : (
-        <div className="sched-wrap">
-          <div className="sched-head"><div className="sched-th"></div>{weekDays.map((day,i)=>(<div className="sched-th" key={i}>{day.toLocaleDateString('pt-MZ',{weekday:'short',day:'2-digit',month:'2-digit'})}</div>))}</div>
-          <div className="sched-body">
+
+      {loading ? (
+        <p className="text-center text-[#a8bfcf] py-10">A carregar agenda...</p>
+      ) : (
+        <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
+          {/* Cabeçalho da grelha */}
+          <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[#0c1a27]">
+            <div className="p-[11px_10px] text-[11px] font-bold uppercase tracking-[0.6px] text-[rgba(255,255,255,0.55)] text-center border-r border-[rgba(255,255,255,0.07)] last:border-r-0"></div>
+            {weekDays.map((day, i) => (
+              <div key={i} className="p-[11px_10px] text-[11px] font-bold uppercase tracking-[0.6px] text-[rgba(255,255,255,0.55)] text-center border-r border-[rgba(255,255,255,0.07)] last:border-r-0">
+                {day.toLocaleDateString('pt-MZ', { weekday: 'short', day: '2-digit', month: '2-digit' })}
+              </div>
+            ))}
+          </div>
+
+          {/* Corpo da grelha */}
+          <div>
             {hours.map(hour => (
-              <div className="sched-row" key={hour}>
-                <div className="sched-time">{hour}</div>
-                {weekDays.map((_,dayIdx) => (
-                  <div className="sched-cell" key={dayIdx}>
-                    {(schedule[dayIdx][hour]||[]).map(c => {
-                      const colorClass = doctorColors[c.medicos?.id] || 'ev-warn';
+              <div key={hour} className="grid grid-cols-[68px_repeat(5,1fr)] border-b border-[#ecf1f6] last:border-b-0">
+                <div className="p-[8px_10px] text-[11px] font-semibold text-[#a8bfcf] text-right border-r border-[#ecf1f6] bg-[#f1f5f9] flex items-center justify-end">
+                  {hour}
+                </div>
+                {weekDays.map((_, dayIdx) => (
+                  <div key={dayIdx} className="p-[5px_7px] border-r border-[#ecf1f6] min-h-[42px] last:border-r-0">
+                    {(schedule[dayIdx][hour] || []).map(c => {
+                      const colorClass = doctorColors[c.medicos?.id] || doctorColors[0];
                       return (
                         <div key={c.id}>
-                          <div className={`ev ${colorClass}`} onClick={() => window.location.href = `/medico/consulta/${c.id}`} title={`${c.pacientes?.users?.name ?? 'N/D'} - ${c.medicos?.users?.name ?? 'N/D'}`}>
+                          <div
+                            className={`rounded-[5px] p-[5px_8px] text-[11px] font-semibold cursor-pointer transition hover:brightness-[1.07] hover:translate-y-[-1px] ${colorClass}`}
+                            onClick={() => window.location.href = `/medico/consulta/${c.id}`}
+                            title={`${c.pacientes?.users?.name ?? 'N/D'} - ${c.medicos?.users?.name ?? 'N/D'}`}
+                          >
                             {c.pacientes?.users?.name ?? 'N/D'}
-                            <div className="ev-doc">{c.medicos?.users?.name ?? 'N/D'}</div>
+                            <div className="text-[10px] font-normal opacity-70 mt-[1px]">
+                              {c.medicos?.users?.name ?? 'N/D'}
+                            </div>
                           </div>
                           {c.status === 'agendada' && (
                             <button
-                              className="btn btn-sm"
-                              style={{ marginTop: 4, background: 'var(--danger-dim)', color: 'var(--danger)', border: '1px solid #f0c4c4', fontSize: 10, padding: '2px 6px' }}
+                              className="mt-1 text-[10px] px-[6px] py-[2px] rounded bg-[#fdf0f0] text-[#b83232] border border-[#f0c4c4] transition hover:bg-[#fdf0f0]"
                               onClick={() => setCancelId(c.id)}
                             >
                               Cancelar
@@ -131,7 +180,10 @@ export default function ReceptionConsultationsPage() {
           </div>
         </div>
       )}
-      {!loading && consultas.length === 0 && <p style={{ textAlign:'center', color:'var(--ink4)', padding:40 }}>Nenhuma consulta agendada para esta semana.</p>}
+
+      {!loading && consultas.length === 0 && (
+        <p className="text-center text-[#a8bfcf] py-10">Nenhuma consulta agendada para esta semana.</p>
+      )}
 
       <ConfirmModal
         open={!!cancelId}

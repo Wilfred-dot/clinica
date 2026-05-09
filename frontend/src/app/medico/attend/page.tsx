@@ -13,6 +13,12 @@ interface Consulta {
   medicos: { users: { name: string } };
 }
 
+const statusBadge: Record<string, { cls: string; label: string }> = {
+  agendada: { cls: 'bw', label: 'Aguarda' },
+  realizada: { cls: 'bg', label: 'Realizada' },
+  em_curso: { cls: 'bb', label: 'Em curso' },
+};
+
 export default function MedicoAttendPage() {
   const [consultas, setConsultas] = useState<Consulta[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,12 +29,6 @@ export default function MedicoAttendPage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
-
-  const statusBadge: Record<string, { cls: string; label: string }> = {
-    agendada: { cls: 'bw', label: 'Aguarda' },
-    realizada: { cls: 'bg', label: 'Realizada' },
-    em_curso: { cls: 'bb', label: 'Em curso' },
-  };
 
   return (
     <Shell>
@@ -41,36 +41,40 @@ export default function MedicoAttendPage() {
 
       <div className="card">
         <div className="card-head">
-          <h3>Consultas de Hoje</h3>
+          <h3>Agenda de Hoje</h3>
         </div>
         {loading ? (
           <p style={{ padding: 24, textAlign: 'center', color: 'var(--ink4)' }}>A carregar...</p>
+        ) : consultas.length === 0 ? (
+          <p style={{ padding: 40, textAlign: 'center', color: 'var(--ink4)' }}>Nenhuma consulta agendada para hoje.</p>
         ) : (
-          <table>
-            <thead>
-              <tr><th>Hora</th><th>Paciente</th><th>Estado</th><th></th></tr>
-            </thead>
-            <tbody>
-              {consultas.map(c => {
-                const bad = statusBadge[c.status] || { cls: 'bn', label: c.status };
-                return (
-                  <tr key={c.id}>
-                    <td><strong>{new Date(c.data_hora).toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit' })}</strong></td>
-                    <td>{c.pacientes?.users?.name ?? 'N/D'}</td>
-                    <td><span className={`badge ${bad.cls}`}>{bad.label}</span></td>
-                    <td>
-                      <Link href={`/medico/consulta/${c.id}`} className="btn btn-outline btn-sm">
-                        Atender
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-              {consultas.length === 0 && (
-                <tr><td colSpan={4} style={{ textAlign: 'center', color: 'var(--ink4)', padding: 24 }}>Nenhuma consulta agendada para hoje.</td></tr>
-              )}
-            </tbody>
-          </table>
+          <div className="clist">
+            {consultas.map(c => {
+              const bad = statusBadge[c.status] || { cls: 'bn', label: c.status };
+              const patientName = c.pacientes?.users?.name ?? 'N/D';
+              return (
+                <Link href={`/medico/consulta/${c.id}`} key={c.id} style={{ textDecoration: 'none' }}>
+                  <div className="citem">
+                    <div className="ctime">
+                      {new Date(c.data_hora).toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                    <div className="divider-v" />
+                    <div
+                      className="cavatar"
+                      style={{ background: 'var(--teal)' }}
+                    >
+                      {patientName.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="cinfo">
+                      <div className="cname">{patientName}</div>
+                      <div className="creason">{c.medicos?.users?.name ?? '—'}</div>
+                    </div>
+                    <span className={`badge ${bad.cls}`}>{bad.label}</span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         )}
       </div>
     </Shell>

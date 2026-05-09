@@ -33,6 +33,8 @@ services:
       - 8.8.8.8
       - 8.8.4.4
     command: npm run start:dev
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     networks:
       - clinica-network
 

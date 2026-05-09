@@ -9,14 +9,58 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
-    const existing = await this.prisma.users.findUnique({ where: { email: createUserDto.email } });
-    if (existing) throw new ConflictException('Email já existe');
-    const hash = await bcrypt.hash(createUserDto.password, 10);
-    return this.prisma.users.create({
-      data: { ...createUserDto, password: hash, ativo: createUserDto.ativo ?? true },
-      select: { id: true, name: true, email: true, role: true, ativo: true, created_at: true },
-    });
+  const existing = await this.prisma.users.findUnique({
+    where: { email: createUserDto.email },
+  });
+
+  if (existing) {
+    throw new ConflictException('Email já existe');
   }
+
+  const hash = await bcrypt.hash(createUserDto.password, 10);
+
+  return this.prisma.$transaction(async (tx) => {
+    // criar utilizador
+    const user = await tx.users.create({
+      data: {
+        ...createUserDto,
+        password: hash,
+        ativo: createUserDto.ativo ?? true,
+      },
+    });
+
+    // criar médico automaticamente
+    if (createUserDto.role === 'medico') {
+      await tx.medicos.create({
+        data: {
+          user_id: user.id,
+          especialidade: 'Geral',
+          numero_ordem: `MED-${user.id}`,
+        },
+      });
+    }
+
+    // criar paciente automaticamente
+    if (createUserDto.role === 'paciente') {
+      await tx.pacientes.create({
+        data: {
+          user_id: user.id,
+          data_nascimento: new Date('2000-01-01'),
+          endereco: 'Por definir',
+        },
+      });
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      ativo: user.ativo,
+      created_at: user.created_at,
+    };
+  });
+}
 
   async findAll(page = 1, limit = 10, search?: string, ativo?: boolean) {
     const where: any = {};
