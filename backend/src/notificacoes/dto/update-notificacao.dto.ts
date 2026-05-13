@@ -1,3 +1,4 @@
+import { UserRole } from '../../common/enums';
 ﻿import { IsString, IsOptional, IsIn } from 'class-validator';
 
 export class UpdateNotificacaoDto {

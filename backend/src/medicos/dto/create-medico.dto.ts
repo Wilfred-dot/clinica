@@ -1,3 +1,5 @@
+import { IsIn } from 'class-validator';
+import { UserRole } from '../../common/enums';
 ﻿import { IsString, IsEmail, IsOptional, Matches } from 'class-validator';
 
 export class CreateMedicoDto {

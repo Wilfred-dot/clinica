@@ -1,3 +1,5 @@
+import { IsIn } from 'class-validator';
+import { UserRole } from '../../common/enums';
 ﻿import { IsInt, IsString, IsOptional } from 'class-validator';
 
 export class CreatePrescricaoDto {

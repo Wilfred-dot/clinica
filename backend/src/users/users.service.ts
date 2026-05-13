@@ -1,3 +1,4 @@
+import { UserRole } from '../common/enums';
 ﻿import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -30,7 +31,7 @@ export class UsersService {
     });
 
     // criar médico automaticamente
-    if (createUserDto.role === 'medico') {
+    if (createUserDto.role === UserRole.MEDICO) {
       await tx.medicos.create({
         data: {
           user_id: user.id,
@@ -41,7 +42,7 @@ export class UsersService {
     }
 
     // criar paciente automaticamente
-    if (createUserDto.role === 'paciente') {
+    if (createUserDto.role === UserRole.PACIENTE) {
       await tx.pacientes.create({
         data: {
           user_id: user.id,

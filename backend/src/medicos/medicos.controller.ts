@@ -1,3 +1,4 @@
+import { UserRole } from '../common/enums';
 ﻿import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -12,13 +13,13 @@ export class MedicosController {
   constructor(private readonly medicosService: MedicosService) {}
 
   @Post()
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   create(@Body() dto: CreateMedicoDto) {
     return this.medicosService.create(dto);
   }
 
   @Get()
-  @Roles('admin', 'recepcionista', 'medico')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO)
   findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -32,25 +33,22 @@ export class MedicosController {
   }
 
   @Get('me')
-  @Roles('admin', 'recepcionista', 'medico', 'paciente')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO, UserRole.PACIENTE)
   findMe(@Request() req) {
     return this.medicosService.findByUserId(req.user.userId);
   }
 
   @Get(':id')
-  @Roles('admin', 'recepcionista', 'medico')
   findOne(@Param('id') id: string) {
     return this.medicosService.findOne(+id);
   }
 
   @Patch(':id')
-  @Roles('admin')
   update(@Param('id') id: string, @Body() dto: UpdateMedicoDto) {
     return this.medicosService.update(+id, dto);
   }
 
   @Delete(':id')
-  @Roles('admin')
   remove(@Param('id') id: string) {
     return this.medicosService.remove(+id);
   }

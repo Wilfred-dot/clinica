@@ -28,22 +28,17 @@ export class RelatoriosService {
   }
 
   async diagnosticosMaisComuns() {
-    const consultas = await this.prisma.consultas.findMany({
-      where: { status: 'realizada', observacoes: { not: null } },
-      select: { observacoes: true },
+    const resultado = await this.prisma.consultas.groupBy({
+      by: ['diagnostico'],
+      where: { status: 'realizada', diagnostico: { not: null } },
+      _count: { id: true },
+      orderBy: { _count: { id: 'desc' } },
+      take: 10,
     });
-    const contagem: Record<string, number> = {};
-    for (const c of consultas) {
-      try {
-        const clinico = JSON.parse(c.observacoes || '{}');
-        const diag = clinico.diagnostico?.trim();
-        if (diag) contagem[diag] = (contagem[diag] || 0) + 1;
-      } catch {}
-    }
-    return Object.entries(contagem)
-      .map(([diagnostico, total]) => ({ diagnostico, total }))
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 10);
+    return resultado.map(r => ({
+      diagnostico: r.diagnostico,
+      total: r._count.id,
+    }));
   }
 
   async resumoGeral() {
@@ -62,7 +57,6 @@ export class RelatoriosService {
     };
   }
 
-  // ─── NOVO: consultas por dia do mês ────────────
   async consultasPorDia(mes: string) {
     const [ano, mesNum] = mes.split('-').map(Number);
     const inicio = new Date(ano, mesNum - 1, 1);
@@ -75,14 +69,12 @@ export class RelatoriosService {
       select: { data_hora: true },
     });
 
-    // Conta por dia
     const contagem: Record<number, number> = {};
     for (const c of consultas) {
       const dia = c.data_hora.getDate();
       contagem[dia] = (contagem[dia] || 0) + 1;
     }
 
-    // Preenche todos os dias do mês
     const diasNoMes = new Date(ano, mesNum, 0).getDate();
     const resultado = [];
     for (let d = 1; d <= diasNoMes; d++) {

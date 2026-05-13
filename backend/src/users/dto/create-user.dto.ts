@@ -1,3 +1,4 @@
+import { UserRole } from '../../common/enums';
 ﻿import { IsEmail, IsString, MinLength, IsIn, IsOptional, IsBoolean } from 'class-validator';
 
 export class CreateUserDto {
@@ -12,8 +13,9 @@ export class CreateUserDto {
   password: string;
 
   @IsString()
-  @IsIn(['admin', 'medico', 'recepcionista', 'paciente'])
-  role: string;
+  @IsIn(Object.values(UserRole))
+  @IsIn(Object.values(UserRole))
+  role: UserRole;
 
   @IsOptional()
   @IsBoolean()

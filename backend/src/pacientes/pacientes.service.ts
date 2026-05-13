@@ -1,4 +1,5 @@
-﻿import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { UserRole } from '../common/enums';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
@@ -12,19 +13,22 @@ export class PacientesService {
     const existUser = await this.prisma.users.findUnique({ where: { email: dto.email } });
     if (existUser) throw new ConflictException('Email já existe');
     const hash = await bcrypt.hash(dto.password, 10);
-    const user = await this.prisma.users.create({
-      data: { name: dto.name, email: dto.email, password: hash, role: 'paciente' },
-    });
-    return this.prisma.pacientes.create({
-      data: {
-        user_id: user.id,
-        data_nascimento: new Date(dto.data_nascimento),
-        sexo: dto.sexo,
-        telefone: dto.telefone,
-        endereco: dto.endereco,
-        historico_medico: dto.historico_medico,
-      },
-      include: { users: { select: { id: true, name: true, email: true, ativo: true } } },
+
+    return this.prisma.$transaction(async (tx) =>  {
+      const user = await tx.users.create({
+        data: { name: dto.name, email: dto.email, password: hash, role: UserRole.PACIENTE },
+      });
+      return tx.pacientes.create({
+        data: {
+          user_id: user.id,
+          data_nascimento: new Date(dto.data_nascimento),
+          sexo: dto.sexo,
+          telefone: dto.telefone,
+          endereco: dto.endereco,
+          historico_medico: dto.historico_medico,
+        },
+        include: { users: { select: { id: true, name: true, email: true, ativo: true } } },
+      });
     });
   }
 
@@ -83,9 +87,6 @@ export class PacientesService {
 
   async update(id: number, dto: UpdatePacienteDto) {
     const paciente = await this.findOne(id);
-    if (dto.email && paciente.users) {
-      await this.prisma.users.update({ where: { id: paciente.user_id }, data: { email: dto.email } });
-    }
     return this.prisma.pacientes.update({
       where: { id },
       data: {
@@ -100,8 +101,11 @@ export class PacientesService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
+    const paciente = await this.findOne(id);
     await this.prisma.pacientes.delete({ where: { id } });
+    if (paciente.user_id) {
+      await this.prisma.users.delete({ where: { id: paciente.user_id } });
+    }
     return { message: 'Paciente removido' };
   }
 
@@ -121,27 +125,18 @@ export class PacientesService {
     });
     if (!paciente) throw new NotFoundException('Paciente não encontrado');
 
-    const consultasFormatadas = paciente.consultas.map(c => {
-      let diagnostico = null;
-      try {
-        if (c.observacoes) {
-          const clinico = JSON.parse(c.observacoes);
-          diagnostico = clinico.diagnostico || null;
-        }
-      } catch {}
-      return {
-        id: c.id,
-        data: c.data_hora,
-        medico: c.medicos?.users?.name,
-        status: c.status,
-        diagnostico,
-        prescricoes: c.prescricoes.map(p => ({
-          medicamento: p.medicamento,
-          dosagem: p.dosagem,
-          data: p.data_prescricao,
-        })),
-      };
-    });
+    const consultasFormatadas = paciente.consultas.map(c => ({
+      id: c.id,
+      data: c.data_hora,
+      medico: c.medicos?.users?.name,
+      status: c.status,
+      diagnostico: c.diagnostico,
+      prescricoes: c.prescricoes.map(p => ({
+        medicamento: p.medicamento,
+        dosagem: p.dosagem,
+        data: p.data_prescricao,
+      })),
+    }));
 
     return {
       paciente: {
@@ -160,3 +155,5 @@ export class PacientesService {
     };
   }
 }
+
+

@@ -1,3 +1,5 @@
+import { IsIn } from 'class-validator';
+import { UserRole } from '../../common/enums';
 ﻿import { IsDateString, IsOptional, IsString } from 'class-validator';
 
 export class UpdateInternacaoDto {

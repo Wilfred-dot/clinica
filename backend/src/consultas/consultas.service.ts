@@ -1,4 +1,5 @@
-﻿import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { UserRole } from '../common/enums';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateConsultaDto } from './dto/create-consulta.dto';
 import { UpdateConsultaDto } from './dto/update-consulta.dto';
@@ -7,11 +8,10 @@ import { UpdateConsultaDto } from './dto/update-consulta.dto';
 export class ConsultasService {
   constructor(private prisma: PrismaService) {}
 
-  // ─── método existente create ──────────────────
   async create(dto: CreateConsultaDto, currentUserId: number, currentRole: string) {
     const dataHora = new Date(dto.data_hora);
     if (dataHora <= new Date()) throw new BadRequestException('A data da consulta deve ser futura');
-    if (currentRole === 'paciente') {
+    if (currentRole === UserRole.PACIENTE) {
       const paciente = await this.prisma.pacientes.findUnique({ where: { user_id: currentUserId } });
       if (!paciente) throw new NotFoundException('Paciente não encontrado');
       dto.paciente_id = paciente.id;
@@ -35,7 +35,6 @@ export class ConsultasService {
     });
   }
 
-  // ─── método existente findAll ──────────────────
   async findAll(filtros?: { data?: string; medico_id?: number; paciente_id?: number }) {
     const where: any = {};
     if (filtros?.data) where.data_hora = { gte: new Date(filtros.data) };
@@ -51,7 +50,6 @@ export class ConsultasService {
     });
   }
 
-  // ─── método existente findOne ──────────────────
   async findOne(id: number) {
     const consulta = await this.prisma.consultas.findUnique({
       where: { id },
@@ -69,35 +67,36 @@ export class ConsultasService {
     return consulta;
   }
 
-  // ─── método existente update ──────────────────
   async update(id: number, dto: UpdateConsultaDto, currentUserId: number, currentRole: string) {
     const consulta = await this.prisma.consultas.findUnique({ where: { id }, include: { medicos: true } });
     if (!consulta) throw new NotFoundException('Consulta não encontrada');
     if (dto.status) {
       if (dto.status === 'realizada') {
-        if (currentRole !== 'medico' || consulta.medicos.user_id !== currentUserId) throw new ForbiddenException('Apenas o médico responsável pode realizar a consulta');
+        if (currentRole !== UserRole.MEDICO || consulta.medicos.user_id !== currentUserId) throw new ForbiddenException('Apenas o médico responsável pode realizar a consulta');
         if (!dto.motivo || !dto.acuidade_visual || !dto.pressao_intraocular || !dto.diagnostico || !dto.plano_tratamento) throw new BadRequestException('Todos os campos clínicos são obrigatórios para realizar a consulta');
       }
       if (dto.status === 'cancelada') {
-        if (!['admin', 'recepcionista', 'paciente'].includes(currentRole)) throw new ForbiddenException('Não tem permissão para cancelar uma consulta');
-        if (currentRole !== 'admin') {
+        if (![UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.PACIENTE].includes(currentRole as UserRole)) throw new ForbiddenException('Não tem permissão para cancelar uma consulta');
+        if (currentRole !== UserRole.ADMIN) {
           const agora = new Date();
           const diffHoras = (consulta.data_hora.getTime() - agora.getTime()) / (1000 * 60 * 60);
           if (diffHoras < 24) throw new BadRequestException('Só é possível cancelar com pelo menos 24 horas de antecedência');
         }
       }
       if (dto.status === 'confirmada') {
-        if (!['admin', 'recepcionista'].includes(currentRole)) throw new ForbiddenException('Apenas admin ou recepcionista podem confirmar uma consulta');
+        if (![UserRole.ADMIN, UserRole.RECEPCIONISTA].includes(currentRole as UserRole)) throw new ForbiddenException('Apenas admin ou recepcionista podem confirmar uma consulta');
       }
     }
+
     const data: any = {};
     if (dto.status) data.status = dto.status;
-    if (dto.motivo || dto.acuidade_visual || dto.pressao_intraocular || dto.diagnostico || dto.plano_tratamento) {
-      const clinico = { motivo: dto.motivo, acuidade_visual: dto.acuidade_visual, pressao_intraocular: dto.pressao_intraocular, diagnostico: dto.diagnostico, plano_tratamento: dto.plano_tratamento };
-      data.observacoes = JSON.stringify(clinico);
-    } else if (dto.observacoes) {
-      data.observacoes = dto.observacoes;
-    }
+    if (dto.observacoes) data.observacoes = dto.observacoes;
+    if (dto.motivo !== undefined) data.motivo = dto.motivo;
+    if (dto.acuidade_visual !== undefined) data.acuidade_visual = dto.acuidade_visual;
+    if (dto.pressao_intraocular !== undefined) data.pressao_intraocular = dto.pressao_intraocular;
+    if (dto.diagnostico !== undefined) data.diagnostico = dto.diagnostico;
+    if (dto.plano_tratamento !== undefined) data.plano_tratamento = dto.plano_tratamento;
+
     return this.prisma.consultas.update({
       where: { id },
       data,
@@ -108,10 +107,9 @@ export class ConsultasService {
     });
   }
 
-  // ─── NOVO: agenda semanal ─────────────────────
   async getSemana(dataReferencia: string) {
     const ref = new Date(dataReferencia);
-    const diaSemana = ref.getDay(); // 0 = domingo
+    const diaSemana = ref.getDay();
     const segunda = new Date(ref);
     segunda.setDate(ref.getDate() - ((diaSemana + 6) % 7));
     segunda.setHours(0, 0, 0, 0);
@@ -130,7 +128,6 @@ export class ConsultasService {
       orderBy: { data_hora: 'asc' },
     });
 
-    // Agrupa por data (YYYY-MM-DD) e depois por médico
     const mapa: any = {};
     for (const c of consultas) {
       const chaveData = c.data_hora.toISOString().slice(0, 10);

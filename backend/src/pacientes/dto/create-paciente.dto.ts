@@ -1,4 +1,5 @@
-﻿import { IsString, IsOptional, IsEmail, IsDateString, IsIn } from 'class-validator';
+import { UserRole } from '../../common/enums';
+import { IsString, IsOptional, IsEmail, IsDateString, IsIn, MinLength } from 'class-validator';
 
 export class CreatePacienteDto {
   @IsString()
@@ -8,6 +9,7 @@ export class CreatePacienteDto {
   email: string;
 
   @IsString()
+  @MinLength(6)
   password: string;
 
   @IsDateString()

@@ -7,17 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model consultas {
-  id          Int           @id @default(autoincrement())
-  paciente_id Int
-  medico_id   Int
-  data_hora   DateTime      @db.Timestamp(6)
-  status      String?       @default("agendada") @db.VarChar(20)
-  observacoes String?
-  medicos     medicos       @relation(fields: [medico_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  pacientes   pacientes     @relation(fields: [paciente_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  prescricoes prescricoes[]
+  id                  Int           @id @default(autoincrement())
+  paciente_id         Int
+  medico_id           Int
+  data_hora           DateTime      @db.Timestamp(6)
+  status              String?       @default("agendada") @db.VarChar(20)
+  observacoes         String?
+  // campos clínicos
+  motivo              String?
+  acuidade_visual     String?       @db.VarChar(50)
+  pressao_intraocular String?       @db.VarChar(50)
+  diagnostico         String?
+  plano_tratamento    String?
+  medicos             medicos       @relation(fields: [medico_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  pacientes           pacientes     @relation(fields: [paciente_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  prescricoes         prescricoes[]
 
   @@unique([medico_id, data_hora])
   @@index([medico_id, data_hora], map: "idx_consultas_medico_data")
@@ -25,7 +30,6 @@ model consultas {
   @@index([status], map: "idx_consultas_status")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model medicos {
   id               Int         @id @default(autoincrement())
   user_id          Int         @unique
@@ -37,7 +41,6 @@ model medicos {
   users            users       @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model notificacoes {
   id            Int       @id @default(autoincrement())
   paciente_id   Int
@@ -50,7 +53,6 @@ model notificacoes {
   @@index([paciente_id], map: "idx_notificacoes_paciente")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model pacientes {
   id                  Int                   @id @default(autoincrement())
   user_id             Int?                  @unique
@@ -75,7 +77,6 @@ model prescricoes {
   consultas       consultas @relation(fields: [consulta_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model processo_internacao {
   nr_processo       String    @id @db.VarChar(20)
   paciente_id       Int
@@ -85,7 +86,6 @@ model processo_internacao {
   pacientes         pacientes @relation(fields: [paciente_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model users {
   id         Int        @id @default(autoincrement())
   name       String     @db.VarChar(100)

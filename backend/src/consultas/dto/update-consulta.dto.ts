@@ -1,33 +1,32 @@
-﻿import { IsOptional, IsString, IsIn, ValidateIf } from 'class-validator';
+﻿import { IsString, IsOptional, IsIn } from 'class-validator';
 
 export class UpdateConsultaDto {
   @IsOptional()
   @IsString()
-  @IsIn(['confirmada', 'realizada', 'cancelada'])
+  @IsIn(['agendada', 'confirmada', 'realizada', 'cancelada'])
   status?: string;
-
-  // Campos clínicos – obrigatórios se status = 'realizada'
-  @ValidateIf(o => o.status === 'realizada')
-  @IsString()
-  motivo?: string;
-
-  @ValidateIf(o => o.status === 'realizada')
-  @IsString()
-  acuidade_visual?: string;
-
-  @ValidateIf(o => o.status === 'realizada')
-  @IsString()
-  pressao_intraocular?: string;
-
-  @ValidateIf(o => o.status === 'realizada')
-  @IsString()
-  diagnostico?: string;
-
-  @ValidateIf(o => o.status === 'realizada')
-  @IsString()
-  plano_tratamento?: string;
 
   @IsOptional()
   @IsString()
   observacoes?: string;
+
+  @IsOptional()
+  @IsString()
+  motivo?: string;
+
+  @IsOptional()
+  @IsString()
+  acuidade_visual?: string;
+
+  @IsOptional()
+  @IsString()
+  pressao_intraocular?: string;
+
+  @IsOptional()
+  @IsString()
+  diagnostico?: string;
+
+  @IsOptional()
+  @IsString()
+  plano_tratamento?: string;
 }

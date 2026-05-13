@@ -1,3 +1,4 @@
+import { UserRole } from '../common/enums';
 ﻿import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -6,7 +7,7 @@ import { RelatoriosService } from './relatorios.service';
 
 @Controller('relatorios')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Roles('admin')
+@Roles(UserRole.ADMIN)
 export class RelatoriosController {
   constructor(private readonly relatoriosService: RelatoriosService) {}
 

@@ -1,3 +1,4 @@
+import { UserRole } from '../common/enums';
 ﻿import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Request, ForbiddenException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -12,13 +13,13 @@ export class PacientesController {
   constructor(private readonly pacientesService: PacientesService) {}
 
   @Post()
-  @Roles('admin', 'recepcionista')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA)
   create(@Body() dto: CreatePacienteDto) {
     return this.pacientesService.create(dto);
   }
 
   @Get()
-  @Roles('admin', 'recepcionista', 'medico')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO)
   findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -32,35 +33,32 @@ export class PacientesController {
   }
 
   @Get('me')
-  @Roles('admin', 'recepcionista', 'medico', 'paciente')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO, UserRole.PACIENTE)
   findMe(@Request() req) {
     return this.pacientesService.findByUserId(req.user.userId);
   }
 
   @Get(':id/historico')
-  @Roles('admin', 'recepcionista', 'medico', 'paciente')
   getHistorico(@Param('id') id: string, @Request() req) {
     return this.pacientesService.getHistorico(+id);
   }
 
   @Get(':id')
-  @Roles('admin', 'recepcionista', 'medico', 'paciente')
   async findOne(@Param('id') id: string, @Request() req) {
     const paciente = await this.pacientesService.findOne(+id);
-    if (req.user.role === 'paciente' && paciente.user_id !== req.user.userId) {
+    if (req.user.role === UserRole.PACIENTE && paciente.user_id !== req.user.userId) {
       throw new ForbiddenException('Acesso negado');
     }
     return paciente;
   }
 
   @Patch(':id')
-  @Roles('admin', 'recepcionista')
   update(@Param('id') id: string, @Body() dto: UpdatePacienteDto) {
     return this.pacientesService.update(+id, dto);
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   remove(@Param('id') id: string) {
     return this.pacientesService.remove(+id);
   }

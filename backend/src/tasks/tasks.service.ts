@@ -1,12 +1,16 @@
-﻿import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificacoesService } from '../notificacoes/notificacoes.service';
 
 @Injectable()
 export class TasksService {
   private readonly logger = new Logger(TasksService.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificacoesService: NotificacoesService,
+  ) {}
 
   @Cron(CronExpression.EVERY_HOUR)
   async enviarLembretesConsultas() {
@@ -14,7 +18,6 @@ export class TasksService {
     const agora = new Date();
     const em24Horas = new Date(agora.getTime() + 24 * 60 * 60 * 1000);
 
-    // Busca consultas agendadas nas próximas 24h, incluindo médico e paciente
     const consultas = await this.prisma.consultas.findMany({
       where: {
         data_hora: {
@@ -30,7 +33,6 @@ export class TasksService {
     });
 
     for (const consulta of consultas) {
-      // Verifica se já existe um lembrete recente para esta consulta
       const lembreteExistente = await this.prisma.notificacoes.findFirst({
         where: {
           paciente_id: consulta.paciente_id,
@@ -42,18 +44,17 @@ export class TasksService {
       });
 
       if (lembreteExistente) {
-        continue; // já foi enviado lembrete recente, pula
+        continue;
       }
 
       const mensagem = `Lembrete: tem uma consulta agendada com Dr. ${consulta.medicos.users.name} amanhã às ${consulta.data_hora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}.`;
-      await this.prisma.notificacoes.create({
-        data: {
-          paciente_id: consulta.paciente_id,
-          mensagem,
-          tipo_variavel: 'lembrete_consulta',
-          status_envio: 'pendente',
-        },
+      
+      await this.notificacoesService.create({
+        paciente_id: consulta.paciente_id,
+        mensagem,
+        tipo_variavel: 'lembrete_consulta',
       });
+      
       this.logger.log(`Lembrete criado para consulta #${consulta.id}`);
     }
     this.logger.log(`Total de lembretes enviados: ${consultas.length}`);

@@ -1,3 +1,4 @@
+import { UserRole } from '../common/enums';
 ﻿import { Controller, Post, Body, HttpCode, Get, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';

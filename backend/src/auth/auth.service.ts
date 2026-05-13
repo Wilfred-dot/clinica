@@ -1,5 +1,7 @@
+import { UserRole } from '../common/enums';
 import { Injectable, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -8,13 +10,13 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.prisma.users.findUnique({ where: { email } });
     if (!user) throw new UnauthorizedException('Credenciais inválidas');
 
-    // 🔒 Verifica se a conta está ativa
     if (!user.ativo) {
       throw new UnauthorizedException('Conta desactivada. Contacte o administrador.');
     }
@@ -32,17 +34,28 @@ export class AuthService {
 
   async forgotPassword(email: string) {
     const user = await this.prisma.users.findUnique({ where: { email } });
-    if (!user) throw new NotFoundException('Utilizador não encontrado');
-    const payload = { sub: user.id };
-    const token = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const resetLink = `http://localhost:3000/auth/reset-password?token=${token}`;
-    console.log(`🔗 Link de recuperação de senha para ${email}: ${resetLink}`);
+    if (user) {
+      const token = this.jwtService.sign(
+        { sub: user.id, purpose: 'reset' },
+        {
+          secret: this.configService.get('JWT_RESET_SECRET'),
+          expiresIn: '15m',
+        }
+      );
+      const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+      console.log(`Link de reset para ${email}: ${resetLink}`);
+    }
     return { message: 'Se o email existir, receberá um link de recuperação.' };
   }
 
   async resetPassword(token: string, newPassword: string) {
     let payload: any;
-    try { payload = this.jwtService.verify(token); } catch (e) {
+    try {
+      payload = this.jwtService.verify(token, {
+        secret: this.configService.get('JWT_RESET_SECRET'),
+      });
+      if (payload.purpose !== 'reset') throw new Error();
+    } catch {
       throw new BadRequestException('Token inválido ou expirado');
     }
     const hash = await bcrypt.hash(newPassword, 10);

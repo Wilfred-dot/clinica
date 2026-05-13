@@ -1,3 +1,4 @@
+import { UserRole } from '../common/enums';
 ﻿import { Controller, Get, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -10,20 +11,20 @@ export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
   @Get('admin')
-  @Roles('admin')
+  @Roles(UserRole.ADMIN)
   getAdminDashboard() {
     return this.dashboardService.getAdminDashboard();
   }
 
   @Get('medico')
-  @Roles('medico')
+  @Roles(UserRole.MEDICO)
   getMedicoDashboard(@Request() req) {
     console.log("User ID from request:", req.user.userId); // Log do userId para depuração
     return this.dashboardService.getMedicoDashboard(req.user.userId); // Log do resultado do serviço para depuração
   }
 
   @Get('recepcao')
-  @Roles('admin', 'recepcionista')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA)
   getRecepcaoDashboard() {
     return this.dashboardService.getRecepcaoDashboard();
   }

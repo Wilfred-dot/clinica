@@ -1,3 +1,4 @@
+import { UserRole } from '../common/enums';
 ﻿import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePrescricaoDto } from './dto/create-prescricao.dto';
@@ -15,7 +16,7 @@ export class PrescricoesService {
     });
     if (!consulta) throw new NotFoundException('Consulta não encontrada');
 
-    if (currentRole !== 'admin' && consulta.medicos.user_id !== currentUserId) {
+    if (currentRole !== UserRole.ADMIN && consulta.medicos.user_id !== currentUserId) {
       throw new ForbiddenException('Apenas o médico responsável pela consulta pode criar prescrições');
     }
 
@@ -83,7 +84,7 @@ export class PrescricoesService {
     });
     if (!prescricao) throw new NotFoundException('Prescrição não encontrada');
 
-    if (currentRole !== 'admin' && prescricao.consultas.medicos.user_id !== currentUserId) {
+    if (currentRole !== UserRole.ADMIN && prescricao.consultas.medicos.user_id !== currentUserId) {
       throw new ForbiddenException('Apenas o médico responsável ou admin podem editar esta prescrição');
     }
 
@@ -113,7 +114,7 @@ export class PrescricoesService {
     });
     if (!prescricao) throw new NotFoundException('Prescrição não encontrada');
 
-    if (currentRole !== 'admin' && prescricao.consultas.medicos.user_id !== currentUserId) {
+    if (currentRole !== UserRole.ADMIN && prescricao.consultas.medicos.user_id !== currentUserId) {
       throw new ForbiddenException('Apenas o médico responsável ou admin podem remover esta prescrição');
     }
 

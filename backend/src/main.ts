@@ -1,8 +1,6 @@
-﻿import * as dotenv from 'dotenv';
-dotenv.config();
-
-import { NestFactory } from '@nestjs/core';
+﻿import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/http-exception.filter';
@@ -10,10 +8,22 @@ import { AllExceptionsFilter } from './common/http-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // ===== VALIDAÇÃO =====
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+  }));
+
   // ===== SEGURANÇA =====
-  app.use(helmet());                     // Headers de segurança automáticos
-  app.enableCors();                      // Permitir requisições de outras origens
-  app.useGlobalFilters(new AllExceptionsFilter()); // Padronização de erros
+  app.use(helmet());
+  app.enableCors({
+    origin: process.env.FRONTEND_URL,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // ===== SWAGGER =====
   const config = new DocumentBuilder()

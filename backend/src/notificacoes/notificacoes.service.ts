@@ -1,11 +1,12 @@
-﻿import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { UserRole } from '../common/enums';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateNotificacaoDto } from './dto/create-notificacao.dto';
 import { UpdateNotificacaoDto } from './dto/update-notificacao.dto';
 
 @Injectable()
 export class NotificacoesService {
-  constructor(public prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateNotificacaoDto) {
     const paciente = await this.prisma.pacientes.findUnique({ where: { id: dto.paciente_id } });
@@ -69,5 +70,11 @@ export class NotificacoesService {
       mensagem,
       tipo_variavel: 'lembrete_consulta',
     });
+  }
+
+  async findByUserId(userId: number) {
+    const paciente = await this.prisma.pacientes.findUnique({ where: { user_id: userId } });
+    if (!paciente) throw new NotFoundException('Paciente não encontrado');
+    return this.findAll({ paciente_id: paciente.id });
   }
 }
