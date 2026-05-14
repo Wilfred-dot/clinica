@@ -1,24 +1,39 @@
 ﻿'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { getMe } from '@/lib/api';
 
 export default function Home() {
-  const [backendStatus, setBackendStatus] = useState<string>('🔍 A verificar...');
+  const router = useRouter();
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    fetch(`${apiUrl}/ping`)
-      .then((res) => res.json())
-      .then((data) => setBackendStatus(`✅ Backend OK — ${data.tables?.length} tabelas`))
-      .catch(() => setBackendStatus('❌ Backend offline'));
-  }, []);
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      router.replace('/login');
+      return;
+    }
+
+    getMe()
+      .then((user) => {
+        const routes: Record<string, string> = {
+          admin: '/admin',
+          medico: '/medico',
+          recepcionista: '/recepcionista',
+          paciente: '/paciente',
+        };
+        router.replace(routes[user.role] || '/login');
+      })
+      .catch(() => {
+        localStorage.removeItem('access_token');
+        document.cookie = 'access_token=; path=/; max-age=0';
+        router.replace('/login');
+      });
+  }, [router]);
 
   return (
     <main className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-4">Clínica MMQ Oftalmologia</h1>
-        <p className="text-xl">{backendStatus}</p>
-      </div>
+      <p className="text-[#6b8299] text-sm">A redirecionar...</p>
     </main>
   );
 }

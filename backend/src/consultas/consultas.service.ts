@@ -50,6 +50,37 @@ export class ConsultasService {
     });
   }
 
+  async findAllForUser(
+    filtros: any,
+    user: { userId: number; email: string; role: string },
+  ) {
+    const where: any = {};
+    if (filtros?.data) where.data_hora = { gte: new Date(filtros.data) };
+    if (filtros?.medico_id != null && filtros.medico_id !== '') {
+      where.medico_id = +filtros.medico_id;
+    }
+    if (filtros?.status) where.status = filtros.status;
+
+    if (user.role === UserRole.PACIENTE) {
+      const paciente = await this.prisma.pacientes.findUnique({
+        where: { user_id: user.userId },
+      });
+      if (!paciente) throw new NotFoundException('Paciente não encontrado');
+      where.paciente_id = paciente.id;
+    } else if (filtros?.paciente_id != null && filtros.paciente_id !== '') {
+      where.paciente_id = +filtros.paciente_id;
+    }
+
+    return this.prisma.consultas.findMany({
+      where,
+      include: {
+        pacientes: { include: { users: { select: { id: true, name: true, email: true } } } },
+        medicos: { include: { users: { select: { id: true, name: true, email: true } } } },
+      },
+      orderBy: { data_hora: 'asc' },
+    });
+  }
+
   async findOne(id: number) {
     const consulta = await this.prisma.consultas.findUnique({
       where: { id },

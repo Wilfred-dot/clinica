@@ -1,5 +1,5 @@
 import { UserRole } from '../common/enums';
-﻿import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePrescricaoDto } from './dto/create-prescricao.dto';
 import { UpdatePrescricaoDto } from './dto/update-prescricao.dto';
@@ -39,10 +39,23 @@ export class PrescricoesService {
     });
   }
 
-  async findAll(filtros?: { consulta_id?: number; paciente_id?: number }) {
+  async findAll(
+    filtros?: { consulta_id?: number; paciente_id?: number },
+    user?: { userId: number; role: string },
+  ) {
     const where: any = {};
     if (filtros?.consulta_id) where.consulta_id = filtros.consulta_id;
-    if (filtros?.paciente_id) where.consultas = { paciente_id: filtros.paciente_id };
+
+    if (user?.role === UserRole.PACIENTE) {
+      const paciente = await this.prisma.pacientes.findUnique({
+        where: { user_id: user.userId },
+      });
+      if (!paciente) throw new NotFoundException('Paciente não encontrado');
+      where.consultas = { paciente_id: paciente.id };
+    } else if (filtros?.paciente_id) {
+      where.consultas = { paciente_id: filtros.paciente_id };
+    }
+
     return this.prisma.prescricoes.findMany({
       where,
       include: {
@@ -51,7 +64,7 @@ export class PrescricoesService {
             id: true,
             data_hora: true,
             pacientes: { include: { users: { select: { id: true, name: true } } } },
-            medicos:   { include: { users: { select: { id: true, name: true } } } },
+            medicos: { include: { users: { select: { id: true, name: true } } } },
           },
         },
       },
@@ -59,7 +72,7 @@ export class PrescricoesService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user?: { userId: number; role: string }) {
     const prescricao = await this.prisma.prescricoes.findUnique({
       where: { id },
       include: {
@@ -67,13 +80,24 @@ export class PrescricoesService {
           select: {
             id: true,
             data_hora: true,
+            paciente_id: true,
             pacientes: { include: { users: { select: { id: true, name: true } } } },
-            medicos:   { include: { users: { select: { id: true, name: true } } } },
+            medicos: { include: { users: { select: { id: true, name: true } } } },
           },
         },
       },
     });
     if (!prescricao) throw new NotFoundException('Prescrição não encontrada');
+
+    if (user?.role === UserRole.PACIENTE) {
+      const paciente = await this.prisma.pacientes.findUnique({
+        where: { user_id: user.userId },
+      });
+      if (!paciente || prescricao.consultas.paciente_id !== paciente.id) {
+        throw new ForbiddenException('Não tem acesso a esta prescrição');
+      }
+    }
+
     return prescricao;
   }
 

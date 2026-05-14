@@ -1,5 +1,5 @@
 import { UserRole } from '../common/enums';
-﻿import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, Request, ForbiddenException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,15 +19,16 @@ export class ConsultasController {
   }
 
   @Get()
-  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO)
-  findAll(@Query() filtros: any) {
-    return this.consultasService.findAll(filtros);
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO, UserRole.PACIENTE)
+  findAll(@Query() filtros: any, @Request() req) {
+    return this.consultasService.findAllForUser(filtros, req.user);
   }
 
   // ─── NOVA ROTA ──────────────────────────────
   @Get('semana')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO)
   getSemana(@Query('data') data: string) {
-    return this.consultasService.getSemana(data || new Date().toISOString().slice(0,10));
+    return this.consultasService.getSemana(data || new Date().toISOString().slice(0, 10));
   }
 
   @Get(':id')
@@ -41,6 +42,7 @@ export class ConsultasController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO, UserRole.PACIENTE)
   update(@Param('id') id: string, @Body() dto: UpdateConsultaDto, @Request() req) {
     return this.consultasService.update(+id, dto, req.user.userId, req.user.role);
   }

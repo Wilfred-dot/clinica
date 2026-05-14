@@ -25,11 +25,13 @@ export class InternacoesController {
   }
 
   @Get(':nrProcesso')
+  @Roles(UserRole.ADMIN, UserRole.MEDICO, UserRole.RECEPCIONISTA)
   findOne(@Param('nrProcesso') nrProcesso: string) {
     return this.internacoesService.findOne(nrProcesso);
   }
 
   @Patch(':nrProcesso')
+  @Roles(UserRole.ADMIN, UserRole.MEDICO)
   update(@Param('nrProcesso') nrProcesso: string, @Body() dto: UpdateInternacaoDto) {
     return this.internacoesService.update(nrProcesso, dto);
   }

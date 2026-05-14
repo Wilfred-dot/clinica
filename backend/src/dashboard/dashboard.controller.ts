@@ -1,5 +1,5 @@
 import { UserRole } from '../common/enums';
-﻿import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,8 +19,7 @@ export class DashboardController {
   @Get('medico')
   @Roles(UserRole.MEDICO)
   getMedicoDashboard(@Request() req) {
-    console.log("User ID from request:", req.user.userId); // Log do userId para depuração
-    return this.dashboardService.getMedicoDashboard(req.user.userId); // Log do resultado do serviço para depuração
+    return this.dashboardService.getMedicoDashboard(req.user.userId);
   }
 
   @Get('recepcao')

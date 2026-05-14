@@ -41,7 +41,7 @@ export default function ReceptionAgendarPage() {
     if (!selectedPaciente || !selectedMedico || !data || !hora) { setError('Preencha todos os campos.'); return; }
     setLoading(true);
     try {
-      await request('/consultas', { method:'POST', body: JSON.stringify({ paciente_id: +selectedPaciente, medico_id: +selectedMedico, data_hora: `${data}T${hora}:00.000Z`, status:'agendada' }) });
+      await request('/consultas', { method:'POST', body: JSON.stringify({ paciente_id: +selectedPaciente, medico_id: +selectedMedico, data_hora: `${data}T${hora}:00.000Z` }) });
       router.push('/recepcionista/consultations');
     } catch (err: any) { setError(err.message || 'Erro ao agendar consulta'); }
     finally { setLoading(false); }

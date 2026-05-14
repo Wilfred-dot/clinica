@@ -135,4 +135,3 @@ ALTER TABLE "prescricoes" ADD CONSTRAINT "prescricoes_consulta_id_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "processo_internacao" ADD CONSTRAINT "processo_internacao_paciente_id_fkey" FOREIGN KEY ("paciente_id") REFERENCES "pacientes"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
-

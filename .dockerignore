@@ -1,3 +1,17 @@
-node_modules
-dist
-.git
+# Global
+**/node_modules
+**/dist
+**/.git
+**/*.log
+
+# Backend
+backend/node_modules
+backend/dist
+
+# Frontend
+frontend/node_modules
+frontend/.next
+
+# Scripts temporários
+*.ps1
+*.sh

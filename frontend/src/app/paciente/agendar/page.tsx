@@ -41,8 +41,7 @@ export default function PacienteAgendarPage() {
           paciente_id: perfil.id,
           medico_id: +selectedMedico,
           data_hora: `${data}T${hora}:00.000Z`,
-          motivo,
-          status: 'agendada',
+          ...(motivo.trim() ? { observacoes: motivo.trim() } : {}),
         }),
       });
       router.push('/paciente');

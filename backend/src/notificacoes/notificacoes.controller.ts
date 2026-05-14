@@ -19,6 +19,7 @@ export class NotificacoesController {
   }
 
   @Post('lembrete/:consultaId')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA)
   enviarLembrete(@Param('consultaId') consultaId: string) {
     return this.notificacoesService.enviarLembreteConsulta(+consultaId);
   }
@@ -39,6 +40,7 @@ export class NotificacoesController {
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO, UserRole.PACIENTE)
   async findOne(@Param('id') id: string, @Request() req) {
     const notif = await this.notificacoesService.findOne(+id);
     if (req.user.role === UserRole.PACIENTE && notif.pacientes.user_id !== req.user.userId) {
@@ -48,6 +50,7 @@ export class NotificacoesController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA)
   update(@Param('id') id: string, @Body() dto: UpdateNotificacaoDto) {
     return this.notificacoesService.update(+id, dto);
   }

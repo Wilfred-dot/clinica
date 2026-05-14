@@ -28,12 +28,11 @@ export default function PacienteDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const perfil = await request<{ nome: string; id: number }>('/pacientes/me');
-        setNome(perfil?.nome || 'Paciente');
-        const pacienteId = perfil?.id;
-        if (pacienteId) {
-          const cons = await request<{ data: Consulta[] }>(`/consultas?paciente_id=${pacienteId}&status=agendada&limit=5`);
-          setConsultas(cons?.data ?? []);
+        const perfil = await request<{ id: number; users: { name: string } }>('/pacientes/me');
+        setNome(perfil?.users?.name || 'Paciente');
+        if (perfil?.id) {
+          const cons = await request<Consulta[]>(`/consultas?status=agendada`);
+          setConsultas(Array.isArray(cons) ? cons.slice(0, 5) : []);
         }
         const notifs = await request<Notificacao[]>('/notificacoes/minhas');
         setNotificacoes(notifs.slice(0, 5));

@@ -61,7 +61,6 @@ export default function AgendarConsultaPage() {
           paciente_id: +selectedPaciente,
           medico_id: +selectedMedico,
           data_hora: `${data}T${hora}:00.000Z`,
-          status: 'agendada',
         }),
       });
       router.push('/admin/consultations');

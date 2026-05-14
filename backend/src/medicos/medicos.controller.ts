@@ -1,5 +1,5 @@
 import { UserRole } from '../common/enums';
-﻿import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -39,16 +39,19 @@ export class MedicosController {
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO)
   findOne(@Param('id') id: string) {
     return this.medicosService.findOne(+id);
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN)
   update(@Param('id') id: string, @Body() dto: UpdateMedicoDto) {
     return this.medicosService.update(+id, dto);
   }
 
   @Delete(':id')
+  @Roles(UserRole.ADMIN)
   remove(@Param('id') id: string) {
     return this.medicosService.remove(+id);
   }

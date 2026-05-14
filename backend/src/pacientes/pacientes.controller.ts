@@ -1,5 +1,5 @@
 import { UserRole } from '../common/enums';
-﻿import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Request, ForbiddenException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -39,11 +39,13 @@ export class PacientesController {
   }
 
   @Get(':id/historico')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO, UserRole.PACIENTE)
   getHistorico(@Param('id') id: string, @Request() req) {
-    return this.pacientesService.getHistorico(+id);
+    return this.pacientesService.getHistoricoForUser(+id, req.user);
   }
 
   @Get(':id')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO, UserRole.PACIENTE)
   async findOne(@Param('id') id: string, @Request() req) {
     const paciente = await this.pacientesService.findOne(+id);
     if (req.user.role === UserRole.PACIENTE && paciente.user_id !== req.user.userId) {
@@ -53,6 +55,7 @@ export class PacientesController {
   }
 
   @Patch(':id')
+  @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA)
   update(@Param('id') id: string, @Body() dto: UpdatePacienteDto) {
     return this.pacientesService.update(+id, dto);
   }

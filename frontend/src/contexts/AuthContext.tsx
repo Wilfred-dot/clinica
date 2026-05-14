@@ -33,7 +33,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (token) {
       getMe()
         .then((u) => setUser(u))
-        .catch(() => localStorage.removeItem('access_token'))
+        .catch(() => {
+          localStorage.removeItem('access_token');
+          document.cookie = 'access_token=; path=/; max-age=0';
+        })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
@@ -42,7 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginSuccess = (u: User) => setUser(u);
 
-  const logout = () => apiLogout();
+  const logout = () => {
+    setUser(null);
+    apiLogout();
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, loginSuccess, logout }}>

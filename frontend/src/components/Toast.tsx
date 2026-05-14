@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 type ToastType = 'success' | 'warn' | 'error' | '';
 
@@ -14,7 +14,7 @@ let toastId = 0;
 const listeners: ((toasts: ToastMessage[]) => void)[] = [];
 
 function emit(toasts: ToastMessage[]) {
-  listeners.forEach(fn => fn(toasts));
+  listeners.forEach((fn) => fn(toasts));
 }
 
 export function toast(message: string, type: ToastType = '') {
@@ -29,6 +29,29 @@ export function toast(message: string, type: ToastType = '') {
     emit(updated);
   }, 3200);
 }
+
+const icons: Record<string, ReactNode> = {
+  success: (
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  ),
+  warn: (
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+  ),
+  error: (
+    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="15" y1="9" x2="9" y2="15" />
+      <line x1="9" y1="9" x2="15" y2="15" />
+    </svg>
+  ),
+};
 
 export function ToastContainer() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -48,16 +71,12 @@ export function ToastContainer() {
 
   return (
     <div className="toast-wrap">
-      {toasts.map(t => {
-        let icon = '';
-        if (t.type === 'success') icon = '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
-        else if (t.type === 'warn') icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-        else if (t.type === 'error') icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
-        else icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-        return (
-          <div key={t.id} className={`toast ${t.type}`} dangerouslySetInnerHTML={{ __html: icon + t.message }} />
-        );
-      })}
+      {toasts.map((t) => (
+        <div key={t.id} className={`toast ${t.type}`}>
+          {icons[t.type] ?? icons.warn}
+          <span>{t.message}</span>
+        </div>
+      ))}
     </div>
   );
 }

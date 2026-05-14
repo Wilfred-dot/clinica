@@ -4,37 +4,56 @@ services:
     container_name: postgres-clinica
     restart: unless-stopped
     environment:
-      POSTGRES_PASSWORD: minhasenha
+      POSTGRES_USER: clinica_app
+      POSTGRES_PASSWORD: senhaAppSegura123
+      POSTGRES_DB: clinica_oftalmo
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
     networks:
       - clinica-network
 
   app:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: clinica-app
     working_dir: /app
     volumes:
       - ./backend:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     depends_on:
       - db
     env_file:
       - ./backend/.env
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
-    command: npm run start:dev
     environment:
       - CHOKIDAR_USEPOLLING=true
+    command: npm run start:dev
+    networks:
+      - clinica-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: clinica-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3001:3000"
+    depends_on:
+      - app
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      API_URL: http://clinica-app:3000
+    command: sh -c "npm install && npm run dev"
     networks:
       - clinica-network
 

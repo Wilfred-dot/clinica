@@ -42,8 +42,7 @@ export class AuthService {
           expiresIn: '15m',
         }
       );
-      const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-      console.log(`Link de reset para ${email}: ${resetLink}`);
+      console.log(`[PASSWORD-RESET] Token gerado para userId=${user.id}`);
     }
     return { message: 'Se o email existir, receberá um link de recuperação.' };
   }

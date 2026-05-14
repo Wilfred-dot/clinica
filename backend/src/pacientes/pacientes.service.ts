@@ -1,5 +1,5 @@
 import { UserRole } from '../common/enums';
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePacienteDto } from './dto/create-paciente.dto';
 import { UpdatePacienteDto } from './dto/update-paciente.dto';
@@ -107,6 +107,18 @@ export class PacientesService {
       await this.prisma.users.delete({ where: { id: paciente.user_id } });
     }
     return { message: 'Paciente removido' };
+  }
+
+  async getHistoricoForUser(id: number, user: { userId: number; role: string }) {
+    if (user.role === UserRole.PACIENTE) {
+      const paciente = await this.prisma.pacientes.findUnique({
+        where: { user_id: user.userId },
+      });
+      if (!paciente || paciente.id !== id) {
+        throw new ForbiddenException('Só pode aceder ao seu próprio histórico');
+      }
+    }
+    return this.getHistorico(id);
   }
 
   async getHistorico(id: number) {
