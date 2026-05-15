@@ -92,6 +92,7 @@ export default function ReceptionPatientsPage() {
                 <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Contacto</th>
                 <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Último Atendimento</th>
                 <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Estado</th>
+                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Acções</th>
               </tr>
             </thead>
             <tbody>
@@ -117,12 +118,20 @@ export default function ReceptionPatientsPage() {
                         {ativo ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
+                    <td className="p-[12px_18px]">
+                      <Link
+                        href={`/recepcionista/patients/${patient.id}`}
+                        className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold border border-[#d6e0ea] bg-white text-[#2e4358] transition hover:bg-[#f1f5f9]"
+                      >
+                        Histórico
+                      </Link>
+                    </td>
                   </tr>
                 );
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="text-center text-[#a8bfcf] py-6">
+                  <td colSpan={5} className="text-center text-[#a8bfcf] py-6">
                     Nenhum paciente encontrado.
                   </td>
                 </tr>

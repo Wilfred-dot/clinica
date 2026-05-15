@@ -344,3 +344,111 @@ td { padding: 12px 18px; font-size: 13.5px; color: var(--ink); vertical-align: m
 .gap8 { gap: 8px; }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .mt16 { margin-top: 16px; }
+
+/* ══ PORTAL DO PACIENTE ══ */
+.portal-topbar {
+  height: 56px;
+  background: #0c1a27;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.portal-topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.portal-topbar-brand strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.portal-topbar-brand span {
+  display: block;
+  font-size: 10.5px;
+  color: rgba(255,255,255,.45);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.ptm {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(0,125,116,.5);
+  border: 1.5px solid rgba(0,157,146,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ptm svg {
+  width: 18px;
+  height: 18px;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.portal-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 16px;
+}
+
+.portal-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,.55);
+  text-decoration: none;
+  transition: all .15s;
+}
+
+.portal-nav-btn:hover {
+  background: rgba(255,255,255,.08);
+  color: #fff;
+}
+
+.portal-nav-btn.active {
+  background: rgba(0,125,116,.35);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ══ IMPRESSÃO / PDF ══ */
+@media print {
+  .topbar,
+  .sidebar,
+  #report-print-btn {
+    display: none !important;
+  }
+  .shell {
+    display: block !important;
+  }
+  .main {
+    padding: 0 !important;
+  }
+  #report-content {
+    display: block !important;
+  }
+  body {
+    background: white !important;
+  }
+}

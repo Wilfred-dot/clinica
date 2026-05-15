@@ -53,20 +53,8 @@ export default function ConsultationsPage() {
   const fetchWeek = async (startDate: Date) => {
     setLoading(true);
     try {
-      const response = await request<any>(`/consultas/semana?data=${formatDate(startDate)}`);
-      const all: ConsultaItem[] = [];
-      if (response && typeof response === 'object') {
-        Object.values(response).forEach((day: any) => {
-          if (day && typeof day === 'object') {
-            Object.values(day).forEach((arr: any) => {
-              if (Array.isArray(arr)) {
-                all.push(...arr);
-              }
-            });
-          }
-        });
-      }
-      setConsultas(all);
+      const response = await request<ConsultaItem[]>(`/consultas/semana?data=${formatDate(startDate)}`);
+      setConsultas(Array.isArray(response) ? response : []);
     } catch (err) {
       console.error('Erro ao carregar consultas da semana', err);
     } finally {

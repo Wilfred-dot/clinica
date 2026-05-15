@@ -151,6 +151,13 @@ export default function PatientsPage() {
                     </td>
                     <td className="p-[12px_18px]">
                       <div className="flex gap-2">
+                        {/* Histórico — NOVO */}
+                        <Link
+                          href={`/admin/patients/${patient.id}`}
+                          className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold border border-[#d6e0ea] bg-white text-[#2e4358] transition hover:bg-[#f1f5f9]"
+                        >
+                          Histórico
+                        </Link>
                         {/* Ver ficha */}
                         <Link
                           href={`/admin/patients/${patient.id}/ficha`}

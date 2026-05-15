@@ -11,26 +11,40 @@ export class ConsultasService {
   async create(dto: CreateConsultaDto, currentUserId: number, currentRole: string) {
     const dataHora = new Date(dto.data_hora);
     if (dataHora <= new Date()) throw new BadRequestException('A data da consulta deve ser futura');
+    
     if (currentRole === UserRole.PACIENTE) {
       const paciente = await this.prisma.pacientes.findUnique({ where: { user_id: currentUserId } });
       if (!paciente) throw new NotFoundException('Paciente não encontrado');
       dto.paciente_id = paciente.id;
     }
+    
     const paciente = await this.prisma.pacientes.findUnique({ where: { id: dto.paciente_id } });
     if (!paciente) throw new NotFoundException('Paciente não encontrado');
-    const conflitoMedico = await this.prisma.consultas.findFirst({
-      where: { medico_id: dto.medico_id, data_hora: dataHora, status: { notIn: ['cancelada'] } },
-    });
-    if (conflitoMedico) throw new BadRequestException('O médico já tem uma consulta marcada nesse horário');
+    
+    // Só verifica conflito de médico se medico_id foi passado
+    if (dto.medico_id) {
+      const conflitoMedico = await this.prisma.consultas.findFirst({
+        where: { medico_id: dto.medico_id, data_hora: dataHora, status: { notIn: ['cancelada'] } },
+      });
+      if (conflitoMedico) throw new BadRequestException('O médico já tem uma consulta marcada nesse horário');
+    }
+    
     const conflitoPaciente = await this.prisma.consultas.findFirst({
       where: { paciente_id: dto.paciente_id, data_hora: dataHora, status: { notIn: ['cancelada'] } },
     });
     if (conflitoPaciente) throw new BadRequestException('O paciente já tem uma consulta marcada nesse horário');
+    
     return this.prisma.consultas.create({
-      data: { paciente_id: dto.paciente_id, medico_id: dto.medico_id, data_hora: dataHora, status: 'agendada', observacoes: dto.observacoes },
+      data: {
+        paciente_id: dto.paciente_id,
+        medico_id: dto.medico_id ?? null,
+        data_hora: dataHora,
+        status: 'pendente',
+        observacoes: dto.observacoes,
+      },
       include: {
         pacientes: { include: { users: { select: { id: true, name: true, email: true } } } },
-        medicos:   { include: { users: { select: { id: true, name: true, email: true } } } },
+        medicos: { include: { users: { select: { id: true, name: true, email: true } } } },
       },
     });
   }
@@ -44,7 +58,7 @@ export class ConsultasService {
       where,
       include: {
         pacientes: { include: { users: { select: { id: true, name: true, email: true } } } },
-        medicos:   { include: { users: { select: { id: true, name: true, email: true } } } },
+        medicos: { include: { users: { select: { id: true, name: true, email: true } } } },
       },
       orderBy: { data_hora: 'asc' },
     });
@@ -133,7 +147,7 @@ export class ConsultasService {
       data,
       include: {
         pacientes: { include: { users: { select: { id: true, name: true, email: true } } } },
-        medicos:   { include: { users: { select: { id: true, name: true, email: true } } } },
+        medicos: { include: { users: { select: { id: true, name: true, email: true } } } },
       },
     });
   }
@@ -159,19 +173,13 @@ export class ConsultasService {
       orderBy: { data_hora: 'asc' },
     });
 
-    const mapa: any = {};
-    for (const c of consultas) {
-      const chaveData = c.data_hora.toISOString().slice(0, 10);
-      if (!mapa[chaveData]) mapa[chaveData] = {};
-      const chaveMedico = c.medico_id.toString();
-      if (!mapa[chaveData][chaveMedico]) mapa[chaveData][chaveMedico] = [];
-      mapa[chaveData][chaveMedico].push({
-        id: c.id,
-        hora: c.data_hora.toISOString().slice(11, 16),
-        paciente: c.pacientes?.users?.name,
-        status: c.status,
-      });
-    }
-    return mapa;
+    return consultas.map(c => ({
+      id: c.id,
+      data_hora: c.data_hora.toISOString(),
+      status: c.status,
+      medico_id: c.medico_id,
+      pacientes: { users: { name: c.pacientes?.users?.name ?? 'N/D' } },
+      medicos:   { id: c.medicos?.id, users: { name: c.medicos?.users?.name ?? 'N/D' } },
+    }));
   }
 }

@@ -19,7 +19,7 @@ export default function PacienteHistoricoPage() {
   useEffect(() => {
     const fetchHistorico = async () => {
       try {
-        const perfil = await request<{ id: number; nome: string }>('/pacientes/me');
+        const perfil = await request<{ id: number; users: { name: string } }>('/pacientes/me');
         const hist = await request<{ consultas: HistoricoItem[] }>(`/pacientes/${perfil.id}/historico`);
         setConsultas(hist?.consultas ?? []);
       } catch (err) {

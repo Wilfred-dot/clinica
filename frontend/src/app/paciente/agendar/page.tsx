@@ -1,35 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PortalLayout from '@/app/components/PortalLayout';
 import { request } from '@/lib/api';
 
-interface Medico { id: number; especialidade: string; users: { name: string } }
-
 export default function PacienteAgendarPage() {
   const router = useRouter();
-  const [medicos, setMedicos] = useState<Medico[]>([]);
-  const [selectedMedico, setSelectedMedico] = useState('');
   const [data, setData] = useState('');
   const [hora, setHora] = useState('');
   const [motivo, setMotivo] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [loadingLists, setLoadingLists] = useState(true);
-
-  useEffect(() => {
-    request<{ data: Medico[] }>('/medicos')
-      .then(res => setMedicos(res.data ?? []))
-      .catch(() => {})
-      .finally(() => setLoadingLists(false));
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!selectedMedico || !data || !hora) {
-      setError('Preencha todos os campos obrigatórios.');
+    if (!data || !hora) {
+      setError('Preencha data e hora.');
       return;
     }
     setLoading(true);
@@ -39,14 +27,13 @@ export default function PacienteAgendarPage() {
         method: 'POST',
         body: JSON.stringify({
           paciente_id: perfil.id,
-          medico_id: +selectedMedico,
           data_hora: `${data}T${hora}:00.000Z`,
-          ...(motivo.trim() ? { observacoes: motivo.trim() } : {}),
+          observacoes: motivo.trim() || undefined,
         }),
       });
       router.push('/paciente');
     } catch (err: any) {
-      setError(err.message || 'Erro ao agendar consulta');
+      setError(err.message || 'Erro ao solicitar consulta');
     } finally {
       setLoading(false);
     }
@@ -60,10 +47,9 @@ export default function PacienteAgendarPage() {
         {/* Cabeçalho da página */}
         <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
           <div>
-            <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Agendar Consulta</h1>
-            <p className="text-[13px] text-[#6b8299] mt-1">Escolha o médico e seleccione um horário disponível</p>
+            <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Solicitar Consulta</h1>
+            <p className="text-[13px] text-[#6b8299] mt-1">Escolha a data e hora preferida. Um médico será atribuído pela recepção.</p>
           </div>
-          {/* Botão voltar opcional - não existia no HTML original, mas fica bem com o padrão */}
         </div>
 
         {/* Painel do formulário */}
@@ -79,28 +65,6 @@ export default function PacienteAgendarPage() {
             </div>
           )}
 
-          {/* Médico */}
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Médico
-            </label>
-            <select
-              value={selectedMedico}
-              onChange={e => setSelectedMedico(e.target.value)}
-              required
-              disabled={loadingLists}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
-              }}
-            >
-              <option value="">{loadingLists ? 'Carregando...' : 'Seleccione um médico...'}</option>
-              {medicos.map(m => (
-                <option key={m.id} value={m.id}>{m.users?.name} — {m.especialidade}</option>
-              ))}
-            </select>
-          </div>
-
           {/* Data */}
           <div className="mb-4">
             <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
@@ -111,6 +75,7 @@ export default function PacienteAgendarPage() {
               value={data}
               onChange={e => setData(e.target.value)}
               required
+              min={new Date().toISOString().split('T')[0]}
               className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
             />
           </div>
@@ -156,7 +121,7 @@ export default function PacienteAgendarPage() {
               disabled={loading}
               className="inline-flex items-center gap-1.5 rounded-[8px] bg-[#007d74] px-5 h-12 text-sm font-semibold text-white transition hover:bg-[#009d92] disabled:opacity-50"
             >
-              {loading ? 'Agendando...' : 'Confirmar agendamento'}
+              {loading ? 'A processar...' : 'Solicitar Consulta'}
             </button>
             <button
               type="button"
