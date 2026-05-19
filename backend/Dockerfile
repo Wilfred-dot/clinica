@@ -1,7 +1,5 @@
 FROM node:22-bookworm
 
-RUN npm install -g @nestjs/cli@10
-
 WORKDIR /app
 
 COPY package*.json ./
@@ -11,8 +9,6 @@ COPY . .
 
 RUN npx prisma generate
 
-RUN npm run build
-
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["npm", "run", "start:dev"]

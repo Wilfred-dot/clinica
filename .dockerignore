@@ -1,17 +1,28 @@
-# Global
+# Dependências
 **/node_modules
+
+# Builds
 **/dist
+**/.next
+**/build
+
+# Git
 **/.git
-**/*.log
 
-# Backend
-backend/node_modules
-backend/dist
+# Arquivos de ambiente
+.env
+.env.*
+!.env.example
 
-# Frontend
-frontend/node_modules
-frontend/.next
+# Logs
+*.log
 
-# Scripts temporários
-*.ps1
-*.sh
+# IDE e sistema
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore

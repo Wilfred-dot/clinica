@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { login, getMe } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { loginSuccess } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,7 @@ export default function LoginPage() {
       await login(email, password);
       const user = await getMe();
       loginSuccess(user);
-      window.location.href = '/' + user.role;
+      router.push('/' + user.role);
     } catch (err: any) {
       setError(err.message || 'Credenciais inválidas');
     } finally {

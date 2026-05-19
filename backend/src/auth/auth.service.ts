@@ -1,5 +1,5 @@
 import { UserRole } from '../common/enums';
-import { Injectable, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
@@ -7,6 +7,8 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
@@ -42,7 +44,7 @@ export class AuthService {
           expiresIn: '15m',
         }
       );
-      console.log(`[PASSWORD-RESET] Token gerado para userId=${user.id}`);
+      this.logger.log('Password reset solicitado');
     }
     return { message: 'Se o email existir, receberá um link de recuperação.' };
   }

@@ -1,25 +1,25 @@
 services:
   db:
     image: postgres:16.8-bookworm
-    container_name: postgres-clinica
     restart: unless-stopped
     environment:
-      POSTGRES_USER: clinica_app
-      POSTGRES_PASSWORD: senhaAppSegura123
-      POSTGRES_DB: clinica_oftalmo
+      POSTGRES_USER: clinica_usuario
+      POSTGRES_PASSWORD: clinica123
+      POSTGRES_DB: clinica_db
     ports:
       - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
     networks:
-      - clinica-network
+      - rede
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clinica_usuario -d clinica_db"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
-  app:
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: clinica-app
     working_dir: /app
     volumes:
       - ./backend:/app
@@ -27,20 +27,20 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file:
       - ./backend/.env
     environment:
       - CHOKIDAR_USEPOLLING=true
     command: npm run start:dev
     networks:
-      - clinica-network
+      - rede
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: clinica-frontend
     working_dir: /app
     volumes:
       - ./frontend:/app
@@ -49,17 +49,14 @@ services:
     ports:
       - "3001:3000"
     depends_on:
-      - app
+      - backend
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:3000
-      API_URL: http://clinica-app:3000
-    command: sh -c "npm install && npm run dev"
+      API_URL: http://backend:3000
+    command: npm run dev
     networks:
-      - clinica-network
-
-volumes:
-  pgdata:
+      - rede
 
 networks:
-  clinica-network:
-    external: true
+  rede:
+    driver: bridge
