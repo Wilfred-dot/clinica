@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Shell from '@/app/components/Shell';
+import Link from 'next/link';
 import { request } from '@/lib/api';
 
 interface ConsultaItem {
@@ -42,9 +43,16 @@ export default function MedicoDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <p className="p-8">A carregar dashboard...</p>;
-  console.log("_____",data)
-  if (!data) return <p className="p-8">Erro ao carregar dados.</p>;
+  if (loading) return (
+    <Shell>
+      <p className="text-[#a8bfcf] text-center p-8">A carregar dashboard...</p>
+    </Shell>
+  );
+  if (!data) return (
+    <Shell>
+      <p className="text-[#b83232] text-center p-8">Erro ao carregar dados.</p>
+    </Shell>
+  );
 
   const { consultasHoje, ultimasFichas = [] } = data;
   // Usa valores padrão para campos que possam não vir
@@ -59,10 +67,10 @@ export default function MedicoDashboard() {
           <h1>Bom dia</h1>
           <p className="sub">{new Date().toLocaleDateString('pt-MZ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
-        <button className="btn btn-primary" onClick={() => window.location.href = '/medico/attend'}>
+        <Link href="/medico/attend" className="btn btn-primary">
           <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
           Iniciar Atendimento
-        </button>
+        </Link>
       </div>
       <div className="stats">
         <div className="stat c-teal">
@@ -89,7 +97,7 @@ export default function MedicoDashboard() {
       <div className="card">
         <div className="card-head">
           <h3>Agenda de Hoje</h3>
-          <button className="btn btn-outline btn-sm" onClick={() => window.location.href = '/medico/attend'}>Iniciar</button>
+          <Link href="/medico/attend" className="btn btn-outline btn-sm">Iniciar</Link>
         </div>
         <table>
           <thead>

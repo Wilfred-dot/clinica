@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
+import Link from 'next/link';
 
 interface ConsultaItem {
   id: number;
@@ -74,15 +75,15 @@ export default function AdminDashboard() {
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <button
+          <Link
+            href="/admin/consultations/agendar"
             className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#007d74] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
-            onClick={() => window.location.href = '/admin/consultations/agendar'}
           >
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
             </svg>
             Nova Consulta
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -98,7 +99,7 @@ export default function AdminDashboard() {
           </div>
           <h3 className="text-[30px] font-bold text-[#0c1a27] tracking-[-1px] leading-none mb-1">{totalConsultas}</h3>
           <p className="text-xs text-[#6b8299] font-medium">Total de Consultas</p>
-          <div className="text-[11.5px] font-semibold text-[#007d74] mt-1.5">↑ +{totalConsultas} total</div>
+          <div className="text-[11.5px] font-semibold text-[#6b8299] mt-1.5">Desde o início</div>
         </div>
 
         {/* Card 2 – Sky */}
@@ -111,7 +112,7 @@ export default function AdminDashboard() {
           </div>
           <h3 className="text-[30px] font-bold text-[#0c1a27] tracking-[-1px] leading-none mb-1">{totalPacientes}</h3>
           <p className="text-xs text-[#6b8299] font-medium">Pacientes Registados</p>
-          <div className="text-[11.5px] font-semibold text-[#1258a8] mt-1.5">↑ +{totalPacientes} registados</div>
+          <div className="text-[11.5px] font-semibold text-[#6b8299] mt-1.5">Total registados</div>
         </div>
 
         {/* Card 3 – Green (success) */}
@@ -147,12 +148,12 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-[12px] border border-[#ecf1f6] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
           <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[#ecf1f6] flex-wrap">
             <h3 className="text-[14.5px] font-bold text-[#0c1a27]">Consultas de Hoje</h3>
-            <button
+            <Link
+              href="/admin/consultations"
               className="inline-flex items-center gap-1.5 rounded-[6px] border border-[#d6e0ea] bg-white px-3 py-1.5 text-xs font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
-              onClick={() => window.location.href = '/admin/consultations'}
             >
               Ver todas
-            </button>
+            </Link>
           </div>
           <table className="w-full border-collapse">
             <thead>
@@ -219,33 +220,33 @@ export default function AdminDashboard() {
               <h3 className="text-[14.5px] font-bold text-[#0c1a27]">Acções Rápidas</h3>
             </div>
             <div className="p-4 flex flex-col gap-2">
-              <button
+              <Link
+                href="/admin/patients/novo"
                 className="w-full flex items-center justify-center gap-1.5 rounded-[8px] bg-[#007d74] px-4 py-2.5 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
-                onClick={() => window.location.href = '/admin/patients/novo'}
               >
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
                 Novo Paciente
-              </button>
-              <button
+              </Link>
+              <Link
+                href="/admin/medics/novo"
                 className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
-                onClick={() => window.location.href = '/admin/medics/novo'}
               >
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
                 Novo Médico
-              </button>
-              <button
+              </Link>
+              <Link
+                href="/admin/reports"
                 className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
-                onClick={() => window.location.href = '/admin/reports'}
               >
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
                 </svg>
                 Ver Relatórios
-              </button>
+              </Link>
             </div>
           </div>
         </div>

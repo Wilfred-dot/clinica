@@ -23,6 +23,12 @@ export async function request<T>(url: string, options: RequestInit = {}): Promis
   const res = await fetch(API_BASE + url, { ...options, headers });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem('access_token');
+      document.cookie = 'access_token=; path=/; max-age=0; SameSite=Strict';
+      window.location.href = '/login?expired=1';
+      throw new Error('Sessão expirada. Faça login novamente.');
+    }
     const error = await res.json().catch(() => ({ message: 'Erro de rede' }));
     const message = extractErrorMessage(error);
     throw new Error(message);
@@ -37,7 +43,8 @@ export async function login(email: string, password: string) {
     body: JSON.stringify({ email, password }),
   });
   localStorage.setItem('access_token', data.access_token);
-  document.cookie = `access_token=${data.access_token}; path=/; max-age=604800`;
+  const isSecure = window.location.protocol === 'https:';
+  document.cookie = `access_token=${data.access_token}; path=/; max-age=604800; SameSite=Strict${isSecure ? '; Secure' : ''}`;
   return data;
 }
 
@@ -61,6 +68,6 @@ export async function resetPassword(token: string, newPassword: string) {
 
 export function logout() {
   localStorage.removeItem('access_token');
-  document.cookie = 'access_token=; path=/; max-age=0';
+  document.cookie = 'access_token=; path=/; max-age=0; SameSite=Strict';
   window.location.href = '/login';
 }

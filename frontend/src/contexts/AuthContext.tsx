@@ -36,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .catch(() => {
           localStorage.removeItem('access_token');
           document.cookie = 'access_token=; path=/; max-age=0';
+          window.location.href = '/login?expired=1';
         })
         .finally(() => setLoading(false));
     } else {

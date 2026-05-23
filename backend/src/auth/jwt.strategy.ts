@@ -20,11 +20,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     const user = await this.prisma.users.findUnique({
       where: { id: payload.sub },
-      select: { id: true, email: true, role: true, ativo: true },
+      select: { id: true, email: true, role: true, ativo: true, password_reset_at: true },
     });
+
     if (!user || !user.ativo) {
       throw new UnauthorizedException('Utilizador inválido ou inativo');
     }
+
+    // Se password foi resetada depois do token ser emitido, token é inválido
+    if (user.password_reset_at) {
+      const tokenIssuedAt = new Date(payload.iat * 1000);
+      if (user.password_reset_at > tokenIssuedAt) {
+        throw new UnauthorizedException('Sessão expirada. Faça login novamente.');
+      }
+    }
+
     return {
       userId: user.id,
       email: user.email,

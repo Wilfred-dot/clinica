@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
 
@@ -81,7 +82,7 @@ export default function RecepcionistaDashboard() {
         <div className="flex gap-2 flex-wrap">
           <button
             className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
-            onClick={() => window.location.href = '/recepcionista/patients'}
+            onClick={() => router.push('/recepcionista/patients')}
           >
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -90,7 +91,7 @@ export default function RecepcionistaDashboard() {
           </button>
           <button
             className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#007d74] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
-            onClick={() => window.location.href = '/recepcionista/consultations'}
+            onClick={() => router.push('/recepcionista/consultations')}
           >
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -145,7 +146,7 @@ export default function RecepcionistaDashboard() {
             <h3 className="text-[14.5px] font-bold text-[#0c1a27]">Consultas de Hoje</h3>
             <button
               className="inline-flex items-center gap-1.5 rounded-[6px] border border-[#d6e0ea] bg-white px-3 py-1.5 text-xs font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
-              onClick={() => window.location.href = '/recepcionista/consultations'}
+              onClick={() => router.push('/recepcionista/consultations')}
             >
               Ver todas
             </button>
@@ -201,7 +202,7 @@ export default function RecepcionistaDashboard() {
           <div className="p-4 flex flex-col gap-2">
             <button
               className="w-full flex items-center justify-center gap-1.5 rounded-[8px] bg-[#007d74] px-4 py-2.5 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
-              onClick={() => window.location.href = '/recepcionista/consultations'}
+              onClick={() => router.push('/recepcionista/consultations')}
             >
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -210,7 +211,7 @@ export default function RecepcionistaDashboard() {
             </button>
             <button
               className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
-              onClick={() => window.location.href = '/recepcionista/patients/novo'}
+              onClick={() => router.push('/recepcionista/patients/novo')}
             >
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -219,7 +220,7 @@ export default function RecepcionistaDashboard() {
             </button>
             <button
               className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
-              onClick={() => window.location.href = '/recepcionista/patients'}
+              onClick={() => router.push('/recepcionista/patients')}
             >
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />

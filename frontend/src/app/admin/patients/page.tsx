@@ -158,13 +158,6 @@ export default function PatientsPage() {
                         >
                           Histórico
                         </Link>
-                        {/* Ver ficha */}
-                        <Link
-                          href={`/admin/patients/${patient.id}/ficha`}
-                          className="inline-flex items-center rounded-[6px] px-2 py-1.5 text-xs font-semibold text-[#007d74] transition hover:bg-[#e4f5f4]"
-                        >
-                          Ver ficha
-                        </Link>
                         {/* Editar */}
                         <Link
                           href={`/admin/patients/${patient.id}/editar`}

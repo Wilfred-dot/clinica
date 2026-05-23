@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Shell from '@/app/components/Shell';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { request } from '@/lib/api';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface ConsultaItem {
   id: number;
@@ -28,11 +30,13 @@ function getWeekDays(start: Date): Date[] {
   return days;
 }
 
-const doctorColors: Record<number, string> = {
-  2: 'bg-[#e4f5f4] text-[#007d74] border-l-[3px] border-l-[#007d74]',
-  5: 'bg-[#e6f0fb] text-[#1258a8] border-l-[3px] border-l-[#1258a8]',
-  0: 'bg-[#fef8ec] text-[#b87a00] border-l-[3px] border-l-[#b87a00]',
-};
+const DOCTOR_COLOR_CLASSES = [
+  'bg-[#e4f5f4] text-[#007d74] border-l-[3px] border-l-[#007d74]',
+  'bg-[#e6f0fb] text-[#1258a8] border-l-[3px] border-l-[#1258a8]',
+  'bg-[#fef8ec] text-[#b87a00] border-l-[3px] border-l-[#b87a00]',
+  'bg-[#edf7f2] text-[#1a7a4a] border-l-[3px] border-l-[#1a7a4a]',
+  'bg-[#fdf0f0] text-[#b83232] border-l-[3px] border-l-[#b83232]',
+];
 
 export default function ReceptionConsultationsPage() {
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => getWeekStart(new Date()));
@@ -41,6 +45,18 @@ export default function ReceptionConsultationsPage() {
   const [cancelId, setCancelId] = useState<number | null>(null);
   const [cancelling, setCancelling] = useState(false);
   const weekDays = getWeekDays(currentWeekStart);
+
+  const medicoColorMap = useMemo(() => {
+    const map: Record<number, string> = {};
+    let idx = 0;
+    consultas.forEach(c => {
+      if (c.medicos?.id !== undefined && !(c.medicos.id in map)) {
+        map[c.medicos.id] = DOCTOR_COLOR_CLASSES[idx % DOCTOR_COLOR_CLASSES.length];
+        idx++;
+      }
+    });
+    return map;
+  }, [consultas]);
 
   const fetchWeek = async (startDate: Date) => {
     setLoading(true);
@@ -52,6 +68,8 @@ export default function ReceptionConsultationsPage() {
   };
 
   useEffect(() => { fetchWeek(currentWeekStart); }, [currentWeekStart]);
+
+  const router = useRouter();
 
   const goToWeek = (offset: number) => { const newStart = new Date(currentWeekStart); newStart.setDate(newStart.getDate() + offset * 7); setCurrentWeekStart(getWeekStart(newStart)); };
 
@@ -82,7 +100,18 @@ export default function ReceptionConsultationsPage() {
     schedule[dayIndex][hour].push(c);
   });
 
-  const hours = ['08:00','09:00','10:00','10:30','11:00','14:00','15:00','16:00'];
+  const hours = useMemo(() => {
+    if (consultas.length === 0) {
+      return ['08:00', '09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+    }
+    const slotSet = new Set<string>();
+    consultas.forEach(c => {
+      const d = new Date(c.data_hora);
+      const h = d.toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit', hour12: false });
+      slotSet.add(h);
+    });
+    return Array.from(slotSet).sort();
+  }, [consultas]);
 
   return (
     <Shell>
@@ -107,15 +136,15 @@ export default function ReceptionConsultationsPage() {
           >
             Semana seguinte →
           </button>
-          <button
+          <Link
+            href="/recepcionista/consultations/agendar"
             className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#007d74] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
-            onClick={() => window.location.href = '/recepcionista/consultations/agendar'}
           >
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
             </svg>
             Agendar consulta
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -143,12 +172,12 @@ export default function ReceptionConsultationsPage() {
                 {weekDays.map((_, dayIdx) => (
                   <div key={dayIdx} className="p-[5px_7px] border-r border-[#ecf1f6] min-h-[42px] last:border-r-0">
                     {(schedule[dayIdx][hour] || []).map(c => {
-                      const colorClass = doctorColors[c.medicos?.id] || doctorColors[0];
+                      const colorClass = medicoColorMap[c.medicos?.id] ?? DOCTOR_COLOR_CLASSES[0];
                       return (
                         <div key={c.id}>
                           <div
                             className={`rounded-[5px] p-[5px_8px] text-[11px] font-semibold cursor-pointer transition hover:brightness-[1.07] hover:translate-y-[-1px] ${colorClass}`}
-                            onClick={() => window.location.href = `/medico/consulta/${c.id}`}
+                            onClick={() => router.push(`/medico/consulta/${c.id}`)}
                             title={`${c.pacientes?.users?.name ?? 'N/D'} - ${c.medicos?.users?.name ?? 'N/D'}`}
                           >
                             {c.pacientes?.users?.name ?? 'N/D'}

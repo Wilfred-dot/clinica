@@ -65,7 +65,7 @@ export default function PacienteDashboard() {
             {nome.charAt(0)}
           </div>
           <div className="relative">
-            <h2 className="text-xl font-bold text-white">Bem-vinda, {nome}</h2>
+            <h2 className="text-xl font-bold text-white">Olá, {nome}</h2>
             <p className="text-[13px] text-[rgba(255,255,255,.45)] mt-1">Clínica MMQ Oftalmologia · Paciente desde Janeiro de 2023</p>
           </div>
         </div>

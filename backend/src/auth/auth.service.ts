@@ -38,13 +38,15 @@ export class AuthService {
     const user = await this.prisma.users.findUnique({ where: { email } });
     if (user) {
       const token = this.jwtService.sign(
-        { sub: user.id, purpose: 'reset' },
+        { sub: user.id, purpose: 'reset', iat: Date.now() },
         {
           secret: this.configService.get('JWT_RESET_SECRET'),
           expiresIn: '15m',
         }
       );
+      // TODO: enviar por email real — por agora só log interno
       this.logger.log('Password reset solicitado');
+      // Em produção: emailService.sendResetLink(email, token);
     }
     return { message: 'Se o email existir, receberá um link de recuperação.' };
   }
@@ -59,8 +61,27 @@ export class AuthService {
     } catch {
       throw new BadRequestException('Token inválido ou expirado');
     }
+
+    // Verifica se o token já foi usado:
+    // o token tem iat (issued at) — se password_reset_at for posterior ao iat, já foi usado
+    const user = await this.prisma.users.findUnique({ where: { id: payload.sub } });
+    if (!user) throw new BadRequestException('Token inválido ou expirado');
+
+    if (user.password_reset_at) {
+      const tokenIssuedAt = new Date(payload.iat * 1000);
+      if (user.password_reset_at > tokenIssuedAt) {
+        throw new BadRequestException('Token já utilizado. Solicite um novo link.');
+      }
+    }
+
     const hash = await bcrypt.hash(newPassword, 10);
-    await this.prisma.users.update({ where: { id: payload.sub }, data: { password: hash } });
+    await this.prisma.users.update({
+      where: { id: payload.sub },
+      data: {
+        password: hash,
+        password_reset_at: new Date(),   // marca quando foi usado
+      },
+    });
     return { message: 'Senha redefinida com sucesso.' };
   }
 

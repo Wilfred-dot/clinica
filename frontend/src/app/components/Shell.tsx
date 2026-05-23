@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const adminNav = [
@@ -39,6 +39,7 @@ function capitalize(s: string) {
 export default function Shell({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
 
   if (!user) return null;
 
@@ -48,7 +49,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <div className="topbar">
-        <div className="topbar-brand" onClick={() => window.location.href = `/${role}`}>
+        <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => router.push(`/${role}`)}>
           <div className="topbar-mark">
             <svg viewBox="0 0 24 24">
               <ellipse cx="12" cy="12" rx="10" ry="6" />
