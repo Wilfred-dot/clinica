@@ -23,12 +23,23 @@ export async function request<T>(url: string, options: RequestInit = {}): Promis
   const res = await fetch(API_BASE + url, { ...options, headers });
 
   if (!res.ok) {
-    if (res.status === 401) {
-      localStorage.removeItem('access_token');
-      document.cookie = 'access_token=; path=/; max-age=0; SameSite=Strict';
-      window.location.href = '/login?expired=1';
-      throw new Error('Sessão expirada. Faça login novamente.');
-    }
+if (res.status === 401) {
+  localStorage.removeItem('access_token');
+  document.cookie = 'access_token=; path=/; max-age=0; SameSite=Strict';
+  const isPublic = ['/login', '/forgot-password', '/reset-password'].some(p => window.location.pathname.startsWith(p));
+  if (typeof window !== 'undefined' && !isPublic) {
+    window.location.href = '/login?expired=1';
+  }
+  // Diferenciar login de outras rotas
+  if (url === '/auth/login') {
+    // Para login, exibir mensagem de erro real
+    const error = await res.json().catch(() => ({ message: 'Erro de rede' }));
+    const message = extractErrorMessage(error);
+    throw new Error(message || 'Credenciais inválidas');
+  } else {
+    throw new Error('Sessão expirada. Faça login novamente.');
+  }
+}
     const error = await res.json().catch(() => ({ message: 'Erro de rede' }));
     const message = extractErrorMessage(error);
     throw new Error(message);

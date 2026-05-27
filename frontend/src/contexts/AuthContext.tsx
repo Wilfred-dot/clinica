@@ -36,7 +36,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .catch(() => {
           localStorage.removeItem('access_token');
           document.cookie = 'access_token=; path=/; max-age=0';
-          window.location.href = '/login?expired=1';
+          // Só redirecciona se não estiver já na página de login
+          if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+            window.location.href = '/login?expired=1';
+          }
         })
         .finally(() => setLoading(false));
     } else {

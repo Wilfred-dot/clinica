@@ -39,4 +39,9 @@ coverage/
 next-env.d.ts
 
 backend/prisma/*.db
+backend/prisma/*.bak
 *.db-journal
+.env.migrate
+
+# Root lock file (should be in frontend/backend)
+/package-lock.json
