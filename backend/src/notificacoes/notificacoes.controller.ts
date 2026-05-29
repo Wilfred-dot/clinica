@@ -1,5 +1,5 @@
 import { UserRole } from '../common/enums';
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Request, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Request, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -30,6 +30,7 @@ export class NotificacoesController {
     if (req.user.role === UserRole.PACIENTE) {
       return this.notificacoesService.findByUserId(req.user.userId);
     }
+    // ADMIN, RECEPCIONISTA, MEDICO veem todas
     return this.notificacoesService.findAll();
   }
 
@@ -43,8 +44,12 @@ export class NotificacoesController {
   @Roles(UserRole.ADMIN, UserRole.RECEPCIONISTA, UserRole.MEDICO, UserRole.PACIENTE)
   async findOne(@Param('id') id: string, @Request() req) {
     const notif = await this.notificacoesService.findOne(+id);
-    if (req.user.role === UserRole.PACIENTE && notif.pacientes.user_id !== req.user.userId) {
-      throw new ForbiddenException('Apenas pode visualizar as suas próprias notificações');
+    // PACIENTE so pode ver as suas proprias notificacoes
+    if (req.user.role === UserRole.PACIENTE) {
+      const pacienteUserId = notif.pacientes?.users?.id ?? notif.pacientes?.user_id;
+      if (pacienteUserId !== req.user.userId) {
+        throw new ForbiddenException('Apenas pode visualizar as suas próprias notificações');
+      }
     }
     return notif;
   }
