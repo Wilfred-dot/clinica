@@ -33,7 +33,6 @@ services:
       - ./backend/.env
     environment:
       - CHOKIDAR_USEPOLLING=true
-    command: npm run start:dev
     networks:
       - rede
 

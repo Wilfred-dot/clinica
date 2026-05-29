@@ -33,6 +33,14 @@ coverage/
 *.ps1
 *.sh
 
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+*.temp
+
 *.md
 !README.md
 

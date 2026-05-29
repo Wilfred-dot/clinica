@@ -5,6 +5,8 @@
 **/dist
 **/.next
 **/build
+**/.prisma/
+**/coverage/
 
 # Git
 **/.git
@@ -16,6 +18,10 @@
 
 # Logs
 *.log
+npm-debug.log*
+
+# Ficheiros de build do TypeScript
+*.tsbuildinfo
 
 # IDE e sistema
 .vscode/
@@ -26,3 +32,9 @@ Thumbs.db
 Dockerfile*
 docker-compose*.yml
 .dockerignore
+
+# Bases de dados (SQLite)
+*.sqlite
+
+# Cache do Python (se houver scripts)
+**/__pycache__/
