@@ -533,6 +533,48 @@ td { padding: 14px 18px; font-size: 13.5px; color: var(--ink); vertical-align: m
 .btn-outline:hover { background: var(--slate); border-color: var(--ink4); color: var(--ink); }
 .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
 
+.btn-activate {
+  background: var(--success-dim);
+  color: var(--success);
+  border-color: var(--success);
+  border: 1.5px solid;
+}
+.btn-activate:hover:not(:disabled) {
+  background: var(--success);
+  color: #fff;
+}
+
+.btn-deactivate {
+  background: var(--danger-dim);
+  color: var(--danger);
+  border-color: var(--danger);
+  border: 1.5px solid;
+}
+.btn-deactivate:hover:not(:disabled) {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink3);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background: var(--slate);
+  color: var(--ink);
+}
+
+.btn-secondary {
+  background: var(--slate);
+  color: var(--ink2);
+  border-color: var(--border);
+}
+.btn-secondary:hover {
+  background: var(--slate2);
+  border-color: var(--ink4);
+}
+
 /* ══ MODAL ══ */
 .modal-overlay {
   position: fixed;
