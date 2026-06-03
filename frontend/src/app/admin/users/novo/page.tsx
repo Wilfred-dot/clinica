@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
-import { useRouter } from 'next/navigation';
 
 export default function NewUserPage() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function NewUserPage() {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('recepcionista');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // novo campo
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -28,12 +28,7 @@ export default function NewUserPage() {
     try {
       await request('/users', {
         method: 'POST',
-        body: JSON.stringify({
-          name,
-          email,
-          role,
-          password,
-        }),
+        body: JSON.stringify({ name, email, role, password }),
       });
       router.push('/admin/users');
     } catch (err: any) {
@@ -45,126 +40,107 @@ export default function NewUserPage() {
 
   return (
     <Shell>
-      <div className="ph">
+      <div className="p-6">
         <div>
-          <h1>Novo Utilizador</h1>
-          <p className="sub">Criar conta de acesso ao sistema</p>
+          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Novo Utilizador</h1>
+          <p className="text-base font-medium text-ink-3 mt-[3px]">Criar conta de acesso ao sistema</p>
         </div>
-        <button className="btn btn-outline" onClick={() => router.back()}>
+        <button type="button" className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium" onClick={() => router.back()}>
           ← Voltar
         </button>
       </div>
 
-      {/* FORM-PANEL – igual ao design original */}
-      <div className="bg-white border border-[#ecf1f6] rounded-[12px] p-[28px_30px] shadow-[0_1px_3px_rgba(12,26,39,.05)] max-w-[680px]">
+      <form onSubmit={handleSubmit} className="form-panel max-w-[680px]">
         {error && (
-          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="alert alert-danger mb-6">
             {error}
           </div>
         )}
 
-        {/* Secção: Dados pessoais */}
-        <div className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
-          Dados pessoais
-        </div>
+        <div className="form-section-title">Dados pessoais</div>
 
-        <div className="flex flex-wrap gap-5 mb-0">
-          <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
-            <label className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
-              Nome completo
-            </label>
+        <div className="form-grid">
+          <div className="form-group">
+            <label>Nome completo</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Nome do utilizador"
-className="h-12 rounded-[8px] border border-[#d6e0ea] bg-white px-4 text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"            />
+              className="form-control"
+            />
           </div>
 
-          <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
-            <label className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">Email</label>
+          <div className="form-group">
+            <label>Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               placeholder="email@clinicammq.com"
-className="h-12 rounded-[8px] border border-[#d6e0ea] bg-white px-4 text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"            />
+              className="form-control"
+            />
           </div>
         </div>
 
-        {/* Separador visual */}
-<hr className="my-5 border-[#ecf1f6]" />
-        {/* Secção: Acesso */}
-        <div className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
-          Acesso
-        </div>
+        <hr />
 
-        <div className="flex flex-wrap gap-5 mb-5">
-          <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
-            <label className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
-              Nível de acesso
-            </label>
+        <div className="form-section-title">Acesso</div>
+
+        <div className="form-grid mb-4">
+          <div className="form-group">
+            <label>Nível de acesso</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-className="h-12 rounded-[8px] border border-[#d6e0ea] bg-white px-4 text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"            >
+              className="form-select"
+            >
               <option value="admin">Administrador</option>
               <option value="medico">Médico</option>
               <option value="recepcionista">Recepcionista</option>
               <option value="paciente">Paciente</option>
             </select>
           </div>
-
         </div>
 
-        <div className="flex flex-wrap gap-5 mb-0">
-          <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
-            <label className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
-              Senha inicial
-            </label>
+        <div className="form-grid">
+          <div className="form-group">
+            <label>Senha inicial</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="Mínimo 8 caracteres"
-className="h-12 rounded-[8px] border border-[#d6e0ea] bg-white px-4 text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"            />
+              className="form-control"
+            />
           </div>
 
-          <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
-            <label className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
-              Confirmar senha
-            </label>
+          <div className="form-group">
+            <label>Confirmar senha</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               placeholder="Repetir senha"
-className="h-12 rounded-[8px] border border-[#d6e0ea] bg-white px-4 text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"            />
+              className="form-control"
+            />
           </div>
         </div>
 
-        {/* Acções */}
-        <div className="mt-8 flex flex-wrap gap-3">
-          <button
-            type="submit"
-            disabled={loading}
-            onClick={handleSubmit}
-className="h-12 rounded-[8px] bg-[#007d74] px-5 text-sm font-semibold text-white transition hover:bg-[#009d92] disabled:opacity-50"          >
+        <div className="form-actions mt-8">
+          <button type="submit" disabled={loading} className="btn btn-primary h-12 px-5">
             {loading ? 'Criando...' : 'Criar utilizador'}
           </button>
 
-          <button
-            type="button"
-            onClick={() => router.back()}
-className="h-12 rounded-[8px] border border-[#d6e0ea] bg-white px-5 text-sm font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"          >
+          <button type="button" onClick={() => router.back()} className="btn btn-outline h-12 px-5">
             Cancelar
           </button>
         </div>
-      </div>
+      </form>
     </Shell>
   );
 }

@@ -26,15 +26,15 @@ export default function MedicoRecordsPage() {
 
   return (
     <Shell>
-      <div className="ph">
+      <div className="p-6">
         <div>
-          <h1>Fichas Clínicas</h1>
-          <p className="sub">Últimos atendimentos</p>
+          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Fichas Clínicas</h1>
+          <p className="text-base font-medium text-ink-3 mt-[3px]">Últimos atendimentos</p>
         </div>
       </div>
 
-      <div className="card">
-        <div className="card-head">
+      <div className="bg-white rounded-xl border border-[var(--border2)] shadow-md">
+        <div className="mb-4">
           <h3>Pacientes Atendidos</h3>
         </div>
         {loading ? (
@@ -51,7 +51,7 @@ export default function MedicoRecordsPage() {
                   <td>{new Date(f.data_hora).toLocaleDateString('pt-MZ')}</td>
                   <td>{f.status}</td>
                   <td>
-                    <Link href={`/medico/consulta/${f.id}`} className="btn btn-outline btn-sm">
+                    <Link href={`/medico/consulta/${f.id}`} className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-3 py-1.5 rounded-md text-xs font-medium">
                       Ver
                     </Link>
                   </td>

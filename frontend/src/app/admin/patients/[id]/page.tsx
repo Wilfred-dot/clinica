@@ -38,27 +38,37 @@ export default function PatientDetailPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchPatientData = async () => {
       try {
         const p = await request<PacienteInfo>(`/pacientes/${params.id}`);
         setPaciente(p);
+        
         const allConsultas = await request<ConsultaItem[]>(`/consultas?paciente_id=${params.id}`);
         setConsultas(Array.isArray(allConsultas) ? allConsultas : []);
       } catch (err: any) {
-        setError(err.message || 'Erro ao carregar histórico');
+        setError(err.message || 'Erro ao carregar o histórico clínico.');
       } finally {
         setLoading(false);
       }
     };
-    fetch();
+    
+    fetchPatientData();
   }, [params.id]);
 
+  // Normalização do estado visual dos badges em minúsculas
   const statusColors: Record<string, string> = {
-    realizada:  'bg-[#edf7f2] text-[#1a7a4a]',
-    agendada:   'bg-[#fef8ec] text-[#b87a00]',
-    pendente:   'bg-[#fef8ec] text-[#b87a00]',
-    cancelada:  'bg-[#fdf0f0] text-[#b83232]',
+    realizada:  'bg-success-dim text-[#10b981]',
+    agendada:   'bg-warn-dim text-warn',
+    pendente:   'bg-warn-dim text-warn',
+    cancelada:  'bg-[#fdf0f0] text-[#ef4444]',
     confirmada: 'bg-[#e6f0fb] text-[#1258a8]',
+  };
+
+  const formatarDataLocal = (dataStr: string) => {
+    if (!dataStr) return '—';
+    // Divide a string para evitar mutação indesejada por fusos horários locais
+    const [year, month, day] = dataStr.split('T')[0].split('-');
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -66,21 +76,21 @@ export default function PatientDetailPage() {
       {/* Cabeçalho */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">
+          <h1 className="text-[24px] font-bold text-[#102A6B] tracking-[-0.5px]">
             {loading ? 'A carregar...' : paciente?.users?.name ?? 'Paciente'}
           </h1>
-          <p className="text-[13px] text-[#6b8299] mt-1">Histórico clínico</p>
+          <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Histórico clínico detalhado do utente</p>
         </div>
         <div className="flex gap-2">
           <Link
             href={`/admin/patients/${params.id}/editar`}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
+            className="inline-flex items-center gap-1.5 rounded-[8px] bg-[#FF7F00] px-4 h-10 text-[13.5px] font-bold text-white transition hover:bg-[#E06F00] shadow-sm"
           >
             Editar paciente
           </Link>
           <Link
             href="/admin/patients"
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
           >
             ← Voltar
           </Link>
@@ -88,78 +98,91 @@ export default function PatientDetailPage() {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 rounded-[8px] bg-[#fdf0f0] text-[#b83232] text-[13px]">
+        <div className="mb-4 p-3 rounded-[8px] bg-[#fdf0f0] text-[#ef4444] text-[13px] font-semibold">
           {error}
         </div>
       )}
 
       {/* Dados do paciente */}
       {paciente && (
-        <div className="bg-white rounded-[12px] border border-[#ecf1f6] p-5 mb-5 grid grid-cols-2 md:grid-cols-4 gap-4 shadow-[0_1px_3px_rgba(12,26,39,.05)]">
+        <div className="bg-white rounded-[12px] border border-[#ecf1f6] p-6 mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 shadow-[0_2px_4px_rgba(16,42,107,.03)]">
           {[
             { label: 'Email', val: paciente.users?.email ?? '—' },
             { label: 'Telefone', val: paciente.telefone || '—' },
-            { label: 'Data nascimento', val: paciente.data_nascimento ? new Date(paciente.data_nascimento).toLocaleDateString('pt-MZ') : '—' },
+            { label: 'Data nascimento', val: formatarDataLocal(paciente.data_nascimento) },
             { label: 'Sexo', val: paciente.sexo === 'M' ? 'Masculino' : paciente.sexo === 'F' ? 'Feminino' : 'Outro' },
             { label: 'Endereço', val: paciente.endereco },
-            { label: 'Histórico médico', val: paciente.historico_medico || '—' },
+            { label: 'Histórico médico / Observações', val: paciente.historico_medico || '—' },
           ].map(f => (
-            <div key={f.label} className={f.label === 'Endereço' || f.label === 'Histórico médico' ? 'col-span-2' : ''}>
-              <div className="text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.6px] mb-1">{f.label}</div>
-              <div className="text-[13.5px] text-[#0c1a27]">{f.val}</div>
+            <div key={f.label} className={f.label === 'Endereço' || f.label === 'Histórico médico / Observações' ? 'col-span-1 sm:col-span-2' : ''}>
+              <div className="text-[11px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">{f.label}</div>
+              <div className="text-[14px] text-[#102A6B] font-medium break-words">{f.val}</div>
             </div>
           ))}
         </div>
       )}
 
       {/* Tabela de consultas */}
-      <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
-        <div className="flex items-center justify-between p-[16px_22px] border-b border-[#ecf1f6]">
-          <h3 className="text-[14.5px] font-bold text-[#0c1a27]">Consultas</h3>
-          <span className="inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold bg-[#e4f5f4] text-[#007d74]">
+      <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+        <div className="flex items-center justify-between p-5 border-b border-[#ecf1f6]">
+          <h3 className="text-[15px] font-bold text-[#102A6B]">Consultas e Atendimentos</h3>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-bold bg-[#e6f0fb] text-[#1258a8]">
             {consultas.length} registos
           </span>
         </div>
 
         {loading ? (
-          <p className="p-6 text-center text-[#a8bfcf]">A carregar...</p>
+          <p className="p-12 text-center text-sm font-medium text-ink-3 animate-pulse">A carregar registos...</p>
         ) : (
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                {['Data', 'Médico', 'Status', 'Motivo', 'Diagnóstico', 'Prescrições'].map(h => (
-                  <th key={h} className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {consultas.map(c => (
-                <tr key={c.id} className="border-b border-[#ecf1f6] last:border-b-0 hover:bg-[#f6fafe] transition">
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27] whitespace-nowrap">
-                    {new Date(c.data_hora).toLocaleDateString('pt-MZ')}
-                  </td>
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">
-                    {c.medicos?.users?.name ?? 'Não atribuído'}
-                  </td>
-                  <td className="p-[12px_18px]">
-                    <span className={`inline-flex items-center px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold ${statusColors[c.status] || 'bg-[#f1f5f9] text-[#6b8299]'}`}>
-                      {c.status}
-                    </span>
-                  </td>
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">{c.motivo ?? '—'}</td>
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">{c.diagnostico ?? '—'}</td>
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">
-                    {c.prescricoes?.length > 0
-                      ? c.prescricoes.map(p => `${p.medicamento} (${p.dosagem})`).join(', ')
-                      : '—'}
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[#ecf1f6] bg-[#f8fafc]">
+                  {['Data', 'Médico', 'Status', 'Motivo', 'Diagnóstico', 'Prescrições'].map(h => (
+                    <th key={h} className="p-3.5 pl-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">{h}</th>
+                  ))}
                 </tr>
-              ))}
-              {consultas.length === 0 && (
-                <tr><td colSpan={6} className="text-center text-[#a8bfcf] py-6">Nenhuma consulta registada.</td></tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-[#ecf1f6]">
+                {consultas.map(c => {
+                  const statusNormalizado = c.status?.toLowerCase() ?? 'pendente';
+                  return (
+                    <tr key={c.id} className="hover:bg-[#fdfeff] transition-colors">
+                      <td className="p-4 pl-5 text-sm font-medium text-ink-3 whitespace-nowrap">
+                        {formatarDataLocal(c.data_hora)}
+                      </td>
+                      <td className="p-4 text-sm font-bold text-[#102A6B]">
+                        {c.medicos?.users?.name ?? 'Não atribuído'}
+                      </td>
+                      <td className="p-4 text-sm">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11.5px] font-bold capitalize ${statusColors[statusNormalizado] || 'bg-slate text-ink-3'}`}>
+                          {statusNormalizado}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm font-medium text-[#4a5e73] max-w-xs truncate" title={c.motivo ?? ''}>
+                        {c.motivo ?? '—'}
+                      </td>
+                      <td className="p-4 text-sm font-medium text-[#4a5e73] max-w-xs truncate" title={c.diagnostico ?? ''}>
+                        {c.diagnostico ?? '—'}
+                      </td>
+                      <td className="p-4 text-sm font-medium text-[#4a5e73] max-w-xs break-words">
+                        {c.prescricoes && c.prescricoes.length > 0
+                          ? c.prescricoes.map(p => `${p.medicamento} (${p.dosagem})`).join(', ')
+                          : '—'}
+                      </td>
+                    </tr>
+                  );
+                })}
+                {consultas.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="text-center p-12 text-sm font-medium text-ink-3">
+                      Nenhuma consulta registada no histórico deste paciente.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </Shell>

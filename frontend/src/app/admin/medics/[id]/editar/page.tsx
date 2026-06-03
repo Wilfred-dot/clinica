@@ -38,19 +38,21 @@ export default function EditMedicPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
-    request<Medico>(`/medicos/${params.id}`)
-      .then(m => {
-        setMedico(m);
-        setName(m.users?.name ?? '');
-        setEmail(m.users?.email ?? '');
-        setEspecialidade(m.especialidade);
-        setNumeroOrdem(m.numero_ordem);
-        setTelefone(m.telefone);
-        setHorarioTrabalho(m.horario_trabalho);
-        setAtivo(m.users?.ativo ?? true);
-      })
-      .catch(() => {});
-  }, [params.id]);
+    if (params?.id) {
+      request<Medico>(`/medicos/${params.id}`)
+        .then(m => {
+          setMedico(m);
+          setName(m.users?.name ?? '');
+          setEmail(m.users?.email ?? '');
+          setEspecialidade(m.especialidade);
+          setNumeroOrdem(m.numero_ordem);
+          setTelefone(m.telefone);
+          setHorarioTrabalho(m.horario_trabalho);
+          setAtivo(m.users?.ativo ?? true);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [params?.id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,163 +98,136 @@ export default function EditMedicPage() {
   if (!medico)
     return (
       <Shell>
-        <p className="p-8 text-center text-[#a8bfcf]">A carregar...</p>
+        <p className="p-12 text-center text-muted">A carregar...</p>
       </Shell>
     );
 
   return (
     <Shell>
-      {/* Cabeçalho da página */}
-      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
+      {/* Cabeçalho da página limpo */}
+      <div className="p-6">
         <div>
-          <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Editar Médico</h1>
-          <p className="text-[13px] text-[#6b8299] mt-1">
+          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Editar Médico</h1>
+          <p className="text-base font-medium text-ink-3 mt-[3px]">
             {medico.users?.name} · {medico.users?.email}
           </p>
         </div>
-        <button
-          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
-          onClick={() => router.back()}
-        >
+        <button className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium" onClick={() => router.back()}>
           ← Voltar
         </button>
       </div>
 
-      {/* Painel do formulário */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white border border-[#ecf1f6] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_1px_3px_rgba(12,26,39,0.05)]"
-      >
-        {/* Mensagem de erro */}
+      {/* Painel do formulário unificado */}
+      <form onSubmit={handleSubmit} className="form-panel max-w-[680px]">
         {error && (
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-[#fdf0f0] text-[#b83232] text-[11.5px] font-semibold px-2.5 py-1 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#b83232]"></span>
+          <div className="alert alert-danger mb-4">
             {error}
           </div>
         )}
 
-        {/* Secção: Dados pessoais */}
-        <div className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
+        <div className="form-section-title">
           Dados pessoais
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Nome completo
-            </label>
+        
+        <div className="form-grid">
+          <div className="form-group">
+            <label>Nome completo</label>
             <input
               type="text"
               value={name}
               onChange={e => setName(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="form-control"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Email
-            </label>
+          <div className="form-group">
+            <label>Email</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="form-control"
             />
           </div>
         </div>
 
-        <hr className="border-[#ecf1f6] my-5" />
+        <hr />
 
-        {/* Secção: Dados profissionais */}
-        <div className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
+        <div className="form-section-title">
           Dados profissionais
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Especialidade
-            </label>
+        
+        <div className="form-grid">
+          <div className="form-group">
+            <label>Especialidade</label>
             <input
               type="text"
               value={especialidade}
               onChange={e => setEspecialidade(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="form-control"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              N.º de Ordem
-            </label>
+          <div className="form-group">
+            <label>N.º de Ordem</label>
             <input
               type="text"
               value={numeroOrdem}
               onChange={e => setNumeroOrdem(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="form-control"
             />
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Telefone
-            </label>
+        
+        <div className="form-grid">
+          <div className="form-group">
+            <label>Telefone</label>
             <input
               type="tel"
               value={telefone}
               onChange={e => setTelefone(e.target.value)}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="form-control"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Horário de Trabalho
-            </label>
+          <div className="form-group">
+            <label>Horário de Trabalho</label>
             <input
               type="text"
               value={horarioTrabalho}
               onChange={e => setHorarioTrabalho(e.target.value)}
               placeholder="08:00-16:00"
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="form-control"
             />
           </div>
         </div>
 
-        <hr className="border-[#ecf1f6] my-5" />
+        <hr />
 
-        {/* Secção: Acesso */}
-        <div className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
+        <div className="form-section-title">
           Acesso
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Nova senha{' '}
-              <span className="font-normal normal-case tracking-normal text-[#a8bfcf]">
-                (deixar em branco para manter)
-              </span>
+        
+        <div className="form-grid">
+          <div className="form-group">
+            <label>
+              Nova senha <span className="text-muted font-normal normal-case tracking-normal">(deixar em branco para manter)</span>
             </label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="Nova senha"
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="form-control"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Estado
-            </label>
+          <div className="form-group">
+            <label>Estado</label>
             <select
               value={ativo ? 'true' : 'false'}
               onChange={e => setAtivo(e.target.value === 'true')}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
-              }}
+              className="form-select"
             >
               <option value="true">Activo</option>
               <option value="false">Inactivo</option>
@@ -261,32 +236,24 @@ export default function EditMedicPage() {
         </div>
 
         {/* Acções principais */}
-        <div className="flex gap-3 flex-wrap pt-5 mt-5 border-t border-[#ecf1f6]">
-          <button
-            type="submit"
-            disabled={loading}
-            className="inline-flex items-center gap-1.5 rounded-[8px] bg-[#007d74] px-5 h-12 text-sm font-semibold text-white transition hover:bg-[#009d92] disabled:opacity-50"
-          >
+        <div className="form-actions mt-8">
+          <button type="submit" disabled={loading} className="btn btn-primary h-12 px-6">
             {loading ? 'Guardando...' : 'Guardar alterações'}
           </button>
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-5 h-12 text-sm font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
-          >
+          <button type="button" onClick={() => router.back()} className="btn btn-outline h-12 px-5">
             Cancelar
           </button>
         </div>
 
-        {/* Operação perigosa */}
-        <hr className="border-[#ecf1f6] my-5" />
-        <div className="text-xs font-bold uppercase tracking-[0.8px] text-[#6b8299] mb-4">
+        <hr />
+        
+        <div className="form-section-title text-danger">
           Operação perigosa
         </div>
         <button
           type="button"
           disabled={deleteLoading}
-          className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold bg-[#fdf0f0] text-[#b83232] border border-[#f0c4c4] transition hover:bg-[#fdf0f0] disabled:opacity-50"
+          className="btn btn-danger-outline btn-sm"
           onClick={() => setShowDelete(true)}
         >
           {deleteLoading ? 'Eliminando...' : 'Eliminar médico'}

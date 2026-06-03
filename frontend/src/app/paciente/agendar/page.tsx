@@ -47,8 +47,8 @@ export default function PacienteAgendarPage() {
         {/* Cabeçalho da página */}
         <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
           <div>
-            <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Solicitar Consulta</h1>
-            <p className="text-[13px] text-[#6b8299] mt-1">Escolha a data e hora preferida. Um médico será atribuído pela recepção.</p>
+            <h1 className="text-[22px] font-bold text-[#102A6B] tracking-[-0.3px]">Solicitar Consulta</h1>
+            <p className="text-[13px] text-ink-3 mt-1">Escolha a data e hora preferida. Um médico será atribuído pela recepção.</p>
           </div>
         </div>
 
@@ -59,15 +59,15 @@ export default function PacienteAgendarPage() {
         >
           {/* Erro geral */}
           {error && (
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-[#fdf0f0] text-[#b83232] text-[11.5px] font-semibold px-2.5 py-1 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#b83232]"></span>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-[#fdf0f0] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-danger"></span>
               {error}
             </div>
           )}
 
           {/* Data */}
           <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
+            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-ink-2 mb-1.5">
               Data
             </label>
             <input
@@ -76,20 +76,20 @@ export default function PacienteAgendarPage() {
               onChange={e => setData(e.target.value)}
               required
               min={new Date().toISOString().split('T')[0]}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
 
           {/* Hora */}
           <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
+            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-ink-2 mb-1.5">
               Hora
             </label>
             <select
               value={hora}
               onChange={e => setHora(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               }}
@@ -103,14 +103,14 @@ export default function PacienteAgendarPage() {
 
           {/* Motivo */}
           <div className="mb-4">
-            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[#2e4358] mb-1.5">
-              Motivo da consulta <span className="font-normal normal-case tracking-normal text-[#a8bfcf]">(opcional)</span>
+            <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-ink-2 mb-1.5">
+              Motivo da consulta <span className="font-normal normal-case tracking-normal text-ink-4">(opcional)</span>
             </label>
             <textarea
               value={motivo}
               onChange={e => setMotivo(e.target.value)}
               placeholder="Descreva brevemente o motivo da sua consulta..."
-              className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition resize-y focus:border-[#007d74] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition resize-y focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             ></textarea>
           </div>
 
@@ -119,14 +119,14 @@ export default function PacienteAgendarPage() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-[8px] bg-[#007d74] px-5 h-12 text-sm font-semibold text-white transition hover:bg-[#009d92] disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-[8px] bg-mmq-orange px-5 h-12 text-sm font-semibold text-white transition hover:bg-mmq-orange-hover disabled:opacity-50"
             >
               {loading ? 'A processar...' : 'Solicitar Consulta'}
             </button>
             <button
               type="button"
               onClick={() => router.back()}
-              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-5 h-12 text-sm font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
+              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-5 h-12 text-sm font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
             >
               Cancelar
             </button>

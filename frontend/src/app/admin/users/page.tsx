@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Shell from '@/app/components/Shell';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { request } from '@/lib/api';
@@ -14,17 +14,16 @@ interface User {
   ativo: boolean;
 }
 
-// Mapeamento das cores de cada nível de acesso (seguindo o style guide)
 const roleBadgeClasses: Record<string, { bg: string; text: string; dot: string }> = {
-  admin:          { bg: 'bg-[#e6f0fb]', text: 'text-[#1258a8]', dot: 'bg-[#1258a8]' },
-  medico:         { bg: 'bg-[#e4f5f4]', text: 'text-[#007d74]', dot: 'bg-[#007d74]' },
-  recepcionista:  { bg: 'bg-[#fef8ec]', text: 'text-[#b87a00]', dot: 'bg-[#b87a00]' },
-  paciente:       { bg: 'bg-[#e8eef4]', text: 'text-[#2e4358]', dot: 'bg-[#a8bfcf]' },
+  admin:         { bg: 'bg-[#e6f0fb]', text: 'text-[#1258a8]', dot: 'bg-[#1258a8]' },
+  medico:        { bg: 'bg-warn-dim', text: 'text-mmq-orange', dot: 'bg-mmq-orange' },
+  recepcionista: { bg: 'bg-warn-dim', text: 'text-warn', dot: 'bg-warn' },
+  paciente:      { bg: 'bg-slate2', text: 'text-ink-2', dot: 'bg-ink-4' },
 };
 
 const statusBadgeClasses = {
-  activo:   { bg: 'bg-[#edf7f2]', text: 'text-[#1a7a4a]', dot: 'bg-[#1a7a4a]' },
-  inactivo: { bg: 'bg-[#fdf0f0]', text: 'text-[#b83232]', dot: 'bg-[#b83232]' },
+  activo:   { bg: 'bg-success-dim', text: 'text-[#1a7a4a]', dot: 'bg-[#1a7a4a]' },
+  inactivo: { bg: 'bg-[#fdf0f0]', text: 'text-danger', dot: 'bg-danger' },
 };
 
 export default function UsersPage() {
@@ -37,8 +36,8 @@ export default function UsersPage() {
   const fetchUsers = () => {
     setLoading(true);
     request<{ data: User[] }>('/users')
-      .then(res => setUsers(res.data))
-      .catch(() => console.error)
+      .then(res => setUsers(res?.data ?? []))
+      .catch((err) => console.error('Erro ao carregar utilizadores:', err))
       .finally(() => setLoading(false));
   };
 
@@ -54,35 +53,39 @@ export default function UsersPage() {
         method: 'PATCH',
         body: JSON.stringify({ ativo: newState }),
       });
+      // Atualização de estado pessimista: Só muda a UI se o servidor aceitou
       setUsers(prev =>
         prev.map(u => (u.id === userId ? { ...u, ativo: newState } : u))
       );
     } catch (err) {
-      console.error('Erro ao alterar estado', err);
+      alert('Não foi possível alterar o estado do utilizador. Verifique a sua ligação.');
+      console.error('Erro ao alterar estado do utilizador:', err);
     } finally {
       setActionLoading(null);
       setConfirm(null);
     }
   };
 
-  const filtered = users.filter(u =>
-    u.name.toLowerCase().includes(search.toLowerCase()) ||
-    u.email.toLowerCase().includes(search.toLowerCase())
-  );
+  // Correção da Condição de Corrida e Processamento Inútil usando useMemo
+  const filteredUsers = useMemo(() => {
+    const cleanSearch = search.toLowerCase().trim();
+    if (!cleanSearch) return users;
+    return users.filter(u =>
+      (u.name ?? '').toLowerCase().includes(cleanSearch) ||
+      (u.email ?? '').toLowerCase().includes(cleanSearch)
+    );
+  }, [users, search]);
 
   return (
     <Shell>
-      {/* Cabeçalho da página */}
-      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
+      {/* Cabeçalho da Página */}
+      <div className="p-6">
         <div>
-          <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Utilizadores</h1>
-          <p className="text-[13px] text-[#6b8299] mt-1">Contas de acesso ao sistema</p>
+          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Utilizadores</h1>
+          <p className="text-base font-medium text-ink-3 mt-[3px]">Contas de acesso ao sistema</p>
         </div>
-        <Link
-          href="/admin/users/novo"
-          className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#007d74] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
-        >
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <Link href="/admin/users/novo" className="bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] px-4 py-2 rounded-md font-medium transition shadow-[0_1px_3px_rgba(255,127,0,0.1)] hover:shadow-[0_4px_14px_rgba(255,127,0,0.25)]" aria-label="Criar novo utilizador">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -90,13 +93,12 @@ export default function UsersPage() {
         </Link>
       </div>
 
-      {/* Card da tabela */}
-      <div className="bg-white rounded-[12px] border border-[#ecf1f6] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
-        {/* Cabeçalho do card */}
-        <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[#ecf1f6] flex-wrap">
-          <h3 className="text-[14.5px] font-bold text-[#0c1a27]">Todos os utilizadores</h3>
-          <div className="relative min-w-[200px]">
-            <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" width="14" height="14" stroke="#a8bfcf" fill="none" strokeWidth="2" strokeLinecap="round">
+      {/* Content Card / Table Panel */}
+      <div className="card-panel overflow-hidden">
+        <div className="card-header">
+          <h3>Todos os utilizadores</h3>
+          <div className="search-container" role="search">
+            <svg className="search-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
@@ -105,77 +107,73 @@ export default function UsersPage() {
               placeholder="Pesquisar utilizador..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full h-10 pl-8 pr-3 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74]"
+              className="form-control search-input"
+              aria-label="Campo de pesquisa de utilizadores"
             />
           </div>
         </div>
 
-        {/* Conteúdo: loading vs tabela */}
         {loading ? (
-          <p className="p-6 text-center text-[#a8bfcf]">A carregar...</p>
+          <p className="p-6 text-center text-muted animate-pulse">A carregar utilizadores...</p>
         ) : (
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Nome</th>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Email</th>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Nível de acesso</th>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Estado</th>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Acções</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(user => {
-                const roleBadge = roleBadgeClasses[user.role.toLowerCase()] || roleBadgeClasses.paciente;
-                const statusBadge = user.ativo ? statusBadgeClasses.activo : statusBadgeClasses.inactivo;
-
-                return (
-                  <tr key={user.id} className="border-b border-[#ecf1f6] last:border-b-0 hover:bg-[#f6fafe] transition">
-                    <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27] font-semibold">{user.name}</td>
-                    <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">{user.email}</td>
-                    <td className="p-[12px_18px]">
-                      <span className={`inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold ${roleBadge.bg} ${roleBadge.text}`}>
-                        <span className={`inline-block w-1.5 h-1.5 rounded-full ${roleBadge.dot}`}></span>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="p-[12px_18px]">
-                      <span className={`inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold ${statusBadge.bg} ${statusBadge.text}`}>
-                        <span className={`inline-block w-1.5 h-1.5 rounded-full ${statusBadge.dot}`}></span>
-                        {user.ativo ? 'Activo' : 'Inactivo'}
-                      </span>
-                    </td>
-                    <td className="p-[12px_18px]">
-                      <div className="flex gap-2">
-                        <Link
-                          href={`/admin/users/${user.id}/editar`}
-                          className="inline-flex items-center rounded-[6px] border border-[#d6e0ea] bg-white px-3 py-1.5 text-xs font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
-                        >
-                          Editar
-                        </Link>
-                        <button
-                          onClick={() => setConfirm({ userId: user.id, action: user.ativo ? 'deactivate' : 'activate' })}
-                          disabled={actionLoading === user.id}
-                          className={`inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold transition border ${
-                            user.ativo
-                              ? 'bg-[#fef8ec] text-[#b87a00] border-[#f0d898] hover:bg-[#fdefd0]'
-                              : 'bg-[#edf7f2] text-[#1a7a4a] border-[#aadcc0] hover:bg-[#d6f0e4]'
-                          } disabled:opacity-50`}
-                        >
-                          {actionLoading === user.id ? '...' : user.ativo ? 'Desactivar' : 'Activar'}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-              {filtered.length === 0 && (
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
                 <tr>
-                  <td colSpan={5} className="text-center text-[#a8bfcf] py-6">Nenhum utilizador encontrado.</td>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Nível de acesso</th>
+                  <th>Estado</th>
+                  <th>Acções</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredUsers.map(user => {
+                  const roleKey = user.role?.toLowerCase() || 'paciente';
+                  const roleBadge = roleBadgeClasses[roleKey] || roleBadgeClasses.paciente;
+                  const statusBadge = user.ativo ? statusBadgeClasses.activo : statusBadgeClasses.inactivo;
+
+                  return (
+                    <tr key={user.id}>
+                      <td className="font-semibold">{user.name ?? 'Sem Nome'}</td>
+                      <td>{user.email ?? 'Sem Email'}</td>
+                      <td>
+                        <span className={`badge ${roleBadge.bg} ${roleBadge.text}`}>
+                          <span className={`badge-dot ${roleBadge.dot}`}></span>
+                          {user.role ?? 'Paciente'}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`badge ${statusBadge.bg} ${statusBadge.text}`}>
+                          <span className={`badge-dot ${statusBadge.dot}`}></span>
+                          {user.ativo ? 'Activo' : 'Inactivo'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="flex gap-2">
+                          <Link href={`/admin/users/${user.id}/editar`} className="btn btn-sm btn-outline">
+                            Editar
+                          </Link>
+                          <button
+                            onClick={() => setConfirm({ userId: user.id, action: user.ativo ? 'deactivate' : 'activate' })}
+                            disabled={actionLoading === user.id}
+                            className={`btn btn-sm ${user.ativo ? 'btn-deactivate' : 'btn-activate'}`}
+                          >
+                            {actionLoading === user.id ? '...' : user.ativo ? 'Desactivar' : 'Activar'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {filteredUsers.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="text-center text-muted py-6">Nenhum utilizador encontrado.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 

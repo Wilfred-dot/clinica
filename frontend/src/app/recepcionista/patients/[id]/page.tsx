@@ -54,10 +54,10 @@ export default function PatientDetailPage() {
   }, [params.id]);
 
   const statusColors: Record<string, string> = {
-    realizada:  'bg-[#edf7f2] text-[#1a7a4a]',
-    agendada:   'bg-[#fef8ec] text-[#b87a00]',
-    pendente:   'bg-[#fef8ec] text-[#b87a00]',
-    cancelada:  'bg-[#fdf0f0] text-[#b83232]',
+    realizada:  'bg-success-dim text-[#1a7a4a]',
+    agendada:   'bg-warn-dim text-warn',
+    pendente:   'bg-warn-dim text-warn',
+    cancelada:  'bg-[#fdf0f0] text-danger',
     confirmada: 'bg-[#e6f0fb] text-[#1258a8]',
   };
 
@@ -66,21 +66,21 @@ export default function PatientDetailPage() {
       {/* Cabeçalho */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">
+          <h1 className="text-[22px] font-bold text-[#102A6B] tracking-[-0.3px]">
             {loading ? 'A carregar...' : paciente?.users?.name ?? 'Paciente'}
           </h1>
-          <p className="text-[13px] text-[#6b8299] mt-1">Histórico clínico</p>
+          <p className="text-[13px] text-ink-3 mt-1">Histórico clínico</p>
         </div>
         <div className="flex gap-2">
           <Link
             href={`/recepcionista/patients/${params.id}/editar`}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
           >
             Editar paciente
           </Link>
           <Link
             href="/recepcionista/patients"
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
           >
             ← Voltar
           </Link>
@@ -88,7 +88,7 @@ export default function PatientDetailPage() {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 rounded-[8px] bg-[#fdf0f0] text-[#b83232] text-[13px]">
+        <div className="mb-4 p-3 rounded-[8px] bg-[#fdf0f0] text-danger text-[13px]">
           {error}
         </div>
       )}
@@ -105,8 +105,8 @@ export default function PatientDetailPage() {
             { label: 'Histórico médico', val: paciente.historico_medico || '—' },
           ].map(f => (
             <div key={f.label} className={f.label === 'Endereço' || f.label === 'Histórico médico' ? 'col-span-2' : ''}>
-              <div className="text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.6px] mb-1">{f.label}</div>
-              <div className="text-[13.5px] text-[#0c1a27]">{f.val}</div>
+              <div className="text-[11px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">{f.label}</div>
+              <div className="text-[13.5px] text-[#102A6B]">{f.val}</div>
             </div>
           ))}
         </div>
@@ -115,40 +115,40 @@ export default function PatientDetailPage() {
       {/* Tabela de consultas */}
       <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
         <div className="flex items-center justify-between p-[16px_22px] border-b border-[#ecf1f6]">
-          <h3 className="text-[14.5px] font-bold text-[#0c1a27]">Consultas</h3>
-          <span className="inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold bg-[#e4f5f4] text-[#007d74]">
+          <h3 className="text-[14.5px] font-bold text-[#102A6B]">Consultas</h3>
+          <span className="inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold bg-warn-dim text-mmq-orange">
             {consultas.length} registos
           </span>
         </div>
 
         {loading ? (
-          <p className="p-6 text-center text-[#a8bfcf]">A carregar...</p>
+          <p className="p-6 text-center text-ink-4">A carregar...</p>
         ) : (
           <table className="w-full border-collapse">
             <thead>
               <tr>
                 {['Data', 'Médico', 'Status', 'Motivo', 'Diagnóstico', 'Prescrições'].map(h => (
-                  <th key={h} className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">{h}</th>
+                  <th key={h} className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {consultas.map(c => (
                 <tr key={c.id} className="border-b border-[#ecf1f6] last:border-b-0 hover:bg-[#f6fafe] transition">
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27] whitespace-nowrap">
+                  <td className="p-[12px_18px] text-[13.5px] text-[#102A6B] whitespace-nowrap">
                     {new Date(c.data_hora).toLocaleDateString('pt-MZ')}
                   </td>
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">
+                  <td className="p-[12px_18px] text-[13.5px] text-[#102A6B]">
                     {c.medicos?.users?.name ?? 'Não atribuído'}
                   </td>
                   <td className="p-[12px_18px]">
-                    <span className={`inline-flex items-center px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold ${statusColors[c.status] || 'bg-[#f1f5f9] text-[#6b8299]'}`}>
+                    <span className={`inline-flex items-center px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold ${statusColors[c.status] || 'bg-slate text-ink-3'}`}>
                       {c.status}
                     </span>
                   </td>
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">{c.motivo ?? '—'}</td>
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">{c.diagnostico ?? '—'}</td>
-                  <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">
+                  <td className="p-[12px_18px] text-[13.5px] text-[#102A6B]">{c.motivo ?? '—'}</td>
+                  <td className="p-[12px_18px] text-[13.5px] text-[#102A6B]">{c.diagnostico ?? '—'}</td>
+                  <td className="p-[12px_18px] text-[13.5px] text-[#102A6B]">
                     {c.prescricoes?.length > 0
                       ? c.prescricoes.map(p => `${p.medicamento} (${p.dosagem})`).join(', ')
                       : '—'}
@@ -156,7 +156,7 @@ export default function PatientDetailPage() {
                 </tr>
               ))}
               {consultas.length === 0 && (
-                <tr><td colSpan={6} className="text-center text-[#a8bfcf] py-6">Nenhuma consulta registada.</td></tr>
+                <tr><td colSpan={6} className="text-center text-ink-4 py-6">Nenhuma consulta registada.</td></tr>
               )}
             </tbody>
           </table>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface ConfirmModalProps {
   open: boolean;
@@ -23,32 +23,53 @@ export default function ConfirmModal({
   onCancel,
   variant = 'danger',
 }: ConfirmModalProps) {
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Focus Trapping: Força o foco para dentro do modal ao abrir
   useEffect(() => {
     if (open) {
-      const handleEscape = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') onCancel();
-      };
-      document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
+      setTimeout(() => cancelButtonRef.current?.focus(), 50);
     }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCancel();
+    };
+    
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
   }, [open, onCancel]);
 
   if (!open) return null;
 
-  const confirmClass = variant === 'danger'
-    ? 'btn-danger-outline'
-    : 'btn-warn';
+  const confirmClass = variant === 'danger' ? 'btn-danger-outline' : 'btn-warn';
 
   return (
-    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}>
+    <div 
+      className="modal-overlay" 
+      onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <div className="modal-box">
-        <h3>{title}</h3>
+        <h3 id="modal-title">{title}</h3>
         <p>{message}</p>
         <div className="modal-actions">
-          <button className="btn btn-outline" onClick={onCancel}>
+          <button 
+            ref={cancelButtonRef}
+            className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium" 
+            onClick={onCancel}
+          >
             {cancelLabel}
           </button>
-          <button className={`btn ${confirmClass}`} onClick={onConfirm}>
+          <button 
+            className={`btn ${confirmClass}`} 
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </button>
         </div>

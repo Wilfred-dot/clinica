@@ -59,14 +59,14 @@ export default function PacienteHistoricoPage() {
 
   return (
     <Shell>
-      <div className="ph">
+      <div className="p-6">
         <div>
-          <h1>Ficha Clínica</h1>
-          <p className="sub">{paciente.users.name} · Paciente #{paciente.id}</p>
+          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Ficha Clínica</h1>
+          <p className="text-base font-medium text-ink-3 mt-[3px]">{paciente.users.name} · Paciente #{paciente.id}</p>
         </div>
         <div className="ph-actions">
-          <button className="btn btn-outline" onClick={() => router.back()}>← Voltar</button>
-          <Link href={`/medico/consulta/novo?paciente_id=${paciente.id}`} className="btn btn-primary">
+          <button className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium" onClick={() => router.back()}>← Voltar</button>
+          <Link href={`/medico/consulta/novo?paciente_id=${paciente.id}`} className="bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] px-4 py-2 rounded-md font-medium transition shadow-[0_1px_3px_rgba(255,127,0,0.1)] hover:shadow-[0_4px_14px_rgba(255,127,0,0.25)]">
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
             Nova Consulta
           </Link>
@@ -89,18 +89,18 @@ export default function PacienteHistoricoPage() {
               <div className="pc-row"><span className="lbl">Alergias / Histórico</span><span className="val" style={{ color: 'var(--danger)' }}>{paciente.historico_medico || 'Nenhum'}</span></div>
             </div>
             <div className="pc-footer">
-              <button className="btn btn-outline btn-sm" style={{ width: '100%' }} onClick={() => router.push(`/admin/patients/${paciente.id}/editar`)}>Editar dados</button>
+              <button className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-3 py-1.5 rounded-md text-xs font-medium" style={{ width: '100%' }} onClick={() => router.push(`/admin/patients/${paciente.id}/editar`)}>Editar dados</button>
             </div>
           </div>
         </div>
         <div>
           <div className="stats" style={{ gridTemplateColumns: 'repeat(3,1fr)' }}>
-            <div className="stat c-teal"><div className="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><h3>{totalConsultas}</h3><p>Consultas</p></div>
-            <div className="stat c-sky"><div className="ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><h3>{totalPrescricoes}</h3><p>Prescrições</p></div>
-            <div className="stat c-green"><div className="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h3>{totalExames}</h3><p>Exames</p></div>
+            <div className="bg-sky-dim text-sky"><div className="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><h3>{totalConsultas}</h3><p>Consultas</p></div>
+            <div className="bg-sky-dim text-sky"><div className="ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg></div><h3>{totalPrescricoes}</h3><p>Prescrições</p></div>
+            <div className="bg-success-dim text-success"><div className="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><h3>{totalExames}</h3><p>Exames</p></div>
           </div>
-          <div className="card">
-            <div className="card-head"><h3>Consultas Realizadas</h3></div>
+          <div className="bg-white rounded-xl border border-[var(--border2)] shadow-md">
+            <div className="mb-4"><h3>Consultas Realizadas</h3></div>
             <table>
               <thead><tr><th>Data</th><th>Médico</th><th>Diagnóstico</th><th>Prescrição</th><th></th></tr></thead>
               <tbody>

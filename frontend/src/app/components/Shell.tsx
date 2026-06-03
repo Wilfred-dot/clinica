@@ -11,7 +11,7 @@ const adminNav = [
   { label: 'Pacientes', href: '/admin/patients', icon: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8z' },
   { label: 'Consultas', href: '/admin/consultations', icon: 'M3 4h18v18H3V4zM16 2v4M8 2v4M3 10h18' },
   { label: 'Notificações', href: '/admin/notifications', icon: 'M22 12h-4l-3 9L9 3l-3 9H2' },
-  { label: 'Relatórios', href: '/admin/reports', icon: 'M18 20V10M12 20V4M6 20v-6' }, // novo item
+  { label: 'Relatórios', href: '/admin/reports', icon: 'M18 20V10M12 20V4M6 20v-6' },
 ];
 
 const medicoNav = [
@@ -33,25 +33,32 @@ const navMap: Record<string, { label: string; href: string; icon: string }[]> = 
 };
 
 function capitalize(s: string) {
+  if (!s) return '';
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 export default function Shell({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
 
-  if (!user) return null;
-
-  const role = user.role;
+  const role = user?.role ?? '';
   const navItems = navMap[role] || [];
 
   return (
     <div>
-      <div className="topbar">
-        <div className="topbar-brand" style={{ cursor: 'pointer' }} onClick={() => router.push(`/${role}`)}>
+      <div className="topbar" role="banner">
+        <div 
+          className="topbar-brand" 
+          style={{ cursor: 'pointer' }} 
+          onClick={() => { if (role) router.push(`/${role}`); }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' && role) router.push(`/${role}`); }}
+          aria-label="Ir para a página inicial do painel"
+        >
           <div className="topbar-mark">
-            <svg viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
               <ellipse cx="12" cy="12" rx="10" ry="6" />
               <circle cx="12" cy="12" r="3" />
             </svg>
@@ -61,50 +68,78 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             <span>Oftalmologia</span>
           </div>
         </div>
+        
         <div className="topbar-spacer" />
+        
         <div className="topbar-user">
           <div className="topbar-user-info">
-            <div className="u-name">{user.name}</div>
-            <div className="u-role">{capitalize(role)}</div>
+            <div className="u-name">
+              {loading ? 'A carregar...' : (user?.name ?? 'Utilizador')}
+            </div>
+            <div className="u-role">
+              {loading ? '...' : (role ? capitalize(role) : 'Nenhum papel')}
+            </div>
           </div>
         </div>
-        <button className="topbar-logout-btn" onClick={logout} title="Sair">
-          <svg viewBox="0 0 24 24">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+        
+        <button 
+          className="topbar-logout-btn" 
+          onClick={logout} 
+          title="Sair do Sistema" 
+          aria-label="Sair do Sistema"
+          style={{ cursor: 'pointer' }}
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
           </svg>
         </button>
       </div>
+
       <div className="shell">
-        <aside className="sidebar">
+        <aside className="sidebar" role="complementary" aria-label="Menu Lateral">
           {['Principal'].map((section) => (
             <div className="sidebar-section" key={section}>
               <div className="sidebar-label">{section}</div>
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`nav-item ${pathname === item.href ? 'active' : ''}`}
-                >
-                  <div className="ni">
-                    <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={item.icon} />
-                    </svg>
-                  </div>
-                  {item.label}
-                </Link>
-              ))}
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }} aria-label="Navegação Principal">
+                {navItems.map((item) => {
+                  // Validação cirúrgica de rota ativa usando segmentos puros para evitar colisões parciais de strings
+                  const isHomeRole = item.href === `/${role}`;
+                  const isActive = pathname === item.href || (!isHomeRole && pathname.startsWith(item.href + '/'));
+                  
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`nav-item ${isActive ? 'active' : ''}`}
+                    >
+                      <div className="ni">
+                        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d={item.icon} />
+                        </svg>
+                      </div>
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
             </div>
           ))}
+          
           <div style={{ marginTop: 'auto', padding: '16px 18px 0', borderTop: '1px solid var(--border2)' }}>
-            <button className="btn btn-outline btn-sm" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={logout}>
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+            <button 
+              className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-3 py-1.5 rounded-md text-xs font-medium" 
+              style={{ width: '100%', justifyContent: 'flex-start', cursor: 'pointer' }} 
+              onClick={logout}
+            >
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
               </svg>
               Sair
             </button>
           </div>
         </aside>
-        <main className="main">
+
+        <main className="main" role="main">
           {children}
         </main>
       </div>

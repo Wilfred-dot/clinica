@@ -39,15 +39,17 @@ function getWeekDays(start: Date): Date[] {
   return days;
 }
 
+// Cores dinâmicas mantidas apenas para o mapeamento visual dos médicos na agenda
 const DOCTOR_COLOR_CLASSES = [
-  'bg-[#e4f5f4] text-[#007d74] border-l-[3px] border-l-[#007d74]',
-  'bg-[#e6f0fb] text-[#1258a8] border-l-[3px] border-l-[#1258a8]',
-  'bg-[#fef8ec] text-[#b87a00] border-l-[3px] border-l-[#b87a00]',
-  'bg-[#edf7f2] text-[#1a7a4a] border-l-[3px] border-l-[#1a7a4a]',
-  'bg-[#fdf0f0] text-[#b83232] border-l-[3px] border-l-[#b83232]',
+  'bg-[#e6f0fb] text-[#102A6B] border-l-[3px] border-l-[#102A6B]',
+  'bg-warn-dim text-warn border-l-[3px] border-l-[#FF7F00]',
+  'bg-success-dim text-[#1a7a4a] border-l-[3px] border-l-[#1a7a4a]',
+  'bg-[#fdf0f0] text-danger border-l-[3px] border-l-[#b83232]',
+  'bg-slate text-[#475569] border-l-[3px] border-l-[#475569]',
 ];
 
 export default function ConsultationsPage() {
+  const router = useRouter();
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => getWeekStart(new Date()));
   const [consultas, setConsultas] = useState<ConsultaItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -121,74 +123,74 @@ export default function ConsultationsPage() {
 
   return (
     <Shell>
-      {/* Cabeçalho da página */}
-      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
+      {/* Cabeçalho da página limpo usando as classes globais .ph e .sub */}
+      <div className="p-6">
         <div>
-          <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Consultas</h1>
-          <p className="text-[13px] text-[#6b8299] mt-1">
+          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Agenda de Consultas</h1>
+          <p className="text-base font-medium text-ink-3 mt-[3px]">
             Semana de {weekDays[0]?.toLocaleDateString('pt-MZ')} a {weekDays[4]?.toLocaleDateString('pt-MZ')}
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <button
-            className="inline-flex items-center gap-1.5 justify-center rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
-            onClick={() => goToWeek(-1)}
-          >
+          <button onClick={() => goToWeek(-1)} className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium">
             ← Semana anterior
           </button>
-          <button
-            className="inline-flex items-center gap-1.5 justify-center rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
-            onClick={() => goToWeek(1)}
-          >
+          <button onClick={() => goToWeek(1)} className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium">
             Semana seguinte →
           </button>
-          <Link
-            href="/admin/consultations/agendar"
-            className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#007d74] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
-          >
+          <Link href="/admin/consultations/agendar" className="bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] px-4 py-2 rounded-md font-medium transition shadow-[0_1px_3px_rgba(255,127,0,0.1)] hover:shadow-[0_4px_14px_rgba(255,127,0,0.25)]">
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            Agendar consulta
+            Agendar Consulta
           </Link>
         </div>
       </div>
 
       {loading ? (
-        <p className="text-center text-[#a8bfcf] py-10">A carregar agenda...</p>
+        <p className="p-8 text-center text-muted animate-pulse">A carregar agenda da clínica...</p>
       ) : (
-        <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
-          {/* Cabeçalho da grelha */}
-          <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[#0c1a27]">
-            <div className="p-[11px_10px] text-[11px] font-bold uppercase tracking-[0.6px] text-[rgba(255,255,255,0.55)] text-center border-r border-[rgba(255,255,255,0.07)] last:border-r-0"></div>
+        /* Content Card herdando as propriedades do global.css */
+        <div className="card-panel overflow-hidden">
+          
+          {/* Barra superior da grelha (Mudada para bg-[#FF7F00] - Laranja da marca) */}
+          <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[#FF7F00]">
+            <div className="p-3 border-r border-[rgba(255,255,255,0.12)]"></div>
             {weekDays.map((day, i) => (
-              <div key={i} className="p-[11px_10px] text-[11px] font-bold uppercase tracking-[0.6px] text-[rgba(255,255,255,0.55)] text-center border-r border-[rgba(255,255,255,0.07)] last:border-r-0">
+              <div 
+                key={i} 
+                className="p-3 text-[11px] font-bold uppercase tracking-[0.7px] text-white text-center border-r border-[rgba(255,255,255,0.12)] last:border-r-0"
+              >
                 {day.toLocaleDateString('pt-MZ', { weekday: 'short', day: '2-digit', month: '2-digit' })}
               </div>
             ))}
           </div>
 
-          {/* Corpo da grelha */}
+          {/* Corpo estruturado da Grelha */}
           <div>
             {hours.map(hour => (
               <div key={hour} className="grid grid-cols-[68px_repeat(5,1fr)] border-b border-[#ecf1f6] last:border-b-0">
-                <div className="p-[8px_10px] text-[11px] font-semibold text-[#a8bfcf] text-right border-r border-[#ecf1f6] bg-[#f1f5f9] flex items-center justify-end">
+                {/* Coluna de Horas */}
+                <div className="p-2 text-[11px] font-bold text-muted text-right border-r border-[#ecf1f6] bg-[#f8fafc] flex items-center justify-end">
                   {hour}
                 </div>
+                
+                {/* Células de Dias */}
                 {weekDays.map((_, dayIdx) => (
-                  <div key={dayIdx} className="p-[5px_7px] border-r border-[#ecf1f6] min-h-[42px] last:border-r-0">
+                  <div key={dayIdx} className="p-1.5 border-r border-[#ecf1f6] min-h-[46px] last:border-r-0 bg-white">
                     {(schedule[dayIdx][hour] || []).map(c => {
                       const colorClass = medicoColorMap[c.medicos?.id] ?? DOCTOR_COLOR_CLASSES[0];
                       return (
                         <div
                           key={c.id}
-                          className={`rounded-[5px] p-[5px_8px] text-[11px] font-semibold cursor-pointer transition hover:brightness-[1.07] hover:translate-y-[-1px] ${colorClass}`}
+                          className={`rounded-[6px] p-2 text-[11.5px] font-bold cursor-pointer transition hover:brightness-[1.04] hover:shadow-sm block ${colorClass}`}
                           onClick={() => router.push(`/medico/consulta/${c.id}`)}
                           title={`${c.pacientes?.users?.name ?? 'N/D'} - ${c.medicos?.users?.name ?? 'N/D'}`}
                         >
-                          {c.pacientes?.users?.name ?? 'N/D'}
-                          <div className="text-[10px] font-normal opacity-70 mt-[1px]">
-                            {c.medicos?.users?.name ?? 'N/D'}
+                          <span className="block truncate">{c.pacientes?.users?.name ?? 'N/D'}</span>
+                          <div className="text-[10px] font-medium opacity-80 mt-0.5 truncate">
+                            Dr(a). {c.medicos?.users?.name ?? 'N/D'}
                           </div>
                         </div>
                       );
@@ -202,7 +204,7 @@ export default function ConsultationsPage() {
       )}
 
       {!loading && consultas.length === 0 && (
-        <p className="text-center text-[#a8bfcf] py-10">
+        <p className="text-center text-muted py-12 font-medium">
           Nenhuma consulta agendada para esta semana.
         </p>
       )}

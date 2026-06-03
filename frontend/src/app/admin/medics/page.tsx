@@ -25,11 +25,13 @@ export default function MedicsPage() {
   const [medics, setMedics] = useState<Medico[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [confirm, setConfirm] = useState<{ medicoId: number; userId: number; action: 'activate' | 'deactivate' } | null>(null);
 
   const fetchMedics = () => {
     setLoading(true);
+    setError('');
     request<{ data: Medico[] }>('/medicos')
       .then(res => {
         const dados = res.data ?? [];
@@ -39,7 +41,10 @@ export default function MedicsPage() {
         }));
         setMedics(comMock);
       })
-      .catch(() => {})
+      .catch((err) => {
+        console.error(err);
+        setError('Não foi possível carregar a lista de médicos.');
+      })
       .finally(() => setLoading(false));
   };
 
@@ -70,93 +75,89 @@ export default function MedicsPage() {
     }
   };
 
-  const filtered = medics.filter(m =>
-    m.users?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    m.users?.email?.toLowerCase().includes(search.toLowerCase()) ||
-    m.especialidade?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = medics.filter(m => {
+    const termo = search.toLowerCase();
+    return (
+      m.users?.name?.toLowerCase().includes(termo) ||
+      m.users?.email?.toLowerCase().includes(termo) ||
+      m.especialidade?.toLowerCase().includes(termo) ||
+      m.numero_ordem?.toLowerCase().includes(termo)
+    );
+  });
 
   return (
     <Shell>
-      <style>{`
-        .medics-page .status-circle {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-        }
-        .medics-page .status-circle::before {
-          content: "●";
-          font-size: 12px;
-          display: inline-block;
-        }
-        .medics-page .status-circle.activo::before {
-          color: #10b981;
-        }
-        .medics-page .status-circle.inactivo::before {
-          color: #ef4444;
-        }
-        .medics-page .badge::before,
-        .medics-page .badge::after {
-          display: none !important;
-          content: none !important;
-        }
-      `}</style>
+      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
+        <div>
+          <h1 className="text-[24px] font-bold text-[#102A6B] tracking-[-0.5px]">Médicos</h1>
+          <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Corpo clínico da Clínica MMQ Oftalmologia</p>
+        </div>
+        <Link href="/admin/medics/novo" className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#FF7F00] px-4 py-2 text-[13.5px] font-bold text-white transition hover:bg-[#E06F00] shadow-sm">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Novo médico
+        </Link>
+      </div>
 
-      <div className="medics-page">
-        <div className="ph">
-          <div><h1>Médicos</h1><p className="sub">Corpo clínico da Clínica MMQ Oftalmologia</p></div>
-          <Link href="/admin/medics/novo" className="btn btn-primary">
-            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none">
-              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Novo médico
-          </Link>
+      {error && (
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-[#fdf0f0] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
+          <span className="w-1.5 h-1.5 rounded-full bg-danger"></span>
+          {error}
+        </div>
+      )}
+
+      <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+        <div className="p-5 border-b border-[#ecf1f6] flex flex-wrap items-center justify-between gap-4">
+          <h3 className="text-[15px] font-bold text-[#102A6B]">Lista de Médicos</h3>
+          <input 
+            type="text" 
+            placeholder="Pesquisar médico..." 
+            value={search} 
+            onChange={e => setSearch(e.target.value)} 
+            className="h-10 px-3 max-w-xs rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] font-medium outline-none transition focus:border-[#FF7F00]"
+          />
         </div>
 
-        <div className="card">
-          <div className="card-head">
-            <h3>Lista de Médicos</h3>
-            <div className="search">
-              <input type="text" placeholder="Pesquisar médico..." value={search} onChange={e => setSearch(e.target.value)} />
-            </div>
-          </div>
-          {loading ? (
-            <p style={{ padding: 24, textAlign: 'center' }}>A carregar...</p>
-          ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        {loading ? (
+          <p className="p-12 text-center text-sm font-medium text-ink-3">A carregar...</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left">
               <thead>
-                <tr style={{ borderBottom: '1px solid var(--border2)', textAlign: 'left' }}>
-                  <th style={{ padding: '12px 8px' }}>NOME</th>
-                  <th style={{ padding: '12px 8px' }}>ESPECIALIDADE</th>
-                  <th style={{ padding: '12px 8px' }}>N.º REGISTO</th>
-                  <th style={{ padding: '12px 8px' }}>CONSULTAS (MÊS)</th>
-                  <th style={{ padding: '12px 8px' }}>ESTADO</th>
-                  <th style={{ padding: '12px 8px' }}>AÇÕES</th>
+                <tr className="border-b border-[#ecf1f6] bg-[#f8fafc]">
+                  <th className="p-3.5 pl-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Nome</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Especialidade</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">N.º Registo</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Consultas (Mês)</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Estado</th>
+                  <th className="p-3.5 pr-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-44">Ações</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-[#ecf1f6]">
                 {filtered.map(medico => (
-                  <tr key={medico.id} style={{ borderBottom: '1px solid var(--border2)' }}>
-                    <td style={{ padding: '12px 8px' }}><strong>{medico.users?.name}</strong></td>
-                    <td style={{ padding: '12px 8px' }}>{medico.especialidade}</td>
-                    <td style={{ padding: '12px 8px' }}>{medico.numero_ordem}</td>
-                    <td style={{ padding: '12px 8px' }}>{medico.consultasMes ?? '—'}</td>
-                    <td style={{ padding: '12px 8px' }}>
-                      <span className={`status-circle ${medico.users?.ativo ? 'activo' : 'inactivo'}`}>
+                  <tr key={medico.id} className="hover:bg-[#fdfeff] transition-colors">
+                    <td className="p-4 pl-5 text-sm font-bold text-[#102A6B]">{medico.users?.name ?? '—'}</td>
+                    <td className="p-4 text-sm font-medium text-[#4a5e73]">{medico.especialidade}</td>
+                    <td className="p-4 text-sm font-medium text-ink-3">{medico.numero_ordem}</td>
+                    <td className="p-4 text-sm font-semibold text-[#102A6B]">{medico.consultasMes}</td>
+                    <td className="p-4 text-sm">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold ${medico.users?.ativo ? 'bg-success-dim text-[#10b981]' : 'bg-[#fdf0f0] text-[#ef4444]'}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${medico.users?.ativo ? 'bg-[#10b981]' : 'bg-[#ef4444]'}`}></span>
                         {medico.users?.ativo ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 8px' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <Link href={`/admin/medics/${medico.id}/editar`} className="btn btn-outline btn-sm">Editar</Link>
+                    <td className="p-4 pr-5 text-sm">
+                      <div className="flex gap-2">
+                        <Link href={`/admin/medics/${medico.id}/editar`} className="inline-flex items-center rounded-[6px] border border-[#d6e0ea] bg-white px-3 py-1.5 text-[12.5px] font-bold text-ink-3 transition hover:bg-slate">
+                          Editar
+                        </Link>
                         <button
-                          className="btn btn-sm"
-                          style={{
-                            background: medico.users?.ativo ? 'var(--warn-dim)' : 'var(--success-dim)',
-                            color: medico.users?.ativo ? 'var(--warn)' : 'var(--success)',
-                            border: '1px solid',
-                            borderColor: medico.users?.ativo ? '#f3d98a' : '#a8ddc0',
-                          }}
+                          className={`inline-flex items-center rounded-[6px] px-3 py-1.5 text-[12.5px] font-bold border transition disabled:opacity-50 ${
+                            medico.users?.ativo 
+                              ? 'bg-[#fffbeb] border-[#fde8bb] text-warn hover:bg-[#fef3c7]' 
+                              : 'bg-success-dim border-[#a8ddc0] text-[#10b981] hover:bg-[#d1fae5]'
+                          }`}
                           onClick={() => setConfirm({ medicoId: medico.id, userId: medico.user_id, action: medico.users?.ativo ? 'deactivate' : 'activate' })}
                           disabled={actionLoading === medico.user_id}
                         >
@@ -166,11 +167,17 @@ export default function MedicsPage() {
                     </td>
                   </tr>
                 ))}
-                {filtered.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center', padding: 24 }}>Nenhum médico encontrado.</td></tr>}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="text-center p-12 text-sm font-medium text-ink-3">
+                      Nenhum médico encontrado.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <ConfirmModal

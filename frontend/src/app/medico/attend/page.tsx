@@ -14,9 +14,9 @@ interface Consulta {
 }
 
 const statusBadge: Record<string, { cls: string; label: string }> = {
-  agendada: { cls: 'bw', label: 'Aguarda' },
-  realizada: { cls: 'bg', label: 'Realizada' },
-  em_curso: { cls: 'bb', label: 'Em curso' },
+  agendada: { cls: 'bg-warn-dim text-warn', label: 'Aguarda'},
+  realizada: { cls: 'bg-success-dim text-success', label: 'Realizada' },
+  em_curso: { cls: 'bg-sky-dim text-sky', label: 'Em curso' },
 };
 
 export default function MedicoAttendPage() {
@@ -32,15 +32,15 @@ export default function MedicoAttendPage() {
 
   return (
     <Shell>
-      <div className="ph">
+      <div className="p-6">
         <div>
-          <h1>Atendimento</h1>
-          <p className="sub">{new Date().toLocaleDateString('pt-MZ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Atendimento</h1>
+          <p className="text-base font-medium text-ink-3 mt-[3px]">{new Date().toLocaleDateString('pt-MZ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
       </div>
 
-      <div className="card">
-        <div className="card-head">
+      <div className="bg-white rounded-xl border border-[var(--border2)] shadow-md">
+        <div className="mb-4">
           <h3>Agenda de Hoje</h3>
         </div>
         {loading ? (
@@ -61,7 +61,7 @@ export default function MedicoAttendPage() {
                     <div className="divider-v" />
                     <div
                       className="cavatar"
-                      style={{ background: 'var(--teal)' }}
+                      style={{ background: 'mmq-orange' }}
                     >
                       {patientName.charAt(0).toUpperCase()}
                     </div>

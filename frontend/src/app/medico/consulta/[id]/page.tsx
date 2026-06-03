@@ -159,18 +159,18 @@ export default function MedicoConsultaPage() {
 
   return (
     <Shell>
-      <div className="ph">
+      <div className="p-6">
         <div>
-          <h1>Atendimento</h1>
-          <p className="sub">
+          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Atendimento</h1>
+          <p className="text-base font-medium text-ink-3 mt-[3px]">
             {patient?.users?.name} · {new Date(consulta.data_hora).toLocaleDateString('pt-MZ')} às{' '}
             {new Date(consulta.data_hora).toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
         <div className="ph-actions">
-          <button className="btn btn-outline" onClick={() => router.push('/medico/attend')}>← Agenda</button>
+          <button className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium" onClick={() => router.push('/medico/attend')}>← Agenda</button>
           {consulta.status !== 'realizada' && (
-            <button className="btn btn-primary" onClick={handleFinalize} disabled={finalizing}>
+            <button className="bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] px-4 py-2 rounded-md font-medium transition shadow-[0_1px_3px_rgba(255,127,0,0.1)] hover:shadow-[0_4px_14px_rgba(255,127,0,0.25)]" onClick={handleFinalize} disabled={finalizing}>
               {finalizing ? 'Finalizando...' : 'Concluir Consulta'}
             </button>
           )}
@@ -201,8 +201,8 @@ export default function MedicoConsultaPage() {
           </div>
 
           {/* Prescrições */}
-          <div className="card" style={{ marginTop: 20 }}>
-            <div className="card-head"><h3>Prescrições</h3></div>
+          <div className="bg-white rounded-xl border border-[var(--border2)] shadow-md" style={{ marginTop: 20 }}>
+            <div className="mb-4"><h3>Prescrições</h3></div>
             <div style={{ padding: 16 }}>
               {prescricoes.length === 0 ? (
                 <p style={{ fontSize: 13, color: 'var(--ink4)', textAlign: 'center', padding: 16 }}>Nenhuma prescrição emitida.</p>
@@ -278,7 +278,7 @@ export default function MedicoConsultaPage() {
             <textarea value={planoTratamento} onChange={e => setPlanoTratamento(e.target.value)} rows={3} style={{ width: '100%', padding: '10px 12px', border: '1.5px solid var(--border)', borderRadius: 'var(--r)', fontFamily: 'var(--font)', fontSize: 14, outline: 'none', resize: 'vertical' }} disabled={consulta.status === 'realizada'} />
           </div>
           <div className="cc-section" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button className="btn btn-primary" onClick={handleSave} disabled={saving || consulta.status === 'realizada'}>
+            <button className="bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] px-4 py-2 rounded-md font-medium transition shadow-[0_1px_3px_rgba(255,127,0,0.1)] hover:shadow-[0_4px_14px_rgba(255,127,0,0.25)]" onClick={handleSave} disabled={saving || consulta.status === 'realizada'}>
               {saving ? 'Guardando...' : 'Guardar Dados'}
             </button>
             {consulta.status !== 'realizada' && (

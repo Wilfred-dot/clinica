@@ -31,11 +31,11 @@ function getWeekDays(start: Date): Date[] {
 }
 
 const DOCTOR_COLOR_CLASSES = [
-  'bg-[#e4f5f4] text-[#007d74] border-l-[3px] border-l-[#007d74]',
+  'bg-warn-dim text-mmq-orange border-l-[3px] border-l-[#FF7F00]',
   'bg-[#e6f0fb] text-[#1258a8] border-l-[3px] border-l-[#1258a8]',
-  'bg-[#fef8ec] text-[#b87a00] border-l-[3px] border-l-[#b87a00]',
-  'bg-[#edf7f2] text-[#1a7a4a] border-l-[3px] border-l-[#1a7a4a]',
-  'bg-[#fdf0f0] text-[#b83232] border-l-[3px] border-l-[#b83232]',
+  'bg-warn-dim text-warn border-l-[3px] border-l-[#b87a00]',
+  'bg-success-dim text-[#1a7a4a] border-l-[3px] border-l-[#1a7a4a]',
+  'bg-[#fdf0f0] text-danger border-l-[3px] border-l-[#b83232]',
 ];
 
 export default function ReceptionConsultationsPage() {
@@ -118,27 +118,27 @@ export default function ReceptionConsultationsPage() {
       {/* Cabeçalho da página */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Consultas</h1>
-          <p className="text-[13px] text-[#6b8299] mt-1">
+          <h1 className="text-[22px] font-bold text-[#102A6B] tracking-[-0.3px]">Consultas</h1>
+          <p className="text-[13px] text-ink-3 mt-1">
             Semana de {weekDays[0]?.toLocaleDateString('pt-MZ')} a {weekDays[4]?.toLocaleDateString('pt-MZ')}
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
-            className="inline-flex items-center justify-center rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
+            className="inline-flex items-center justify-center rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
             onClick={() => goToWeek(-1)}
           >
             ← Semana anterior
           </button>
           <button
-            className="inline-flex items-center justify-center rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9] hover:border-[#a8bfcf]"
+            className="inline-flex items-center justify-center rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
             onClick={() => goToWeek(1)}
           >
             Semana seguinte →
           </button>
           <Link
             href="/recepcionista/consultations/agendar"
-            className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#007d74] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
+            className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-mmq-orange px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-mmq-orange-hover"
           >
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -149,11 +149,11 @@ export default function ReceptionConsultationsPage() {
       </div>
 
       {loading ? (
-        <p className="text-center text-[#a8bfcf] py-10">A carregar agenda...</p>
+        <p className="text-center text-ink-4 py-10">A carregar agenda...</p>
       ) : (
         <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
           {/* Cabeçalho da grelha */}
-          <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[#0c1a27]">
+          <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[#102A6B]">
             <div className="p-[11px_10px] text-[11px] font-bold uppercase tracking-[0.6px] text-[rgba(255,255,255,0.55)] text-center border-r border-[rgba(255,255,255,0.07)] last:border-r-0"></div>
             {weekDays.map((day, i) => (
               <div key={i} className="p-[11px_10px] text-[11px] font-bold uppercase tracking-[0.6px] text-[rgba(255,255,255,0.55)] text-center border-r border-[rgba(255,255,255,0.07)] last:border-r-0">
@@ -166,7 +166,7 @@ export default function ReceptionConsultationsPage() {
           <div>
             {hours.map(hour => (
               <div key={hour} className="grid grid-cols-[68px_repeat(5,1fr)] border-b border-[#ecf1f6] last:border-b-0">
-                <div className="p-[8px_10px] text-[11px] font-semibold text-[#a8bfcf] text-right border-r border-[#ecf1f6] bg-[#f1f5f9] flex items-center justify-end">
+                <div className="p-[8px_10px] text-[11px] font-semibold text-ink-4 text-right border-r border-[#ecf1f6] bg-slate flex items-center justify-end">
                   {hour}
                 </div>
                 {weekDays.map((_, dayIdx) => (
@@ -187,7 +187,7 @@ export default function ReceptionConsultationsPage() {
                           </div>
                           {c.status === 'agendada' && (
                             <button
-                              className="mt-1 text-[10px] px-[6px] py-[2px] rounded bg-[#fdf0f0] text-[#b83232] border border-[#f0c4c4] transition hover:bg-[#fdf0f0]"
+                              className="mt-1 text-[10px] px-[6px] py-[2px] rounded bg-[#fdf0f0] text-danger border border-[#f0c4c4] transition hover:bg-[#fdf0f0]"
                               onClick={() => setCancelId(c.id)}
                             >
                               Cancelar
@@ -205,7 +205,7 @@ export default function ReceptionConsultationsPage() {
       )}
 
       {!loading && consultas.length === 0 && (
-        <p className="text-center text-[#a8bfcf] py-10">Nenhuma consulta agendada para esta semana.</p>
+        <p className="text-center text-ink-4 py-10">Nenhuma consulta agendada para esta semana.</p>
       )}
 
       <ConfirmModal

@@ -51,7 +51,7 @@ export default function ReceptionAgendarPage() {
 
   return (
     <Shell>
-      <div className="ph"><div><h1>Agendar Consulta</h1><p className="sub">Preencha os dados para marcar uma nova consulta</p></div><button className="btn btn-outline" onClick={() => router.back()}>← Voltar</button></div>
+      <div className="p-6"><div><h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Agendar Consulta</h1><p className="text-base font-medium text-ink-3 mt-[3px]">Preencha os dados para marcar uma nova consulta</p></div><button className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium" onClick={() => router.back()}>← Voltar</button></div>
       <form onSubmit={handleSubmit} className="form-panel">
         {error && <div className="badge br" style={{ marginBottom:16 }}>{error}</div>}
         <div className="form-section-title">Paciente e Médico</div>
@@ -66,8 +66,8 @@ export default function ReceptionAgendarPage() {
           <div className="field"><label>Hora</label><select value={hora} onChange={e => setHora(e.target.value)} required><option value="">Seleccione uma hora...</option>{horarios.map(h => (<option key={h} value={h}>{h}</option>))}</select></div>
         </div>
         <div className="form-actions">
-          <button type="submit" className="btn btn-primary" disabled={loading}>{loading?'Agendando...':'Confirmar agendamento'}</button>
-          <button type="button" className="btn btn-outline" onClick={() => router.back()}>Cancelar</button>
+          <button type="submit" className="bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] px-4 py-2 rounded-md font-medium transition shadow-[0_1px_3px_rgba(255,127,0,0.1)] hover:shadow-[0_4px_14px_rgba(255,127,0,0.25)]" disabled={loading}>{loading?'Agendando...':'Confirmar agendamento'}</button>
+          <button type="button" className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium" onClick={() => router.back()}>Cancelar</button>
         </div>
       </form>
     </Shell>

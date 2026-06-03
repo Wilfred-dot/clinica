@@ -23,8 +23,8 @@ interface Paciente {
 }
 
 const statusBadgeClasses = {
-  activo:   { bg: 'bg-[#edf7f2]', text: 'text-[#1a7a4a]', dot: 'bg-[#1a7a4a]' },
-  inactivo: { bg: 'bg-[#fdf0f0]', text: 'text-[#b83232]', dot: 'bg-[#b83232]' },
+  activo:   { bg: 'bg-success-dim', text: 'text-[#10b981]', dot: 'bg-[#10b981]' },
+  inactivo: { bg: 'bg-[#fdf0f0]', text: 'text-[#ef4444]', dot: 'bg-[#ef4444]' },
 };
 
 export default function PatientsPage() {
@@ -80,14 +80,14 @@ export default function PatientsPage() {
       {/* Cabeçalho da página */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[22px] font-bold text-[#0c1a27] tracking-[-0.3px]">Pacientes</h1>
-          <p className="text-[13px] text-[#6b8299] mt-1">Base de dados de pacientes registados</p>
+          <h1 className="text-[24px] font-bold text-[#102A6B] tracking-[-0.5px]">Pacientes</h1>
+          <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Base de dados de pacientes registados na clínica</p>
         </div>
         <Link
           href="/admin/patients/novo"
-          className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#007d74] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[#009d92]"
+          className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#FF7F00] px-4 py-2 text-[13.5px] font-bold text-white transition hover:bg-[#E06F00] shadow-sm"
         >
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           Novo paciente
@@ -95,11 +95,11 @@ export default function PatientsPage() {
       </div>
 
       {/* Card da tabela */}
-      <div className="bg-white rounded-[12px] border border-[#ecf1f6] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
-        <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[#ecf1f6] flex-wrap">
-          <h3 className="text-[14.5px] font-bold text-[#0c1a27]">Lista de Pacientes</h3>
-          <div className="relative min-w-[200px]">
-            <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" width="14" height="14" stroke="#a8bfcf" fill="none" strokeWidth="2" strokeLinecap="round">
+      <div className="bg-white rounded-[12px] border border-[#ecf1f6] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+        <div className="flex items-center justify-between gap-3 p-5 border-b border-[#ecf1f6] flex-wrap">
+          <h3 className="text-[15px] font-bold text-[#102A6B]">Lista de Pacientes</h3>
+          <div className="relative min-w-[260px]">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" width="14" height="14" stroke="#6b8299" fill="none" strokeWidth="2.5" strokeLinecap="round">
               <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
@@ -107,96 +107,95 @@ export default function PatientsPage() {
               placeholder="Pesquisar por nome ou contacto..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full h-10 pl-8 pr-3 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#0c1a27] outline-none transition focus:border-[#007d74]"
+              className="w-full h-10 pl-9 pr-3 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] font-medium outline-none transition focus:border-[#FF7F00]"
             />
           </div>
         </div>
 
         {loading ? (
-          <p className="p-6 text-center text-[#a8bfcf]">A carregar...</p>
+          <p className="p-12 text-center text-sm font-medium text-ink-3">A carregar...</p>
         ) : (
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Nome</th>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Contacto</th>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Último Atendimento</th>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Estado</th>
-                <th className="bg-[#f1f5f9] text-[11px] font-bold text-[#6b8299] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Acções</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(patient => {
-                const ativo = patient.users?.ativo ?? false;
-                const statusBadge = ativo ? statusBadgeClasses.activo : statusBadgeClasses.inactivo;
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[#ecf1f6] bg-[#f8fafc]">
+                  <th className="p-3.5 pl-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Nome</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Contacto</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Último Atendimento</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Estado</th>
+                  <th className="p-3.5 pr-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#ecf1f6]">
+                {filtered.map(patient => {
+                  const ativo = patient.users?.ativo ?? false;
+                  const statusBadge = ativo ? statusBadgeClasses.activo : statusBadgeClasses.inactivo;
 
-                return (
-                  <tr key={patient.id} className="border-b border-[#ecf1f6] last:border-b-0 hover:bg-[#f6fafe] transition">
-                    <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27] font-semibold">
-                      {patient.users?.name ?? 'N/D'}
-                    </td>
-                    <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">
-                      {patient.telefone}
-                    </td>
-                    <td className="p-[12px_18px] text-[13.5px] text-[#0c1a27]">
-                      {patient.ultimo_atendimento
-                        ? new Date(patient.ultimo_atendimento).toLocaleDateString('pt-MZ')
-                        : '—'}
-                    </td>
-                    <td className="p-[12px_18px]">
-                      <span className={`inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold ${statusBadge.bg} ${statusBadge.text}`}>
-                        <span className={`inline-block w-1.5 h-1.5 rounded-full ${statusBadge.dot}`}></span>
-                        {ativo ? 'Activo' : 'Inactivo'}
-                      </span>
-                    </td>
-                    <td className="p-[12px_18px]">
-                      <div className="flex gap-2">
-                        {/* Histórico — NOVO */}
-                        <Link
-                          href={`/admin/patients/${patient.id}`}
-                          className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold border border-[#d6e0ea] bg-white text-[#2e4358] transition hover:bg-[#f1f5f9]"
-                        >
-                          Histórico
-                        </Link>
-                        {/* Editar */}
-                        <Link
-                          href={`/admin/patients/${patient.id}/editar`}
-                          className="inline-flex items-center rounded-[6px] border border-[#d6e0ea] bg-white px-3 py-1.5 text-xs font-semibold text-[#2e4358] transition hover:bg-[#f1f5f9]"
-                        >
-                          Editar
-                        </Link>
-                        {/* Activar / Inactivar */}
-                        {ativo ? (
-                          <button
-                            onClick={() => setConfirm({ patientId: patient.id, userId: patient.user_id, action: 'deactivate' })}
-                            disabled={actionLoading === patient.user_id}
-                            className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold bg-[#fef8ec] text-[#b87a00] border border-[#f0d898] transition hover:bg-[#fdefd0] disabled:opacity-50"
+                  return (
+                    <tr key={patient.id} className="hover:bg-[#fdfeff] transition-colors">
+                      <td className="p-4 pl-5 text-sm font-bold text-[#102A6B]">
+                        {patient.users?.name ?? 'N/D'}
+                      </td>
+                      <td className="p-4 text-sm font-medium text-[#4a5e73]">
+                        {patient.telefone}
+                      </td>
+                      <td className="p-4 text-sm font-medium text-ink-3">
+                        {patient.ultimo_atendimento
+                          ? new Date(patient.ultimo_atendimento).toLocaleDateString('pt-MZ')
+                          : '—'}
+                      </td>
+                      <td className="p-4 text-sm">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold ${statusBadge.bg} ${statusBadge.text}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${statusBadge.dot}`}></span>
+                          {ativo ? 'Ativo' : 'Inativo'}
+                        </span>
+                      </td>
+                      <td className="p-4 pr-5 text-sm text-right">
+                        <div className="flex gap-2 justify-end">
+                          <Link
+                            href={`/admin/patients/${patient.id}`}
+                            className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold border border-[#d6e0ea] bg-white text-[#102A6B] transition hover:bg-slate"
                           >
-                            {actionLoading === patient.user_id ? '...' : 'Inactivar'}
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => setConfirm({ patientId: patient.id, userId: patient.user_id, action: 'activate' })}
-                            disabled={actionLoading === patient.user_id}
-                            className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold bg-[#edf7f2] text-[#1a7a4a] border border-[#aadcc0] transition hover:bg-[#d6f0e4] disabled:opacity-50"
+                            Histórico
+                          </Link>
+                          <Link
+                            href={`/admin/patients/${patient.id}/editar`}
+                            className="inline-flex items-center rounded-[6px] border border-[#d6e0ea] bg-white px-2.5 py-1.5 text-xs font-bold text-ink-3 transition hover:bg-slate"
                           >
-                            {actionLoading === patient.user_id ? '...' : 'Activar'}
-                          </button>
-                        )}
-                      </div>
+                            Editar
+                          </Link>
+                          {ativo ? (
+                            <button
+                              onClick={() => setConfirm({ patientId: patient.id, userId: patient.user_id, action: 'deactivate' })}
+                              disabled={actionLoading === patient.user_id}
+                              className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold bg-[#fdf0f0] text-[#ef4444] border border-[#fca5a5] transition hover:bg-[#fee2e2] disabled:opacity-50"
+                            >
+                              {actionLoading === patient.user_id ? '...' : 'Inactivar'}
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => setConfirm({ patientId: patient.id, userId: patient.user_id, action: 'activate' })}
+                              disabled={actionLoading === patient.user_id}
+                              className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold bg-success-dim text-[#10b981] border border-[#a7f3d0] transition hover:bg-[#d1fae5] disabled:opacity-50"
+                            >
+                              {actionLoading === patient.user_id ? '...' : 'Activar'}
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="text-center text-ink-3 font-medium p-12 text-sm">
+                      Nenhum paciente encontrado.
                     </td>
                   </tr>
-                );
-              })}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="text-center text-[#a8bfcf] py-6">
-                    Nenhum paciente encontrado.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
