@@ -124,7 +124,7 @@ export default function EditUserPage() {
               value={name}
               onChange={e => setName(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.15)]"
             />
           </div>
           <div className="mb-4">
@@ -136,7 +136,7 @@ export default function EditUserPage() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.15)]"
             />
           </div>
         </div>
@@ -155,7 +155,7 @@ export default function EditUserPage() {
             <select
               value={role}
               onChange={e => setRole(e.target.value)}
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.15)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               }}
@@ -173,7 +173,7 @@ export default function EditUserPage() {
             <select
               value={ativo ? 'true' : 'false'}
               onChange={e => setAtivo(e.target.value === 'true')}
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.15)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               }}
@@ -197,7 +197,7 @@ export default function EditUserPage() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             placeholder="Nova senha"
-            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(0,125,116,0.1)]"
+            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.15)]"
           />
         </div>
 

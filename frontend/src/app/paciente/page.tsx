@@ -60,8 +60,8 @@ export default function PacienteDashboard() {
         {/* Banner de boas-vindas */}
         <div className="relative overflow-hidden rounded-[18px] bg-gradient-to-br from-ink via-ink-dark to-ink-darker p-8 flex items-center gap-5 mb-7">
           {/* Efeito de brilho */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_500px_300px_at_80%_50%,rgba(0,125,116,.18),transparent_65%)] pointer-events-none" />
-          <div className="relative w-14 h-14 rounded-full bg-[rgba(0,125,116,.3)] border-2 border-[rgba(0,157,146,.5)] flex items-center justify-center text-white font-bold text-lg shrink-0">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_500px_300px_at_80%_50%,rgba(255,127,0,.15),transparent_65%)] pointer-events-none" />
+          <div className="relative w-14 h-14 rounded-full bg-[rgba(255,127,0,.3)] border-2 border-[rgba(255,127,0,.5)] flex items-center justify-center text-white font-bold text-lg shrink-0">
             {nome.charAt(0)}
           </div>
           <div className="relative">

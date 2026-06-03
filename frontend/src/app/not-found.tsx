@@ -102,7 +102,7 @@ export default function ResetPasswordPage() {
             </svg>
           </div>
           <h1 className="auth-sidebar-title">
-            Defina uma<br />nova senha<br /><em style={{ fontStyle: 'italic', color: 'rgba(13,155,143,.9)' }}>segura</em>
+            Defina uma<br />nova senha<br /><em style={{ fontStyle: 'italic', color: 'var(--mmq-orange)' }}>segura</em>
           </h1>
           <p className="auth-sidebar-text">
             A sua senha deve ter no mínimo 8 caracteres, incluindo uma estrutura complexa para manter os dados clínicos protegidos.

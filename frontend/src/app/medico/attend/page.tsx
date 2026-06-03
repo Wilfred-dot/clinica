@@ -61,7 +61,7 @@ export default function MedicoAttendPage() {
                     <div className="divider-v" />
                     <div
                       className="cavatar"
-                      style={{ background: 'mmq-orange' }}
+                      style={{ background: 'var(--mmq-orange)' }}
                     >
                       {patientName.charAt(0).toUpperCase()}
                     </div>
