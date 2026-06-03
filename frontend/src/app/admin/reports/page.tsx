@@ -97,7 +97,7 @@ export default function ReportsPage() {
   const maxDaily = Math.max(...dailyData.map(d => d.total), 1);
   const maxMedico = Math.max(...porMedico.map(m => m.total_consultas), 1);
   const maxDiag = Math.max(...diagnosticos.map(d => d.total), 1);
-  const chartColors = ['#FF7F00', '#1258a8', '#b87a00'];
+  const chartColors = ['var(--mmq-orange)', 'var(--sky)', 'var(--warn)'];
 
   return (
     <Shell>
@@ -106,7 +106,7 @@ export default function ReportsPage() {
           body { background: white; color: black; }
           #shell-sidebar, #shell-header, .no-print, #report-actions { display: none !important; }
           #report-content { width: 100%; max-width: 100%; position: absolute; left: 0; top: 0; }
-          .bg-white { border: 1px solid #ecf1f6 !important; }
+          .bg-white { border: 1px solid var(--border2) !important; }
           * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
       `}</style>
@@ -114,7 +114,7 @@ export default function ReportsPage() {
       <div id="report-content">
         <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
           <div>
-            <h1 className="text-[22px] font-bold text-[#102A6B] tracking-[-0.3px]">Relatórios</h1>
+            <h1 className="text-[22px] font-bold text-[var(--ink)] tracking-[-0.3px]">Relatórios</h1>
             <p className="text-[13px] text-ink-3 mt-1">
               Dados clínicos · {mesLabel} {ano}
             </p>
@@ -124,7 +124,7 @@ export default function ReportsPage() {
             <select
               value={mes}
               onChange={e => setMes(e.target.value)}
-              className="px-3 py-2 border border-[#d6e0ea] rounded-[8px] bg-white text-sm text-[#102A6B] outline-none focus:border-mmq-orange transition"
+              className="px-3 py-2 border border-[var(--border)] rounded-[8px] bg-white text-sm text-[var(--ink)] outline-none focus:border-mmq-orange transition"
             >
               {MESES.map(m => (
                 <option key={m.value} value={m.value}>{m.label}</option>
@@ -133,14 +133,14 @@ export default function ReportsPage() {
             <select
               value={ano}
               onChange={e => setAno(e.target.value)}
-              className="px-3 py-2 border border-[#d6e0ea] rounded-[8px] bg-white text-sm text-[#102A6B] outline-none focus:border-mmq-orange transition"
+              className="px-3 py-2 border border-[var(--border)] rounded-[8px] bg-white text-sm text-[var(--ink)] outline-none focus:border-mmq-orange transition"
             >
               {[2024, 2025, 2026].map(y => (
                 <option key={y} value={y}>{y}</option>
               ))}
             </select>
             <button
-              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
               onClick={() => window.print()}
             >
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -153,22 +153,22 @@ export default function ReportsPage() {
 
         <div className="grid grid-cols-[repeat(auto-fill,minmax(190px,1fr))] gap-4 mb-6">
           {[
-            { label: 'Consultas',      val: resumo?.total_consultas ?? 0,      color: '#FF7F00' },
-            { label: 'Pacientes',      val: resumo?.total_pacientes ?? 0,      color: '#1258a8' },
-            { label: 'Taxa Conclusão', val: resumo?.taxa_conclusao ?? '0%',    color: '#1a7a4a' },
-            { label: 'Realizadas',     val: resumo?.consultas_realizadas ?? 0, color: '#b87a00' },
+            { label: 'Consultas',      val: resumo?.total_consultas ?? 0,      color: 'var(--mmq-orange)' },
+            { label: 'Pacientes',      val: resumo?.total_pacientes ?? 0,      color: 'var(--sky)' },
+            { label: 'Taxa Conclusão', val: resumo?.taxa_conclusao ?? '0%',    color: 'var(--success)' },
+            { label: 'Realizadas',     val: resumo?.consultas_realizadas ?? 0, color: 'var(--warn)' },
           ].map((card, i) => (
-            <div key={i} className="bg-white rounded-[12px] p-[20px_22px] border border-[#ecf1f6] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden"
+            <div key={i} className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden"
               style={{ borderBottom: `3px solid ${card.color}` }}>
               <h4 className="text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] mb-2.5">{card.label}</h4>
-              <h2 className="text-[32px] font-bold text-[#102A6B] tracking-[-1px] leading-none">{card.val}</h2>
+              <h2 className="text-[32px] font-bold text-[var(--ink)] tracking-[-1px] leading-none">{card.val}</h2>
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-[12px] border border-[#ecf1f6] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden mb-5">
-          <div className="p-[16px_22px] border-b border-[#ecf1f6]">
-            <h3 className="text-[14.5px] font-bold text-[#102A6B]">
+        <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden mb-5">
+          <div className="p-[16px_22px] border-b border-[var(--border2)]">
+            <h3 className="text-[14.5px] font-bold text-[var(--ink)]">
               Consultas por dia — {mesLabel} {ano}
             </h3>
           </div>
@@ -205,18 +205,18 @@ export default function ReportsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-0">
-          <div className="bg-white rounded-[12px] border border-[#ecf1f6] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
-            <div className="flex items-center justify-between p-[16px_22px] border-b border-[#ecf1f6]">
-              <h3 className="text-[14.5px] font-bold text-[#102A6B]">Consultas por Médico</h3>
+          <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
+            <div className="flex items-center justify-between p-[16px_22px] border-b border-[var(--border2)]">
+              <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Consultas por Médico</h3>
             </div>
             <div className="p-5">
               {porMedico.length === 0 ? <p className="text-ink-4 text-sm">Sem dados.</p> : porMedico.map((item, idx) => (
                 <div key={idx} className="mb-4 last:mb-0">
                   <div className="flex justify-between mb-1 text-[13px]">
-                    <span className="text-[#102A6B]">{item.nome}</span>
-                    <strong className="text-[#102A6B]">{item.total_consultas}</strong>
+                    <span className="text-[var(--ink)]">{item.nome}</span>
+                    <strong className="text-[var(--ink)]">{item.total_consultas}</strong>
                   </div>
-                  <div className="w-full h-[5px] bg-[#ecf1f6] rounded-[3px] overflow-hidden">
+                  <div className="w-full h-[5px] bg-[var(--border2)] rounded-[3px] overflow-hidden">
                     <div className="h-full rounded-[3px]"
                       style={{ width: `${(item.total_consultas / maxMedico) * 100}%`, backgroundColor: chartColors[idx % chartColors.length] }} />
                   </div>
@@ -225,18 +225,18 @@ export default function ReportsPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-[12px] border border-[#ecf1f6] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
-            <div className="flex items-center justify-between p-[16px_22px] border-b border-[#ecf1f6]">
-              <h3 className="text-[14.5px] font-bold text-[#102A6B]">Diagnósticos mais comuns</h3>
+          <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
+            <div className="flex items-center justify-between p-[16px_22px] border-b border-[var(--border2)]">
+              <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Diagnósticos mais comuns</h3>
             </div>
             <div className="p-5">
               {diagnosticos.length === 0 ? <p className="text-ink-4 text-sm">Sem dados.</p> : diagnosticos.map((item, idx) => (
                 <div key={idx} className="mb-4 last:mb-0">
                   <div className="flex justify-between mb-1 text-[13px]">
-                    <span className="text-[#102A6B]">{item.diagnostico}</span>
-                    <strong className="text-[#102A6B]">{item.total}%</strong>
+                    <span className="text-[var(--ink)]">{item.diagnostico}</span>
+                    <strong className="text-[var(--ink)]">{item.total}%</strong>
                   </div>
-                  <div className="w-full h-[5px] bg-[#ecf1f6] rounded-[3px] overflow-hidden">
+                  <div className="w-full h-[5px] bg-[var(--border2)] rounded-[3px] overflow-hidden">
                     <div className="h-full rounded-[3px]"
                       style={{ width: `${(item.total / maxDiag) * 100}%`, backgroundColor: chartColors[idx % chartColors.length] }} />
                   </div>

@@ -37,16 +37,16 @@ export default function PacienteHistoricoPage() {
         {/* Cabeçalho da página */}
         <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
           <div>
-            <h1 className="text-[22px] font-bold text-[#102A6B] tracking-[-0.3px]">Meu Histórico</h1>
+            <h1 className="text-[22px] font-bold text-[var(--ink)] tracking-[-0.3px]">Meu Histórico</h1>
             <p className="text-[13px] text-ink-3 mt-1">Todos os registos clínicos</p>
           </div>
         </div>
 
         {/* Card da tabela */}
-        <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
+        <div className="bg-white border border-[var(--border2)] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
           {/* Cabeçalho do card */}
-          <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[#ecf1f6] flex-wrap">
-            <h3 className="text-[14.5px] font-bold text-[#102A6B]">Consultas Realizadas</h3>
+          <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[var(--border2)] flex-wrap">
+            <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Consultas Realizadas</h3>
             <span className="inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold bg-warn-dim text-mmq-orange">
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-mmq-orange"></span>
               {consultas.length} registos
@@ -59,19 +59,19 @@ export default function PacienteHistoricoPage() {
             <table className="w-full border-collapse">
               <thead>
                 <tr>
-                  <th className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Data</th>
-                  <th className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Médico</th>
-                  <th className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Diagnóstico</th>
-                  <th className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[#ecf1f6]">Prescrição</th>
+                  <th className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Data</th>
+                  <th className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Médico</th>
+                  <th className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Diagnóstico</th>
+                  <th className="bg-slate text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Prescrição</th>
                 </tr>
               </thead>
               <tbody>
                 {consultas.map(c => (
-                  <tr key={c.id} className="border-b border-[#ecf1f6] last:border-b-0 hover:bg-[#f6fafe] transition">
-                    <td className="p-[12px_18px] text-[13.5px] text-[#102A6B]">{new Date(c.data).toLocaleDateString('pt-MZ')}</td>
-                    <td className="p-[12px_18px] text-[13.5px] text-[#102A6B]">{c.medico}</td>
-                    <td className="p-[12px_18px] text-[13.5px] text-[#102A6B]">{c.diagnostico || '—'}</td>
-                    <td className="p-[12px_18px] text-[13.5px] text-[#102A6B]">
+                  <tr key={c.id} className="border-b border-[var(--border2)] last:border-b-0 hover:bg-[var(--slate)] transition">
+                    <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)]">{new Date(c.data).toLocaleDateString('pt-MZ')}</td>
+                    <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)]">{c.medico}</td>
+                    <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)]">{c.diagnostico || '—'}</td>
+                    <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)]">
                       {c.prescricoes?.length > 0
                         ? c.prescricoes.map(p => `${p.medicamento} (${p.dosagem})`).join(', ')
                         : '—'}

@@ -41,11 +41,11 @@ function getWeekDays(start: Date): Date[] {
 
 // Cores dinâmicas mantidas apenas para o mapeamento visual dos médicos na agenda
 const DOCTOR_COLOR_CLASSES = [
-  'bg-[#e6f0fb] text-[#102A6B] border-l-[3px] border-l-[#102A6B]',
-  'bg-warn-dim text-warn border-l-[3px] border-l-[#FF7F00]',
-  'bg-success-dim text-[#1a7a4a] border-l-[3px] border-l-[#1a7a4a]',
-  'bg-[#fdf0f0] text-danger border-l-[3px] border-l-[#b83232]',
-  'bg-slate text-[#475569] border-l-[3px] border-l-[#475569]',
+  'bg-[var(--sky-dim)] text-[var(--ink)] border-l-[3px] border-l-[var(--ink)]',
+  'bg-warn-dim text-warn border-l-[3px] border-l-[var(--mmq-orange)]',
+  'bg-success-dim text-[var(--success)] border-l-[3px] border-l-[var(--success)]',
+  'bg-[var(--danger-dim)] text-danger border-l-[3px] border-l-[var(--danger)]',
+  'bg-slate text-[var(--ink2)] border-l-[3px] border-l-[var(--ink2)]',
 ];
 
 export default function ConsultationsPage() {
@@ -154,8 +154,8 @@ export default function ConsultationsPage() {
         /* Content Card herdando as propriedades do global.css */
         <div className="card-panel overflow-hidden">
           
-          {/* Barra superior da grelha (Mudada para bg-[#FF7F00] - Laranja da marca) */}
-          <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[#FF7F00]">
+          {/* Barra superior da grelha (Mudada para bg-[var(--mmq-orange)] - Laranja da marca) */}
+          <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[var(--mmq-orange)]">
             <div className="p-3 border-r border-[rgba(255,255,255,0.12)]"></div>
             {weekDays.map((day, i) => (
               <div 
@@ -170,15 +170,15 @@ export default function ConsultationsPage() {
           {/* Corpo estruturado da Grelha */}
           <div>
             {hours.map(hour => (
-              <div key={hour} className="grid grid-cols-[68px_repeat(5,1fr)] border-b border-[#ecf1f6] last:border-b-0">
+              <div key={hour} className="grid grid-cols-[68px_repeat(5,1fr)] border-b border-[var(--border2)] last:border-b-0">
                 {/* Coluna de Horas */}
-                <div className="p-2 text-[11px] font-bold text-muted text-right border-r border-[#ecf1f6] bg-[#f8fafc] flex items-center justify-end">
+                <div className="p-2 text-[11px] font-bold text-muted text-right border-r border-[var(--border2)] bg-[var(--slate)] flex items-center justify-end">
                   {hour}
                 </div>
                 
                 {/* Células de Dias */}
                 {weekDays.map((_, dayIdx) => (
-                  <div key={dayIdx} className="p-1.5 border-r border-[#ecf1f6] min-h-[46px] last:border-r-0 bg-white">
+                  <div key={dayIdx} className="p-1.5 border-r border-[var(--border2)] min-h-[46px] last:border-r-0 bg-white">
                     {(schedule[dayIdx][hour] || []).map(c => {
                       const colorClass = medicoColorMap[c.medicos?.id] ?? DOCTOR_COLOR_CLASSES[0];
                       return (

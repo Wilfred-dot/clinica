@@ -47,7 +47,7 @@ export default function PacienteAgendarPage() {
         {/* Cabeçalho da página */}
         <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
           <div>
-            <h1 className="text-[22px] font-bold text-[#102A6B] tracking-[-0.3px]">Solicitar Consulta</h1>
+            <h1 className="text-[22px] font-bold text-[var(--ink)] tracking-[-0.3px]">Solicitar Consulta</h1>
             <p className="text-[13px] text-ink-3 mt-1">Escolha a data e hora preferida. Um médico será atribuído pela recepção.</p>
           </div>
         </div>
@@ -55,11 +55,11 @@ export default function PacienteAgendarPage() {
         {/* Painel do formulário */}
         <form
           onSubmit={handleSubmit}
-          className="bg-white border border-[#ecf1f6] rounded-[12px] p-[28px_30px] shadow-[0_1px_3px_rgba(12,26,39,0.05)]"
+          className="bg-white border border-[var(--border2)] rounded-[12px] p-[28px_30px] shadow-[0_1px_3px_rgba(12,26,39,0.05)]"
         >
           {/* Erro geral */}
           {error && (
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-[#fdf0f0] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-danger"></span>
               {error}
             </div>
@@ -76,7 +76,7 @@ export default function PacienteAgendarPage() {
               onChange={e => setData(e.target.value)}
               required
               min={new Date().toISOString().split('T')[0]}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
 
@@ -89,7 +89,7 @@ export default function PacienteAgendarPage() {
               value={hora}
               onChange={e => setHora(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               }}
@@ -110,12 +110,12 @@ export default function PacienteAgendarPage() {
               value={motivo}
               onChange={e => setMotivo(e.target.value)}
               placeholder="Descreva brevemente o motivo da sua consulta..."
-              className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition resize-y focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition resize-y focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             ></textarea>
           </div>
 
           {/* Acções */}
-          <div className="flex gap-3 flex-wrap pt-5 mt-5 border-t border-[#ecf1f6]">
+          <div className="flex gap-3 flex-wrap pt-5 mt-5 border-t border-[var(--border2)]">
             <button
               type="submit"
               disabled={loading}
@@ -126,7 +126,7 @@ export default function PacienteAgendarPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-5 h-12 text-sm font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-5 h-12 text-sm font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
             >
               Cancelar
             </button>

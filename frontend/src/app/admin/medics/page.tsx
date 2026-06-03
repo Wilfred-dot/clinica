@@ -89,10 +89,10 @@ export default function MedicsPage() {
     <Shell>
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[24px] font-bold text-[#102A6B] tracking-[-0.5px]">Médicos</h1>
+          <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Médicos</h1>
           <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Corpo clínico da Clínica MMQ Oftalmologia</p>
         </div>
-        <Link href="/admin/medics/novo" className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#FF7F00] px-4 py-2 text-[13.5px] font-bold text-white transition hover:bg-[#E06F00] shadow-sm">
+        <Link href="/admin/medics/novo" className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[var(--mmq-orange)] px-4 py-2 text-[13.5px] font-bold text-white transition hover:bg-[var(--mmq-orange-lt)] shadow-sm">
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -101,21 +101,21 @@ export default function MedicsPage() {
       </div>
 
       {error && (
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-[#fdf0f0] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
           <span className="w-1.5 h-1.5 rounded-full bg-danger"></span>
           {error}
         </div>
       )}
 
-      <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
-        <div className="p-5 border-b border-[#ecf1f6] flex flex-wrap items-center justify-between gap-4">
-          <h3 className="text-[15px] font-bold text-[#102A6B]">Lista de Médicos</h3>
+      <div className="bg-white border border-[var(--border2)] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+        <div className="p-5 border-b border-[var(--border2)] flex flex-wrap items-center justify-between gap-4">
+          <h3 className="text-[15px] font-bold text-[var(--ink)]">Lista de Médicos</h3>
           <input 
             type="text" 
             placeholder="Pesquisar médico..." 
             value={search} 
             onChange={e => setSearch(e.target.value)} 
-            className="h-10 px-3 max-w-xs rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] font-medium outline-none transition focus:border-[#FF7F00]"
+            className="h-10 px-3 max-w-xs rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
           />
         </div>
 
@@ -125,7 +125,7 @@ export default function MedicsPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-[#ecf1f6] bg-[#f8fafc]">
+                <tr className="border-b border-[var(--border2)] bg-[var(--slate)]">
                   <th className="p-3.5 pl-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Nome</th>
                   <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Especialidade</th>
                   <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">N.º Registo</th>
@@ -134,29 +134,29 @@ export default function MedicsPage() {
                   <th className="p-3.5 pr-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-44">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#ecf1f6]">
+              <tbody className="divide-y divide-[var(--border2)]">
                 {filtered.map(medico => (
-                  <tr key={medico.id} className="hover:bg-[#fdfeff] transition-colors">
-                    <td className="p-4 pl-5 text-sm font-bold text-[#102A6B]">{medico.users?.name ?? '—'}</td>
-                    <td className="p-4 text-sm font-medium text-[#4a5e73]">{medico.especialidade}</td>
+                  <tr key={medico.id} className="hover:bg-[var(--white)] transition-colors">
+                    <td className="p-4 pl-5 text-sm font-bold text-[var(--ink)]">{medico.users?.name ?? '—'}</td>
+                    <td className="p-4 text-sm font-medium text-[var(--ink2)]">{medico.especialidade}</td>
                     <td className="p-4 text-sm font-medium text-ink-3">{medico.numero_ordem}</td>
-                    <td className="p-4 text-sm font-semibold text-[#102A6B]">{medico.consultasMes}</td>
+                    <td className="p-4 text-sm font-semibold text-[var(--ink)]">{medico.consultasMes}</td>
                     <td className="p-4 text-sm">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold ${medico.users?.ativo ? 'bg-success-dim text-[#10b981]' : 'bg-[#fdf0f0] text-[#ef4444]'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${medico.users?.ativo ? 'bg-[#10b981]' : 'bg-[#ef4444]'}`}></span>
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-semibold ${medico.users?.ativo ? 'bg-success-dim text-[var(--success)]' : 'bg-[var(--danger-dim)] text-[var(--danger)]'}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${medico.users?.ativo ? 'bg-[var(--success)]' : 'bg-[var(--danger)]'}`}></span>
                         {medico.users?.ativo ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
                     <td className="p-4 pr-5 text-sm">
                       <div className="flex gap-2">
-                        <Link href={`/admin/medics/${medico.id}/editar`} className="inline-flex items-center rounded-[6px] border border-[#d6e0ea] bg-white px-3 py-1.5 text-[12.5px] font-bold text-ink-3 transition hover:bg-slate">
+                        <Link href={`/admin/medics/${medico.id}/editar`} className="inline-flex items-center rounded-[6px] border border-[var(--border)] bg-white px-3 py-1.5 text-[12.5px] font-bold text-ink-3 transition hover:bg-slate">
                           Editar
                         </Link>
                         <button
                           className={`inline-flex items-center rounded-[6px] px-3 py-1.5 text-[12.5px] font-bold border transition disabled:opacity-50 ${
                             medico.users?.ativo 
-                              ? 'bg-[#fffbeb] border-[#fde8bb] text-warn hover:bg-[#fef3c7]' 
-                              : 'bg-success-dim border-[#a8ddc0] text-[#10b981] hover:bg-[#d1fae5]'
+                              ? 'bg-[var(--warn-dim)] border-[var(--mmq-orange-mid)] text-warn hover:bg-[var(--warn-dim)]' 
+                              : 'bg-success-dim border-[var(--success-dim)] text-[var(--success)] hover:bg-[var(--success-dim)]'
                           }`}
                           onClick={() => setConfirm({ medicoId: medico.id, userId: medico.user_id, action: medico.users?.ativo ? 'deactivate' : 'activate' })}
                           disabled={actionLoading === medico.user_id}

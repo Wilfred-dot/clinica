@@ -109,7 +109,7 @@ export default function AgendarConsultaPage() {
               onChange={e => setSelectedPaciente(e.target.value)}
               required
               disabled={loadingLists}
-              className="form-select text-[#102A6B]"
+              className="form-select text-[var(--ink)]"
             >
               <option value="">
                 {loadingLists ? 'Carregando...' : 'Seleccione um paciente...'}
@@ -129,7 +129,7 @@ export default function AgendarConsultaPage() {
               onChange={e => setSelectedMedico(e.target.value)}
               required
               disabled={loadingLists}
-              className="form-select text-[#102A6B]"
+              className="form-select text-[var(--ink)]"
             >
               <option value="">
                 {loadingLists ? 'Carregando...' : 'Seleccione um médico...'}
@@ -157,7 +157,7 @@ export default function AgendarConsultaPage() {
               value={data}
               onChange={e => setData(e.target.value)}
               required
-              className="form-control text-[#102A6B]"
+              className="form-control text-[var(--ink)]"
             />
           </div>
           
@@ -167,7 +167,7 @@ export default function AgendarConsultaPage() {
               value={hora}
               onChange={e => setHora(e.target.value)}
               required
-              className="form-select text-[#102A6B]"
+              className="form-select text-[var(--ink)]"
             >
               <option value="">Seleccione uma hora...</option>
               {horarios.map(h => (

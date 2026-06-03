@@ -23,8 +23,8 @@ interface Paciente {
 }
 
 const statusBadgeClasses = {
-  activo:   { bg: 'bg-success-dim', text: 'text-[#10b981]', dot: 'bg-[#10b981]' },
-  inactivo: { bg: 'bg-[#fdf0f0]', text: 'text-[#ef4444]', dot: 'bg-[#ef4444]' },
+  activo:   { bg: 'bg-success-dim', text: 'text-[var(--success)]', dot: 'bg-[var(--success)]' },
+  inactivo: { bg: 'bg-[var(--danger-dim)]', text: 'text-[var(--danger)]', dot: 'bg-[var(--danger)]' },
 };
 
 export default function PatientsPage() {
@@ -80,12 +80,12 @@ export default function PatientsPage() {
       {/* Cabeçalho da página */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[24px] font-bold text-[#102A6B] tracking-[-0.5px]">Pacientes</h1>
+          <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Pacientes</h1>
           <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Base de dados de pacientes registados na clínica</p>
         </div>
         <Link
           href="/admin/patients/novo"
-          className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[#FF7F00] px-4 py-2 text-[13.5px] font-bold text-white transition hover:bg-[#E06F00] shadow-sm"
+          className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[var(--mmq-orange)] px-4 py-2 text-[13.5px] font-bold text-white transition hover:bg-[var(--mmq-orange-lt)] shadow-sm"
         >
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -95,11 +95,11 @@ export default function PatientsPage() {
       </div>
 
       {/* Card da tabela */}
-      <div className="bg-white rounded-[12px] border border-[#ecf1f6] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
-        <div className="flex items-center justify-between gap-3 p-5 border-b border-[#ecf1f6] flex-wrap">
-          <h3 className="text-[15px] font-bold text-[#102A6B]">Lista de Pacientes</h3>
+      <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+        <div className="flex items-center justify-between gap-3 p-5 border-b border-[var(--border2)] flex-wrap">
+          <h3 className="text-[15px] font-bold text-[var(--ink)]">Lista de Pacientes</h3>
           <div className="relative min-w-[260px]">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" width="14" height="14" stroke="#6b8299" fill="none" strokeWidth="2.5" strokeLinecap="round">
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" width="14" height="14" stroke="var(--ink3)" fill="none" strokeWidth="2.5" strokeLinecap="round">
               <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <input
@@ -107,7 +107,7 @@ export default function PatientsPage() {
               placeholder="Pesquisar por nome ou contacto..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full h-10 pl-9 pr-3 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] font-medium outline-none transition focus:border-[#FF7F00]"
+              className="w-full h-10 pl-9 pr-3 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
             />
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function PatientsPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-[#ecf1f6] bg-[#f8fafc]">
+                <tr className="border-b border-[var(--border2)] bg-[var(--slate)]">
                   <th className="p-3.5 pl-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Nome</th>
                   <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Contacto</th>
                   <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">Último Atendimento</th>
@@ -126,17 +126,17 @@ export default function PatientsPage() {
                   <th className="p-3.5 pr-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 text-right">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#ecf1f6]">
+              <tbody className="divide-y divide-[var(--border2)]">
                 {filtered.map(patient => {
                   const ativo = patient.users?.ativo ?? false;
                   const statusBadge = ativo ? statusBadgeClasses.activo : statusBadgeClasses.inactivo;
 
                   return (
-                    <tr key={patient.id} className="hover:bg-[#fdfeff] transition-colors">
-                      <td className="p-4 pl-5 text-sm font-bold text-[#102A6B]">
+                    <tr key={patient.id} className="hover:bg-[var(--white)] transition-colors">
+                      <td className="p-4 pl-5 text-sm font-bold text-[var(--ink)]">
                         {patient.users?.name ?? 'N/D'}
                       </td>
-                      <td className="p-4 text-sm font-medium text-[#4a5e73]">
+                      <td className="p-4 text-sm font-medium text-[var(--ink2)]">
                         {patient.telefone}
                       </td>
                       <td className="p-4 text-sm font-medium text-ink-3">
@@ -154,13 +154,13 @@ export default function PatientsPage() {
                         <div className="flex gap-2 justify-end">
                           <Link
                             href={`/admin/patients/${patient.id}`}
-                            className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold border border-[#d6e0ea] bg-white text-[#102A6B] transition hover:bg-slate"
+                            className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold border border-[var(--border)] bg-white text-[var(--ink)] transition hover:bg-slate"
                           >
                             Histórico
                           </Link>
                           <Link
                             href={`/admin/patients/${patient.id}/editar`}
-                            className="inline-flex items-center rounded-[6px] border border-[#d6e0ea] bg-white px-2.5 py-1.5 text-xs font-bold text-ink-3 transition hover:bg-slate"
+                            className="inline-flex items-center rounded-[6px] border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-bold text-ink-3 transition hover:bg-slate"
                           >
                             Editar
                           </Link>
@@ -168,7 +168,7 @@ export default function PatientsPage() {
                             <button
                               onClick={() => setConfirm({ patientId: patient.id, userId: patient.user_id, action: 'deactivate' })}
                               disabled={actionLoading === patient.user_id}
-                              className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold bg-[#fdf0f0] text-[#ef4444] border border-[#fca5a5] transition hover:bg-[#fee2e2] disabled:opacity-50"
+                              className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold bg-[var(--danger-dim)] text-[var(--danger)] border border-[var(--danger-dim)] transition hover:bg-[var(--danger-dim)] disabled:opacity-50"
                             >
                               {actionLoading === patient.user_id ? '...' : 'Inactivar'}
                             </button>
@@ -176,7 +176,7 @@ export default function PatientsPage() {
                             <button
                               onClick={() => setConfirm({ patientId: patient.id, userId: patient.user_id, action: 'activate' })}
                               disabled={actionLoading === patient.user_id}
-                              className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold bg-success-dim text-[#10b981] border border-[#a7f3d0] transition hover:bg-[#d1fae5] disabled:opacity-50"
+                              className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold bg-success-dim text-[var(--success)] border border-[var(--success-dim)] transition hover:bg-[var(--success-dim)] disabled:opacity-50"
                             >
                               {actionLoading === patient.user_id ? '...' : 'Activar'}
                             </button>

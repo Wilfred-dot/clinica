@@ -74,7 +74,7 @@ function ResetPasswordForm() {
       </div>
 
       {!token && (
-        <div className="alert-error" style={{ background: '#fff3cd', color: '#856404', borderLeftColor: '#856404' }}>
+        <div className="alert-error" style={{ background: 'var(--warn-dim)', color: 'var(--warn)', borderLeftColor: 'var(--warn)' }}>
           Aviso: Nenhum token detetado. Não poderá submeter este formulário.
         </div>
       )}
@@ -97,7 +97,7 @@ export default function ResetPasswordPage() {
         <div className="auth-sidebar-glow" />
         <div style={{ position: 'relative' }}>
           <div className="auth-sidebar-icon-box">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#0d9b8f" strokeWidth="1.8">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--mmq-orange)" strokeWidth="1.8">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
           </div>

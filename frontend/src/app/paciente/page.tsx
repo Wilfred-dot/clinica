@@ -76,11 +76,11 @@ export default function PacienteDashboard() {
         </div>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-3.5 mb-6">
           {consultas.length > 0 ? consultas.map(c => (
-            <div key={c.id} className="bg-white rounded-[12px] border border-[#ecf1f6] p-4 shadow-[0_1px_3px_rgba(12,26,39,.05)] transition hover:shadow-[0_6px_24px_rgba(12,26,39,.10)]">
+            <div key={c.id} className="bg-white rounded-[12px] border border-[var(--border2)] p-4 shadow-[0_1px_3px_rgba(12,26,39,.05)] transition hover:shadow-[0_6px_24px_rgba(12,26,39,.10)]">
               <div className="text-[11px] font-bold text-mmq-orange uppercase tracking-[0.5px] mb-1.5">
                 {formatDate(c.data_hora)} · {formatTime(c.data_hora)}
               </div>
-              <h4 className="text-[14px] font-bold text-[#102A6B] mb-0.5">{c.medicos?.users?.name}</h4>
+              <h4 className="text-[14px] font-bold text-[var(--ink)] mb-0.5">{c.medicos?.users?.name}</h4>
               <p className="text-[12.5px] text-ink-3">{c.medicos?.especialidade}</p>
               <div className="mt-2.5 flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold bg-warn-dim text-warn">
@@ -88,7 +88,7 @@ export default function PacienteDashboard() {
                   Agendada
                 </span>
                 {/* Botão cancelar opcional – mantemos o comportamento do original */}
-                <button className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold bg-transparent text-danger border border-[#f0c4c4] transition hover:bg-[#fdf0f0]"
+                <button className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold bg-transparent text-danger border border-[var(--danger-dim)] transition hover:bg-[var(--danger-dim)]"
                   onClick={() => {/* lógica de cancelamento */}}>
                   Cancelar
                 </button>
@@ -108,12 +108,12 @@ export default function PacienteDashboard() {
             </div>
             <div className="flex flex-col gap-2">
               {notificacoes.length > 0 ? notificacoes.map(n => {
-                const dotColor = n.tipo_variavel === 'confirmacao' ? 'bg-[#1258a8]' : n.tipo_variavel === 'alerta' ? 'bg-warn' : 'bg-mmq-orange';
+                const dotColor = n.tipo_variavel === 'confirmacao' ? 'bg-[var(--sky)]' : n.tipo_variavel === 'alerta' ? 'bg-warn' : 'bg-mmq-orange';
                 return (
-                  <div key={n.id} className="flex gap-3 items-start p-3 rounded-[8px] border border-[#ecf1f6] bg-white shadow-[0_1px_3px_rgba(12,26,39,.05)]">
+                  <div key={n.id} className="flex gap-3 items-start p-3 rounded-[8px] border border-[var(--border2)] bg-white shadow-[0_1px_3px_rgba(12,26,39,.05)]">
                     <div className={`w-2 h-2 rounded-full mt-1 shrink-0 ${dotColor}`}></div>
                     <div>
-                      <strong className="font-semibold text-[13.5px] text-[#102A6B]">{n.mensagem}</strong>
+                      <strong className="font-semibold text-[13.5px] text-[var(--ink)]">{n.mensagem}</strong>
                       <span className="block text-xs text-ink-3 mt-0.5">{new Date(n.data_envio).toLocaleString('pt-MZ')}</span>
                     </div>
                   </div>
@@ -138,7 +138,7 @@ export default function PacienteDashboard() {
                 Agendar nova consulta
               </Link>
               <Link href="/paciente/historico"
-                className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate">
+                className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 </svg>

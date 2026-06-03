@@ -57,11 +57,11 @@ export default function PatientDetailPage() {
 
   // Normalização do estado visual dos badges em minúsculas
   const statusColors: Record<string, string> = {
-    realizada:  'bg-success-dim text-[#10b981]',
+    realizada:  'bg-success-dim text-[var(--success)]',
     agendada:   'bg-warn-dim text-warn',
     pendente:   'bg-warn-dim text-warn',
-    cancelada:  'bg-[#fdf0f0] text-[#ef4444]',
-    confirmada: 'bg-[#e6f0fb] text-[#1258a8]',
+    cancelada:  'bg-[var(--danger-dim)] text-[var(--danger)]',
+    confirmada: 'bg-[var(--sky-dim)] text-[var(--sky)]',
   };
 
   const formatarDataLocal = (dataStr: string) => {
@@ -76,7 +76,7 @@ export default function PatientDetailPage() {
       {/* Cabeçalho */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[24px] font-bold text-[#102A6B] tracking-[-0.5px]">
+          <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">
             {loading ? 'A carregar...' : paciente?.users?.name ?? 'Paciente'}
           </h1>
           <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Histórico clínico detalhado do utente</p>
@@ -84,13 +84,13 @@ export default function PatientDetailPage() {
         <div className="flex gap-2">
           <Link
             href={`/admin/patients/${params.id}/editar`}
-            className="inline-flex items-center gap-1.5 rounded-[8px] bg-[#FF7F00] px-4 h-10 text-[13.5px] font-bold text-white transition hover:bg-[#E06F00] shadow-sm"
+            className="inline-flex items-center gap-1.5 rounded-[8px] bg-[var(--mmq-orange)] px-4 h-10 text-[13.5px] font-bold text-white transition hover:bg-[var(--mmq-orange-lt)] shadow-sm"
           >
             Editar paciente
           </Link>
           <Link
             href="/admin/patients"
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 h-10 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 h-10 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
           >
             ← Voltar
           </Link>
@@ -98,14 +98,14 @@ export default function PatientDetailPage() {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 rounded-[8px] bg-[#fdf0f0] text-[#ef4444] text-[13px] font-semibold">
+        <div className="mb-4 p-3 rounded-[8px] bg-[var(--danger-dim)] text-[var(--danger)] text-[13px] font-semibold">
           {error}
         </div>
       )}
 
       {/* Dados do paciente */}
       {paciente && (
-        <div className="bg-white rounded-[12px] border border-[#ecf1f6] p-6 mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 shadow-[0_2px_4px_rgba(16,42,107,.03)]">
+        <div className="bg-white rounded-[12px] border border-[var(--border2)] p-6 mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 shadow-[0_2px_4px_rgba(16,42,107,.03)]">
           {[
             { label: 'Email', val: paciente.users?.email ?? '—' },
             { label: 'Telefone', val: paciente.telefone || '—' },
@@ -116,17 +116,17 @@ export default function PatientDetailPage() {
           ].map(f => (
             <div key={f.label} className={f.label === 'Endereço' || f.label === 'Histórico médico / Observações' ? 'col-span-1 sm:col-span-2' : ''}>
               <div className="text-[11px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">{f.label}</div>
-              <div className="text-[14px] text-[#102A6B] font-medium break-words">{f.val}</div>
+              <div className="text-[14px] text-[var(--ink)] font-medium break-words">{f.val}</div>
             </div>
           ))}
         </div>
       )}
 
       {/* Tabela de consultas */}
-      <div className="bg-white border border-[#ecf1f6] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
-        <div className="flex items-center justify-between p-5 border-b border-[#ecf1f6]">
-          <h3 className="text-[15px] font-bold text-[#102A6B]">Consultas e Atendimentos</h3>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-bold bg-[#e6f0fb] text-[#1258a8]">
+      <div className="bg-white border border-[var(--border2)] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+        <div className="flex items-center justify-between p-5 border-b border-[var(--border2)]">
+          <h3 className="text-[15px] font-bold text-[var(--ink)]">Consultas e Atendimentos</h3>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-bold bg-[var(--sky-dim)] text-[var(--sky)]">
             {consultas.length} registos
           </span>
         </div>
@@ -137,21 +137,21 @@ export default function PatientDetailPage() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="border-b border-[#ecf1f6] bg-[#f8fafc]">
+                <tr className="border-b border-[var(--border2)] bg-[var(--slate)]">
                   {['Data', 'Médico', 'Status', 'Motivo', 'Diagnóstico', 'Prescrições'].map(h => (
                     <th key={h} className="p-3.5 pl-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3">{h}</th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#ecf1f6]">
+              <tbody className="divide-y divide-[var(--border2)]">
                 {consultas.map(c => {
                   const statusNormalizado = c.status?.toLowerCase() ?? 'pendente';
                   return (
-                    <tr key={c.id} className="hover:bg-[#fdfeff] transition-colors">
+                    <tr key={c.id} className="hover:bg-[var(--white)] transition-colors">
                       <td className="p-4 pl-5 text-sm font-medium text-ink-3 whitespace-nowrap">
                         {formatarDataLocal(c.data_hora)}
                       </td>
-                      <td className="p-4 text-sm font-bold text-[#102A6B]">
+                      <td className="p-4 text-sm font-bold text-[var(--ink)]">
                         {c.medicos?.users?.name ?? 'Não atribuído'}
                       </td>
                       <td className="p-4 text-sm">
@@ -159,13 +159,13 @@ export default function PatientDetailPage() {
                           {statusNormalizado}
                         </span>
                       </td>
-                      <td className="p-4 text-sm font-medium text-[#4a5e73] max-w-xs truncate" title={c.motivo ?? ''}>
+                      <td className="p-4 text-sm font-medium text-[var(--ink2)] max-w-xs truncate" title={c.motivo ?? ''}>
                         {c.motivo ?? '—'}
                       </td>
-                      <td className="p-4 text-sm font-medium text-[#4a5e73] max-w-xs truncate" title={c.diagnostico ?? ''}>
+                      <td className="p-4 text-sm font-medium text-[var(--ink2)] max-w-xs truncate" title={c.diagnostico ?? ''}>
                         {c.diagnostico ?? '—'}
                       </td>
-                      <td className="p-4 text-sm font-medium text-[#4a5e73] max-w-xs break-words">
+                      <td className="p-4 text-sm font-medium text-[var(--ink2)] max-w-xs break-words">
                         {c.prescricoes && c.prescricoes.length > 0
                           ? c.prescricoes.map(p => `${p.medicamento} (${p.dosagem})`).join(', ')
                           : '—'}

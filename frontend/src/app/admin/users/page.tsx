@@ -15,15 +15,15 @@ interface User {
 }
 
 const roleBadgeClasses: Record<string, { bg: string; text: string; dot: string }> = {
-  admin:         { bg: 'bg-[#e6f0fb]', text: 'text-[#1258a8]', dot: 'bg-[#1258a8]' },
+  admin:         { bg: 'bg-[var(--sky-dim)]', text: 'text-[var(--sky)]', dot: 'bg-[var(--sky)]' },
   medico:        { bg: 'bg-warn-dim', text: 'text-mmq-orange', dot: 'bg-mmq-orange' },
   recepcionista: { bg: 'bg-warn-dim', text: 'text-warn', dot: 'bg-warn' },
   paciente:      { bg: 'bg-slate2', text: 'text-ink-2', dot: 'bg-ink-4' },
 };
 
 const statusBadgeClasses = {
-  activo:   { bg: 'bg-success-dim', text: 'text-[#1a7a4a]', dot: 'bg-[#1a7a4a]' },
-  inactivo: { bg: 'bg-[#fdf0f0]', text: 'text-danger', dot: 'bg-danger' },
+  activo:   { bg: 'bg-success-dim', text: 'text-[var(--success)]', dot: 'bg-[var(--success)]' },
+  inactivo: { bg: 'bg-[var(--danger-dim)]', text: 'text-danger', dot: 'bg-danger' },
 };
 
 export default function UsersPage() {

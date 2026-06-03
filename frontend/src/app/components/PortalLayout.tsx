@@ -33,7 +33,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
           <div className="topbar-user" style={{ padding: '4px 8px', borderRadius: 'var(--r)' }}>
             <div className="topbar-user-info">
-              <div className="u-name" style={{ color: '#fff' }}>
+              <div className="u-name" style={{ color: 'var(--white)' }}>
                 {loading ? 'A carregar...' : (user?.name ?? 'Paciente')}
               </div>
             </div>

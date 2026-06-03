@@ -109,13 +109,13 @@ export default function ReceptionEditPatientPage() {
       {/* Cabeçalho da página */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[22px] font-bold text-[#102A6B] tracking-[-0.3px]">Editar Paciente</h1>
+          <h1 className="text-[22px] font-bold text-[var(--ink)] tracking-[-0.3px]">Editar Paciente</h1>
           <p className="text-[13px] text-ink-3 mt-1">
             {patient.users?.name} · {patient.users?.email || 'Sem email'}
           </p>
         </div>
         <button
-          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-4 py-2 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
           onClick={() => router.back()}
         >
           ← Voltar
@@ -125,11 +125,11 @@ export default function ReceptionEditPatientPage() {
       {/* Painel do formulário */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white border border-[#ecf1f6] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_1px_3px_rgba(12,26,39,0.05)]"
+        className="bg-white border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_1px_3px_rgba(12,26,39,0.05)]"
       >
         {/* Erro geral */}
         {error && (
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-[#fdf0f0] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-danger"></span>
             {error}
           </div>
@@ -149,7 +149,7 @@ export default function ReceptionEditPatientPage() {
               value={name}
               onChange={e => setName(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
           <div className="mb-4">
@@ -161,7 +161,7 @@ export default function ReceptionEditPatientPage() {
               value={dataNascimento}
               onChange={e => setDataNascimento(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
@@ -173,7 +173,7 @@ export default function ReceptionEditPatientPage() {
             <select
               value={sexo}
               onChange={e => setSexo(e.target.value)}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               }}
@@ -192,7 +192,7 @@ export default function ReceptionEditPatientPage() {
               value={telefone}
               onChange={e => setTelefone(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
@@ -205,7 +205,7 @@ export default function ReceptionEditPatientPage() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
           <div className="mb-4">
@@ -217,12 +217,12 @@ export default function ReceptionEditPatientPage() {
               value={endereco}
               onChange={e => setEndereco(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
 
-        <hr className="border-[#ecf1f6] my-5" />
+        <hr className="border-[var(--border2)] my-5" />
 
         {/* Secção: Dados clínicos */}
         <div className="text-xs font-bold uppercase tracking-[0.8px] text-ink-3 mb-4">
@@ -235,11 +235,11 @@ export default function ReceptionEditPatientPage() {
           <textarea
             value={historicoMedico}
             onChange={e => setHistoricoMedico(e.target.value)}
-            className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition resize-y focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+            className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition resize-y focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
           ></textarea>
         </div>
 
-        <hr className="border-[#ecf1f6] my-5" />
+        <hr className="border-[var(--border2)] my-5" />
 
         {/* Secção: Acesso */}
         <div className="text-xs font-bold uppercase tracking-[0.8px] text-ink-3 mb-4">
@@ -257,7 +257,7 @@ export default function ReceptionEditPatientPage() {
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
           <div className="mb-4">
@@ -267,7 +267,7 @@ export default function ReceptionEditPatientPage() {
             <select
               value={ativo ? 'true' : 'false'}
               onChange={e => setAtivo(e.target.value === 'true')}
-              className="w-full h-12 px-4 rounded-[8px] border border-[#d6e0ea] bg-white text-sm text-[#102A6B] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               }}
@@ -279,7 +279,7 @@ export default function ReceptionEditPatientPage() {
         </div>
 
         {/* Acções principais */}
-        <div className="flex gap-3 flex-wrap pt-5 mt-5 border-t border-[#ecf1f6]">
+        <div className="flex gap-3 flex-wrap pt-5 mt-5 border-t border-[var(--border2)]">
           <button
             type="submit"
             disabled={loading}
@@ -290,21 +290,21 @@ export default function ReceptionEditPatientPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#d6e0ea] bg-white px-5 h-12 text-sm font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-5 h-12 text-sm font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
           >
             Cancelar
           </button>
         </div>
 
         {/* Operação perigosa */}
-        <hr className="border-[#ecf1f6] my-5" />
+        <hr className="border-[var(--border2)] my-5" />
         <div className="text-xs font-bold uppercase tracking-[0.8px] text-ink-3 mb-4">
           Operação perigosa
         </div>
         <button
           type="button"
           disabled={deleteLoading}
-          className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold bg-[#fdf0f0] text-danger border border-[#f0c4c4] transition hover:bg-[#fdf0f0] disabled:opacity-50"
+          className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold bg-[var(--danger-dim)] text-danger border border-[var(--danger-dim)] transition hover:bg-[var(--danger-dim)] disabled:opacity-50"
           onClick={() => setShowDelete(true)}
         >
           {deleteLoading ? 'Eliminando...' : 'Eliminar paciente'}
