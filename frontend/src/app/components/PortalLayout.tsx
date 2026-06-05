@@ -3,6 +3,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -12,12 +13,13 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
     <div>
       <div className="portal-topbar" role="banner">
         <div className="portal-topbar-brand">
-          <div className="ptm">
-            <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" fill="currentColor">
-              <ellipse cx="12" cy="12" rx="10" ry="6" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-          </div>
+          <Image 
+            src="/clinica-mmq.png" 
+            alt="Clínica MMQ Logo" 
+            width={32} 
+            height={32} 
+            priority
+          />
           <div>
             <strong>Clínica MMQ</strong>
             <span>Portal do Paciente</span>

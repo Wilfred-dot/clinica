@@ -3,6 +3,7 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const adminNav = [
   { label: 'Dashboard', href: '/admin', icon: 'M3 3h7v7H3V3zm10 0h7v7h-7V3zM3 14h7v7H3v-7zm10 0h7v7h-7v-7z' },
@@ -50,19 +51,20 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <div className="topbar" role="banner">
         <div 
           className="topbar-brand" 
-          style={{ cursor: 'pointer' }} 
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }} 
           onClick={() => { if (role) router.push(`/${role}`); }}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' && role) router.push(`/${role}`); }}
           aria-label="Ir para a página inicial do painel"
         >
-          <div className="topbar-mark">
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-              <ellipse cx="12" cy="12" rx="10" ry="6" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-          </div>
+          <Image 
+            src="/clinica-mmq.png" 
+            alt="Clínica MMQ Logo" 
+            width={32} 
+            height={32} 
+            priority
+          />
           <div className="topbar-brand-text">
             <strong>Clínica MMQ</strong>
             <span>Oftalmologia</span>
@@ -72,12 +74,24 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <div className="topbar-spacer" />
         
         <div className="topbar-user">
-          <div className="topbar-user-info">
-            <div className="u-name">
-              {loading ? 'A carregar...' : (user?.name ?? 'Utilizador')}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-[var(--mmq-orange)] text-white flex items-center justify-center text-sm font-medium">
+              {(() => {
+                if (!user?.name) return 'UU';
+                const parts = user.name.trim().split(/\s+/);
+                if (parts.length >= 2) {
+                  return (parts[0][0] + parts[1][0]).toUpperCase();
+                }
+                return user.name.substring(0, 2).toUpperCase();
+              })()}
             </div>
-            <div className="u-role">
-              {loading ? '...' : (role ? capitalize(role) : 'Nenhum papel')}
+            <div className="topbar-user-info">
+              <div className="u-name">
+                {loading ? 'A carregar...' : (user?.name ?? 'Utilizador')}
+              </div>
+              <div className="u-role">
+                {loading ? '...' : (role ? capitalize(role) : 'Nenhum papel')}
+              </div>
             </div>
           </div>
         </div>
@@ -97,11 +111,17 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
       <div className="shell">
         <aside className="sidebar" role="complementary" aria-label="Menu Lateral">
-          {['Principal'].map((section) => (
-            <div className="sidebar-section" key={section}>
-              <div className="sidebar-label">{section}</div>
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }} aria-label="Navegação Principal">
-                {navItems.map((item) => {
+          {/* Agrupamento de secções da sidebar */}
+          {[ 
+            { label: 'Gestão', items: navItems.filter(item => ['Utilizadores', 'Médicos', 'Pacientes'].includes(item.label)) },
+            { label: 'Operação', items: navItems.filter(item => ['Consultas', 'Notificações'].includes(item.label)) },
+            { label: 'Análise', items: navItems.filter(item => ['Relatórios'].includes(item.label)) },
+            { label: 'Principal', items: navItems.filter(item => !['Utilizadores', 'Médicos', 'Pacientes', 'Consultas', 'Notificações', 'Relatórios'].includes(item.label)) } // Dashboard e outros
+          ].filter(section => section.items.length > 0).map((section) => (
+            <div className="sidebar-section" key={section.label}>
+              <div className="sidebar-label">{section.label}</div>
+              <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }} aria-label={`Navegação ${section.label}`}>
+                {section.items.map((item) => {
                   // Validação cirúrgica de rota ativa usando segmentos puros para evitar colisões parciais de strings
                   const isHomeRole = item.href === `/${role}`;
                   const isActive = pathname === item.href || (!isHomeRole && pathname.startsWith(item.href + '/'));
@@ -128,7 +148,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           <div style={{ marginTop: 'auto', padding: '16px 18px 0', borderTop: '1px solid var(--border2)' }}>
             <button 
               className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-3 py-1.5 rounded-md text-xs font-medium" 
-              style={{ width: '100%', justifyContent: 'flex-start', cursor: 'pointer' }} 
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '6px', cursor: 'pointer' }} 
               onClick={logout}
             >
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

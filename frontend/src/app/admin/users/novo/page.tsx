@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
+import { toast } from '@/components/Toast';
 
 export default function NewUserPage() {
   const router = useRouter();
@@ -30,6 +31,8 @@ export default function NewUserPage() {
         method: 'POST',
         body: JSON.stringify({ name, email, role, password }),
       });
+      // Show success toast
+      toast('Utilizador criado com sucesso!', 'success');
       router.push('/admin/users');
     } catch (err: any) {
       setError(err.message || 'Erro ao criar utilizador');
@@ -40,7 +43,7 @@ export default function NewUserPage() {
 
   return (
     <Shell>
-      <div className="p-6">
+      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Novo Utilizador</h1>
           <p className="text-base font-medium text-ink-3 mt-[3px]">Criar conta de acesso ao sistema</p>
@@ -60,29 +63,29 @@ export default function NewUserPage() {
         <div className="form-section-title">Dados pessoais</div>
 
         <div className="form-grid">
-          <div className="form-group">
-            <label>Nome completo</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              placeholder="Nome do utilizador"
-              className="form-control"
-            />
-          </div>
+        <div className="form-group">
+          <label>Nome completo <span className="text-[var(--red)]">*</span></label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            placeholder="Nome do utilizador"
+            className="form-control"
+          />
+        </div>
 
-          <div className="form-group">
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="email@clinicammq.com"
-              className="form-control"
-            />
-          </div>
+        <div className="form-group">
+          <label>Email <span className="text-[var(--red)]">*</span></label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="email@clinicammq.com"
+            className="form-control"
+          />
+        </div>
         </div>
 
         <hr />
@@ -107,7 +110,7 @@ export default function NewUserPage() {
 
         <div className="form-grid">
           <div className="form-group">
-            <label>Senha inicial</label>
+            <label>Senha inicial <span className="text-[var(--red)]">*</span></label>
             <input
               type="password"
               value={password}
@@ -119,7 +122,7 @@ export default function NewUserPage() {
           </div>
 
           <div className="form-group">
-            <label>Confirmar senha</label>
+            <label>Confirmar senha <span className="text-[var(--red)]">*</span></label>
             <input
               type="password"
               value={confirmPassword}

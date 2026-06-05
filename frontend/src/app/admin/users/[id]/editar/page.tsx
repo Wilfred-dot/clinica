@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { request } from '@/lib/api';
+import { toast } from '@/components/Toast';
+import Link from 'next/link';
 
 interface User {
   id: number;
@@ -51,6 +53,8 @@ export default function EditUserPage() {
         method: 'PATCH',
         body: JSON.stringify(body),
       });
+      // Show success toast
+      toast('Utilizador atualizado com sucesso!', 'success');
       router.push('/admin/users');
     } catch (err: any) {
       setError(err.message || 'Erro ao atualizar utilizador');
@@ -117,7 +121,7 @@ export default function EditUserPage() {
         <div className="grid grid-cols-2 gap-4">
           <div className="mb-4">
             <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[var(--ink2)] mb-1.5">
-              Nome completo
+              Nome completo <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="text"
@@ -129,7 +133,7 @@ export default function EditUserPage() {
           </div>
           <div className="mb-4">
             <label className="block text-[11.5px] font-semibold uppercase tracking-[0.6px] text-[var(--ink2)] mb-1.5">
-              Email
+              Email <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="email"

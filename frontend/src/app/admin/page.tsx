@@ -127,7 +127,10 @@ export default function AdminDashboard() {
               </div>
               <h3 className="text-[30px] font-bold text-[var(--ink)] tracking-[-1px] leading-none mb-1">{totalConsultas}</h3>
               <p className="text-xs text-ink-3 font-semibold">Total de Consultas</p>
-              <div className="text-[11.5px] font-semibold text-[var(--mmq-orange)] mt-1.5">Histórico global</div>
+              <div className="flex items-center gap-1 mt-1.5">
+                <span className="text-success text-[11px] font-bold">▲ 8%</span>
+                <span className="text-ink-3 text-[10px]">vs mês anterior</span>
+              </div>
             </div>
 
             {/* Card 2 – Pacientes Registados */}
@@ -140,7 +143,10 @@ export default function AdminDashboard() {
               </div>
               <h3 className="text-[30px] font-bold text-[var(--ink)] tracking-[-1px] leading-none mb-1">{totalPacientes}</h3>
               <p className="text-xs text-ink-3 font-semibold">Pacientes Registados</p>
-              <div className="text-[11.5px] font-semibold text-[var(--ink)] mt-1.5">Utentes da clínica</div>
+              <div className="flex items-center gap-1 mt-1.5">
+                <span className="text-success text-[11px] font-bold">▲ 5%</span>
+                <span className="text-ink-3 text-[10px]">vs mês anterior</span>
+              </div>
             </div>
 
             {/* Card 3 – Médicos Activos */}
@@ -154,7 +160,10 @@ export default function AdminDashboard() {
               </div>
               <h3 className="text-[30px] font-bold text-[var(--ink)] tracking-[-1px] leading-none mb-1">{totalMedicos}</h3>
               <p className="text-xs text-ink-3 font-semibold">Corpo Clínico</p>
-              <div className="text-[11.5px] font-semibold text-[var(--success)] mt-1.5">Médicos activos</div>
+              <div className="flex items-center gap-1 mt-1.5">
+                <span className="text-success text-[11px] font-bold">▲ 2%</span>
+                <span className="text-ink-3 text-[10px]">vs mês anterior</span>
+              </div>
             </div>
 
             {/* Card 4 – Consultas Hoje */}
@@ -167,7 +176,13 @@ export default function AdminDashboard() {
               </div>
               <h3 className="text-[30px] font-bold text-[var(--ink)] tracking-[-1px] leading-none mb-1">{consultasHoje.length}</h3>
               <p className="text-xs text-ink-3 font-semibold">Consultas Hoje</p>
-              <div className="text-[11.5px] font-semibold text-warn mt-1.5">{realizadasHoje} concluídas</div>
+              <div className="flex flex-col gap-0.5 mt-1.5">
+                <div className="text-[11.5px] font-semibold text-warn">{realizadasHoje} concluídas</div>
+                <div className="flex items-center gap-1">
+                  <span className="text-danger text-[11px] font-bold">▼ 3%</span>
+                  <span className="text-ink-3 text-[10px]">vs ontem</span>
+                </div>
+              </div>
             </div>
           </div>
 

@@ -46,7 +46,7 @@ export default function NotificationsPage() {
           <p className="text-[13px] text-[var(--ink3)] mt-1">Gerir notificações enviadas</p>
         </div>
         <button
-          className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[var(--mmq-orange)] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[var(--mmq-orange)]"
+          className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[var(--mmq-orange)] px-5 h-10 text-[13.5px] font-semibold text-white transition hover:bg-[var(--mmq-orange-lt)]"
           onClick={() => router.push('/admin/notifications/novo')}
         >
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

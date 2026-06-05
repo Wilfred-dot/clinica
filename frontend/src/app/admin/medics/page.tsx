@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Shell from '@/app/components/Shell';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { request } from '@/lib/api';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Medico {
   id: number;
@@ -25,9 +26,24 @@ export default function MedicsPage() {
   const [medics, setMedics] = useState<Medico[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [confirm, setConfirm] = useState<{ medicoId: number; userId: number; action: 'activate' | 'deactivate' } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+  const router = useRouter();
+
+  // Debounce search input to prevent excessive filtering
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
 
   const fetchMedics = () => {
     setLoading(true);
@@ -76,7 +92,7 @@ export default function MedicsPage() {
   };
 
   const filtered = medics.filter(m => {
-    const termo = search.toLowerCase();
+    const termo = debouncedSearch.toLowerCase();
     return (
       m.users?.name?.toLowerCase().includes(termo) ||
       m.users?.email?.toLowerCase().includes(termo) ||
@@ -85,12 +101,21 @@ export default function MedicsPage() {
     );
   });
 
+  // Paginação
+  const paginatedMedics = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filtered, currentPage]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+
   return (
     <Shell>
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
           <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Médicos</h1>
           <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Corpo clínico da Clínica MMQ Oftalmologia</p>
+          <p className="text-[13px] text-ink-3 mt-1">Mostrando {filtered.length} de {medics.length} médico(s)</p>
         </div>
         <Link href="/admin/medics/novo" className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[var(--mmq-orange)] px-4 py-2 text-[13.5px] font-bold text-white transition hover:bg-[var(--mmq-orange-lt)] shadow-sm">
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -135,9 +160,8 @@ export default function MedicsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border2)]">
-                {filtered.map(medico => (
-                  <tr key={medico.id} className="hover:bg-[var(--white)] transition-colors">
-                    <td className="p-4 pl-5 text-sm font-bold text-[var(--ink)]">{medico.users?.name ?? '—'}</td>
+                {paginatedMedics.map((medico) => (
+                  <tr key={medico.id} className="cursor-pointer hover:bg-[var(--white)] transition-colors" onClick={() => router.push(`/admin/medics/${medico.id}/editar`)}>\n                    <td className="p-4 pl-5 text-sm font-bold text-[var(--ink)]">{medico.users?.name ?? '—'}</td>
                     <td className="p-4 text-sm font-medium text-[var(--ink2)]">{medico.especialidade}</td>
                     <td className="p-4 text-sm font-medium text-ink-3">{medico.numero_ordem}</td>
                     <td className="p-4 text-sm font-semibold text-[var(--ink)]">{medico.consultasMes}</td>
@@ -165,19 +189,58 @@ export default function MedicsPage() {
                         </button>
                       </div>
                     </td>
-                  </tr>
+                   </tr>
                 ))}
                 {filtered.length === 0 && (
                   <tr>
                     <td colSpan={6} className="text-center p-12 text-sm font-medium text-ink-3">
-                      Nenhum médico encontrado.
+                      <div className="flex flex-col items-center gap-4">
+                        <svg className="h-10 w-10 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M9 9v3a3 3 0 005.196 3H15a3 3 0 005.196-3V9"/>
+                          <path d="M9 9h.01"/>
+                          <path d="M15 15h.01"/>
+                          <path d="M9 22h6"/>
+                          <path d="M12 2v4.01"/>
+                        </svg>
+                        <p className="text-center">Nenhum médico encontrado.</p>
+                        <Link href="/admin/medics/novo" className="inline-flex items-center gap-1.5 rounded-[8px] bg-[var(--mmq-orange)] px-4 py-2 text-[13.5px] font-bold text-white transition hover:bg-[var(--mmq-orange-lt)]">
+                          Criar primeiro médico
+                        </Link>
+                      </div>
                     </td>
-                  </tr>
+                   </tr>
                 )}
               </tbody>
             </table>
           </div>
         )}
+
+        {/* Paginação */}
+        <div className="flex items-center justify-between px-6 py-4 bg-[var(--slate)] rounded-b">
+          <p className="text-[13px] text-ink-3">
+            Página {currentPage} de {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className={`px-3 py-1 rounded-md text-[12.5px] font-medium 
+                        ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[var(--mmq-orange-lt)]'} 
+                        bg-[var(--mmq-orange)] text-white transition`}
+            >
+              Anterior
+            </button>
+            <button
+              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1 rounded-md text-[12.5px] font-medium 
+                        ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[var(--mmq-orange-lt)]'} 
+                        bg-[var(--mmq-orange)] text-white transition`}
+            >
+              Próxima
+            </button>
+          </div>
+        </div>
       </div>
 
       <ConfirmModal

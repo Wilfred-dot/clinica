@@ -74,6 +74,8 @@ export default function EditMedicPage() {
         method: 'PATCH',
         body: JSON.stringify(userBody),
       });
+      // Show success toast
+      toast('Médico atualizado com sucesso!', 'success');
       router.push('/admin/medics');
     } catch (err: any) {
       setError(err.message || 'Erro ao atualizar médico');
@@ -105,7 +107,7 @@ export default function EditMedicPage() {
   return (
     <Shell>
       {/* Cabeçalho da página limpo */}
-      <div className="p-6">
+      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Editar Médico</h1>
           <p className="text-base font-medium text-ink-3 mt-[3px]">
@@ -131,7 +133,7 @@ export default function EditMedicPage() {
         
         <div className="form-grid">
           <div className="form-group">
-            <label>Nome completo</label>
+            <label>Nome completo <span className="text-[var(--red)]">*</span></label>
             <input
               type="text"
               value={name}
@@ -141,7 +143,7 @@ export default function EditMedicPage() {
             />
           </div>
           <div className="form-group">
-            <label>Email</label>
+            <label>Email <span className="text-[var(--red)]">*</span></label>
             <input
               type="email"
               value={email}
@@ -160,7 +162,7 @@ export default function EditMedicPage() {
         
         <div className="form-grid">
           <div className="form-group">
-            <label>Especialidade</label>
+            <label>Especialidade <span className="text-[var(--red)]">*</span></label>
             <input
               type="text"
               value={especialidade}
@@ -170,7 +172,7 @@ export default function EditMedicPage() {
             />
           </div>
           <div className="form-group">
-            <label>N.º de Ordem</label>
+            <label>N.º de Ordem <span className="text-[var(--red)]">*</span></label>
             <input
               type="text"
               value={numeroOrdem}
@@ -179,24 +181,23 @@ export default function EditMedicPage() {
               className="form-control"
             />
           </div>
-        </div>
-        
-        <div className="form-grid">
           <div className="form-group">
-            <label>Telefone</label>
+            <label>Telefone <span className="text-[var(--red)]">*</span></label>
             <input
               type="tel"
               value={telefone}
               onChange={e => setTelefone(e.target.value)}
+              required
               className="form-control"
             />
           </div>
           <div className="form-group">
-            <label>Horário de Trabalho</label>
+            <label>Horário de Trabalho <span className="text-[var(--red)]">*</span></label>
             <input
               type="text"
               value={horarioTrabalho}
               onChange={e => setHorarioTrabalho(e.target.value)}
+              required
               placeholder="08:00-16:00"
               className="form-control"
             />

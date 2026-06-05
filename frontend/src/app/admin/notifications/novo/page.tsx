@@ -43,7 +43,7 @@ export default function NovaNotificacaoPage() {
   return (
     <Shell>
       {/* Cabecalho */}
-      <div className="p-6">
+      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Nova Notificacao</h1>
           <p className="text-base font-medium text-ink-3 mt-[3px]">Enviar notificacao manual para um paciente</p>

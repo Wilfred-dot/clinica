@@ -79,7 +79,7 @@ export default function AgendarConsultaPage() {
   return (
     <Shell>
       {/* Cabeçalho padrão usando utilitários globais */}
-      <div className="p-6">
+      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Agendar Consulta</h1>
           <p className="text-base font-medium text-ink-3 mt-[3px]">Preencha os dados para marcar uma nova consulta</p>
@@ -103,7 +103,7 @@ export default function AgendarConsultaPage() {
         
         <div className="form-grid">
           <div className="form-group">
-            <label>Paciente</label>
+            <label>Paciente <span className="text-[var(--red)]">*</span></label>
             <select
               value={selectedPaciente}
               onChange={e => setSelectedPaciente(e.target.value)}
@@ -123,7 +123,7 @@ export default function AgendarConsultaPage() {
           </div>
 
           <div className="form-group">
-            <label>Médico</label>
+            <label>Médico <span className="text-[var(--red)]">*</span></label>
             <select
               value={selectedMedico}
               onChange={e => setSelectedMedico(e.target.value)}
@@ -151,7 +151,7 @@ export default function AgendarConsultaPage() {
         
         <div className="form-grid">
           <div className="form-group">
-            <label>Data</label>
+            <label>Data <span className="text-[var(--red)]">*</span></label>
             <input
               type="date"
               value={data}
@@ -162,7 +162,7 @@ export default function AgendarConsultaPage() {
           </div>
           
           <div className="form-group">
-            <label>Hora</label>
+            <label>Hora <span className="text-[var(--red)]">*</span></label>
             <select
               value={hora}
               onChange={e => setHora(e.target.value)}

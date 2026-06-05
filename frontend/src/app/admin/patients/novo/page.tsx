@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation'; // Importação corrigida aqui
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
+import { toast } from '@/components/Toast';
 
 export default function NewPatientPage() {
   const router = useRouter(); // Simplificado sem alias redundante
@@ -39,7 +40,7 @@ export default function NewPatientPage() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     if (!validate()) return;
@@ -59,6 +60,8 @@ export default function NewPatientPage() {
           password: password || undefined,
         }),
       });
+      // Show success toast
+      toast('Paciente criado com sucesso!', 'success');
       router.push('/admin/patients');
     } catch (err: any) {
       setError(err.message || 'Erro ao criar paciente.');
@@ -102,7 +105,7 @@ export default function NewPatientPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="mb-2">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Nome completo
+              Nome completo <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="text"
@@ -116,7 +119,7 @@ export default function NewPatientPage() {
           </div>
           <div className="mb-2">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Data de nascimento
+              Data de nascimento <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="date"
@@ -183,7 +186,7 @@ export default function NewPatientPage() {
           </div>
           <div className="mb-2">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Endereço
+              Endereço <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="text"

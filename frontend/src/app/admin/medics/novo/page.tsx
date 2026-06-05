@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
+import { toast } from '@/components/Toast';
 
 export default function NewMedicPage() {
   const router = useRouter();
@@ -34,6 +35,8 @@ export default function NewMedicPage() {
           password,
         }),
       });
+      // Show success toast
+      toast('Médico criado com sucesso!', 'success');
       router.push('/admin/medics');
     } catch (err: any) {
       setError(err.message || 'Erro ao criar médico');
@@ -79,7 +82,7 @@ export default function NewMedicPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="mb-4">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Nome completo
+              Nome completo <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="text"
@@ -92,7 +95,7 @@ export default function NewMedicPage() {
           </div>
           <div className="mb-4">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Especialidade
+              Especialidade <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="text"

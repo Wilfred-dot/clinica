@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { request } from '@/lib/api';
+import { toast } from '@/components/Toast';
 
 interface Paciente {
   id: number;
@@ -92,25 +93,26 @@ export default function EditPatientPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (!validate()) return;
-
     setLoading(true);
+    if (!validate()) return;
     try {
       await request(`/pacientes/${params.id}`, {
         method: 'PATCH',
         body: JSON.stringify({
           name,
-          email: email.trim() || null, // Define como null se o utilizador limpar o campo
+          email: email.trim() || null,
           data_nascimento: dataNascimento,
           sexo,
           telefone,
           endereco,
           historico_medico: historicoMedico.trim() || null,
-          password: password || undefined, // Apenas envia se houver alteração de senha
+          password: password || undefined,
         }),
       });
+      // Show success toast
+      toast('Paciente atualizado com sucesso!', 'success');
       router.push('/admin/patients');
-      router.refresh(); // Garante atualização de dados nas tabelas de listagem
+      router.refresh();
     } catch (err: any) {
       setError(err.message || 'Erro ao atualizar paciente.');
     } finally {
@@ -144,6 +146,25 @@ export default function EditPatientPage() {
 
   return (
     <Shell>
+      {/* Breadcrumbs */}
+      <div className="mb-4 text-sm text-ink-3">
+        <span 
+          className="cursor-pointer hover:text-[var(--mmq-orange)] transition-colors"
+          onClick={() => router.push('/admin')}
+        >
+          Dashboard
+        </span>
+        <span className="mx-2">/</span>
+        <span 
+          className="cursor-pointer hover:text-[var(--mmq-orange)] transition-colors"
+          onClick={() => router.push('/admin/patients')}
+        >
+          Pacientes
+        </span>
+        <span className="mx-2">/</span>
+        <span className="text-[var(--ink)] font-medium">Editar</span>
+      </div>
+
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
           <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Editar Paciente</h1>
@@ -163,7 +184,7 @@ export default function EditPatientPage() {
         className="bg-white border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_2px_4px_rgba(16,42,107,.03)]"
       >
         {error && (
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-[var(--danger)] text-[11.5px] font-semibold px-2.5 py-1 mb-4w-full">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-[var(--danger)] text-[11.5px] font-semibold px-2.5 py-1 mb-4 w-full">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--danger)]"></span>
             {error}
           </div>
@@ -175,7 +196,7 @@ export default function EditPatientPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="mb-2">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Nome completo
+              Nome completo <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="text"
@@ -188,7 +209,7 @@ export default function EditPatientPage() {
           </div>
           <div className="mb-2">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Data de nascimento
+              Data de nascimento <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="date"
@@ -225,7 +246,7 @@ export default function EditPatientPage() {
           </div>
           <div className="mb-2">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Contacto telefónico
+              Contacto telefónico <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="tel"
@@ -253,7 +274,7 @@ export default function EditPatientPage() {
           </div>
           <div className="mb-2">
             <label className="block text-[11.5px] font-bold uppercase tracking-[0.6px] text-[var(--ink)] mb-1.5">
-              Endereço
+              Endereço <span className="text-[var(--red)]">*</span>
             </label>
             <input
               type="text"

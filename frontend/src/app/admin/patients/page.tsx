@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Shell from '@/app/components/Shell';
 import ConfirmModal from '@/app/components/ConfirmModal';
 import { request } from '@/lib/api';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface Paciente {
   id: number;
@@ -31,8 +32,23 @@ export default function PatientsPage() {
   const [patients, setPatients] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [actionLoading, setActionLoading] = useState<number | null>(null);
   const [confirm, setConfirm] = useState<{ patientId: number; userId: number; action: 'activate' | 'deactivate' } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
+  const router = useRouter();
+
+  // Debounce search input to prevent excessive filtering
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
 
   const fetchPatients = () => {
     setLoading(true);
@@ -69,11 +85,22 @@ export default function PatientsPage() {
     }
   };
 
-  const filtered = patients.filter(p =>
-    p.users?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    p.users?.email?.toLowerCase().includes(search.toLowerCase()) ||
-    p.telefone?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = patients.filter(p => {
+    const termo = debouncedSearch.toLowerCase();
+    return (
+      p.users?.name?.toLowerCase().includes(termo) ||
+      p.users?.email?.toLowerCase().includes(termo) ||
+      p.telefone?.toLowerCase().includes(termo)
+    );
+  });
+
+  // Paginação
+  const paginatedPatients = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filtered, currentPage, ITEMS_PER_PAGE]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
 
   return (
     <Shell>
@@ -82,6 +109,7 @@ export default function PatientsPage() {
         <div>
           <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Pacientes</h1>
           <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Base de dados de pacientes registados na clínica</p>
+          <p className="text-[13px] text-ink-3 mt-1">Mostrando {filtered.length} de {patients.length} paciente(s)</p>
         </div>
         <Link
           href="/admin/patients/novo"
@@ -127,7 +155,7 @@ export default function PatientsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border2)]">
-                {filtered.map(patient => {
+                {paginatedPatients.map(patient => {
                   const ativo = patient.users?.ativo ?? false;
                   const statusBadge = ativo ? statusBadgeClasses.activo : statusBadgeClasses.inactivo;
 
@@ -188,8 +216,16 @@ export default function PatientsPage() {
                 })}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="text-center text-ink-3 font-medium p-12 text-sm">
-                      Nenhum paciente encontrado.
+                    <td colSpan={5} className="text-center text-ink-3 font-medium p-12 text-sm flex flex-col items-center gap-4">
+                      <svg className="h-10 w-10 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M9 9v3a3 3 0 005.196 3H15a3 3 0 005.196-3V9"/>
+                        <path d="M9 9h.01"/>
+                        <path d="M15 15h.01"/>
+                        <path d="M9 22h6"/>
+                        <path d="M12 2v4.01"/>
+                      </svg>
+                      <p className="text-center">Nenhum paciente encontrado.</p>
+                      <Link href="/admin/patients/novo" className="btn btn-sm btn-primary">Criar primeiro paciente</Link>
                     </td>
                   </tr>
                 )}
