@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { login, getMe } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const VALID_ROLES = ['admin', 'medico', 'recepcionista', 'paciente'];
 
@@ -27,15 +28,12 @@ function LoginForm() {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
     try {
       await login(email, password);
       const user = await getMe();
-      
       if (!user || !VALID_ROLES.includes(user.role)) {
         throw new Error('Papel de utilizador desconhecido no sistema.');
       }
-
       loginSuccess(user);
       router.replace(`/${user.role}`);
     } catch (err: any) {
@@ -46,9 +44,9 @@ function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={{ width: '100%' }}>
       <div className="form-group">
-        <label className="form-label">Endereço de email</label>
+        <label className="form-label">Email</label>
         <input
           type="email"
           className="form-input"
@@ -59,7 +57,7 @@ function LoginForm() {
           disabled={loading}
         />
       </div>
-      
+
       <div className="form-group">
         <label className="form-label">Senha</label>
         <input
@@ -67,20 +65,20 @@ function LoginForm() {
           className="form-input"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          placeholder="••••••••"
+          placeholder="Mínimo 6 caracteres"
           required
           disabled={loading}
         />
       </div>
-      
-      <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '-6px 0 18px' }}>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '-8px 0 24px' }}>
         <Link href="/forgot-password" className="auth-link">
           Esqueceu a senha?
         </Link>
       </div>
-      
-      {error && <div className="alert-error">{error}</div>}
-      
+
+      {error && <div className="alert-error" style={{ marginBottom: '20px' }}>{error}</div>}
+
       <button type="submit" disabled={loading} className="btn-submit">
         {loading ? 'A autenticar...' : 'Iniciar sessão'}
       </button>
@@ -90,41 +88,40 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="auth-container">
-      <div className="auth-sidebar">
-        <div className="auth-sidebar-grid" />
-        <div className="auth-sidebar-glow" />
-        <div style={{ position: 'relative' }}>
-          <div className="auth-sidebar-icon-box">
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--mmq-orange)" strokeWidth="1.8">
-              <ellipse cx="12" cy="12" rx="10" ry="6" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
+    <div className="login-page">
+      <div className="login-card">
+
+        {/* TOPO — Logo + Nome */}
+        <div className="login-brand">
+          <Image
+            src="/clinica-mmq.png"
+            alt="Clínica MMQ"
+            width={56}
+            height={56}
+            priority
+            style={{ borderRadius: '14px' }}
+          />
+          <div>
+            <h1 className="login-brand-name">Clínica MMQ</h1>
+            <p className="login-brand-sub">Oftalmologia</p>
           </div>
-          <h1 className="auth-sidebar-title">
-            Cuidados visuais<br /> 
-            <em style={{ fontStyle: 'italic', color: 'var(--mmq-orange)' }}>de excelência</em><br /> 
-            na Beira
-          </h1>
-          <p className="auth-sidebar-text">
-            Plataforma integrada de gestão clínica para a Clínica MMQ Oftalmologia. Aceda ao sistema para gerir consultas, pacientes e registos clínicos.
-          </p>
         </div>
-      </div>
-      
-      <div className="auth-content">
-        <div className="auth-form-wrapper">
-          <h2 className="auth-form-title">Bem-vindo</h2>
-          <p className="auth-form-subtitle">Introduza as suas credenciais para aceder</p>
-          
-          <Suspense fallback={<p className="auth-form-subtitle">A carregar...</p>}>
+
+        {/* DIVISOR */}
+        <div className="login-divider" />
+
+        {/* FORMULÁRIO */}
+        <div className="login-form-area">
+          <h2 className="login-title">Iniciar sessão</h2>
+          <p className="login-subtitle">Bem-vindo. Introduza as suas credenciais.</p>
+
+          <Suspense fallback={<p className="login-subtitle">A carregar...</p>}>
             <LoginForm />
           </Suspense>
-          
-          <p style={{ textAlign: 'center', marginTop: 20, fontSize: 12, color: 'var(--ink4)' }}>
-            Clínica MMQ Oftalmologia &copy; 2026
-          </p>
         </div>
+
+        {/* RODAPÉ */}
+        <p className="login-footer">Clínica MMQ Oftalmologia © 2026</p>
       </div>
     </div>
   );

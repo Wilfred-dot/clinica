@@ -72,41 +72,43 @@ export default function NotificationsPage() {
         {loading ? (
           <p className="p-6 text-center text-[var(--ink4)]">A carregar...</p>
         ) : (
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="bg-[var(--slate)] text-[11px] font-bold text-[var(--ink3)] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Data</th>
-                <th className="bg-[var(--slate)] text-[11px] font-bold text-[var(--ink3)] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Paciente</th>
-                <th className="bg-[var(--slate)] text-[11px] font-bold text-[var(--ink3)] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Tipo</th>
-                <th className="bg-[var(--slate)] text-[11px] font-bold text-[var(--ink3)] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Mensagem</th>
-              </tr>
-            </thead>
-            <tbody>
-              {notificacoes.map(n => {
-                const badge = tipoBadge[n.tipo_variavel] || { bg: 'bg-[var(--slate2)]', text: 'text-[var(--ink3)]', dot: 'bg-[var(--ink4)]', label: n.tipo_variavel };
-                return (
-                  <tr key={n.id} className="border-b border-[var(--border2)] last:border-b-0 hover:bg-[var(--slate)] transition">
-                    <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)]">{new Date(n.data_envio).toLocaleString('pt-MZ')}</td>
-                    <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)] font-semibold">{n.paciente}</td>
-                    <td className="p-[12px_18px]">
-                      <span className={`inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold ${badge.bg} ${badge.text}`}>
-                        <span className={`inline-block w-1.5 h-1.5 rounded-full ${badge.dot}`}></span>
-                        {badge.label}
-                      </span>
-                    </td>
-                    <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)]">{n.mensagem}</td>
-                  </tr>
-                );
-              })}
-              {notificacoes.length === 0 && (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse min-w-[600px]">
+              <thead>
                 <tr>
-                  <td colSpan={4} className="text-center text-[var(--ink4)] py-6">
-                    Nenhuma notificação enviada.
-                  </td>
+                  <th className="bg-[var(--slate)] text-[11px] font-bold text-[var(--ink3)] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Data</th>
+                  <th className="bg-[var(--slate)] text-[11px] font-bold text-[var(--ink3)] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Paciente</th>
+                  <th className="bg-[var(--slate)] text-[11px] font-bold text-[var(--ink3)] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Tipo</th>
+                  <th className="bg-[var(--slate)] text-[11px] font-bold text-[var(--ink3)] uppercase tracking-[0.7px] p-[10px_18px] text-left border-b border-[var(--border2)]">Mensagem</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {notificacoes.map(n => {
+                  const badge = tipoBadge[n.tipo_variavel] || { bg: 'bg-[var(--slate2)]', text: 'text-[var(--ink3)]', dot: 'bg-[var(--ink4)]', label: n.tipo_variavel };
+                  return (
+                    <tr key={n.id} className="border-b border-[var(--border2)] last:border-b-0 hover:bg-[var(--slate)] transition">
+                      <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)]">{new Date(n.data_envio).toLocaleString('pt-MZ')}</td>
+                      <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)] font-semibold">{n.paciente}</td>
+                      <td className="p-[12px_18px]">
+                        <span className={`inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold ${badge.bg} ${badge.text}`}>
+                          <span className={`inline-block w-1.5 h-1.5 rounded-full ${badge.dot}`}></span>
+                          {badge.label}
+                        </span>
+                      </td>
+                      <td className="p-[12px_18px] text-[13.5px] text-[var(--ink)]">{n.mensagem}</td>
+                    </tr>
+                  );
+                })}
+                {notificacoes.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="text-center text-[var(--ink4)] py-6">
+                      Nenhuma notificação enviada.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </Shell>

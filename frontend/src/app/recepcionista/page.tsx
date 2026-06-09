@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Consulta {
   id: number;
@@ -40,8 +41,14 @@ const statusBadgeClasses: Record<string, { bg: string; text: string; dot: string
 
 export default function RecepcionistaDashboard() {
   const router = useRouter();
+  const { user } = useAuth();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Saudação dinâmica (correção 4)
+  const hora = new Date().getHours();
+  const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+  const primeiroNome = user?.name?.split(' ')[0] ?? '';
 
   useEffect(() => {
     request<DashboardData>('/dashboard/recepcao')
@@ -67,10 +74,12 @@ export default function RecepcionistaDashboard() {
 
   return (
     <Shell>
-      {/* Cabeçalho da página */}
+      {/* Cabeçalho da página com saudação dinâmica (correção 4) */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[22px] font-bold text-[var(--ink)] tracking-[-0.3px]">Bom dia, Fátima</h1>
+          <h1 className="text-[22px] font-bold text-[var(--ink)] tracking-[-0.3px]">
+            {saudacao}{primeiroNome ? `, ${primeiroNome}` : ''}
+          </h1>
           <p className="text-[13px] text-ink-3 mt-1">
             {new Date().toLocaleDateString('pt-MZ', {
               weekday: 'long',
@@ -126,10 +135,10 @@ export default function RecepcionistaDashboard() {
           <h3 className="text-[30px] font-bold text-[var(--ink)] tracking-[-1px] leading-none mb-1">{aguardando}</h3>
           <p className="text-xs text-ink-3 font-medium">Aguardando</p>
         </div>
-        {/* Card teal (green) - Atendidos */}
+        {/* Card laranja - Atendidos */}
         <div className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[12px] bg-mmq-orange"></div>
-          <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-warn-dim mb-3.5">
+          <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-mmq-orange-dim mb-3.5">
             <svg viewBox="0 0 24 24" width="17" height="17" stroke="var(--mmq-orange)" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
             </svg>

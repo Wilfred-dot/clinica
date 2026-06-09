@@ -111,18 +111,22 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
       <div className="shell">
         <aside className="sidebar" role="complementary" aria-label="Menu Lateral">
-          {/* Agrupamento de secções da sidebar */}
-          {[ 
+          {/* Sidebar com secções ordenadas: Principal primeiro, depois Gestão, Operação, Análise */}
+          {[
+            // Principal (Dashboard) vem primeiro
+            { label: 'Principal', items: navItems.filter(item => !['Utilizadores', 'Médicos', 'Pacientes', 'Consultas', 'Notificações', 'Relatórios', 'Atendimento', 'Fichas Clínicas'].includes(item.label)) },
+            // Gestão
             { label: 'Gestão', items: navItems.filter(item => ['Utilizadores', 'Médicos', 'Pacientes'].includes(item.label)) },
-            { label: 'Operação', items: navItems.filter(item => ['Consultas', 'Notificações'].includes(item.label)) },
-            { label: 'Análise', items: navItems.filter(item => ['Relatórios'].includes(item.label)) },
-            { label: 'Principal', items: navItems.filter(item => !['Utilizadores', 'Médicos', 'Pacientes', 'Consultas', 'Notificações', 'Relatórios'].includes(item.label)) } // Dashboard e outros
+            // Operação
+            { label: 'Operação', items: navItems.filter(item => ['Consultas', 'Notificações', 'Atendimento'].includes(item.label)) },
+            // Análise
+            { label: 'Análise', items: navItems.filter(item => ['Relatórios', 'Fichas Clínicas'].includes(item.label)) },
           ].filter(section => section.items.length > 0).map((section) => (
             <div className="sidebar-section" key={section.label}>
               <div className="sidebar-label">{section.label}</div>
               <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }} aria-label={`Navegação ${section.label}`}>
                 {section.items.map((item) => {
-                  // Validação cirúrgica de rota ativa usando segmentos puros para evitar colisões parciais de strings
+                  // Validação de rota ativa
                   const isHomeRole = item.href === `/${role}`;
                   const isActive = pathname === item.href || (!isHomeRole && pathname.startsWith(item.href + '/'));
                   

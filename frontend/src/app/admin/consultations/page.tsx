@@ -123,8 +123,8 @@ export default function ConsultationsPage() {
 
   return (
     <Shell>
-      {/* Cabeçalho da página limpo usando as classes globais .ph e .sub */}
-      <div className="p-6">
+      {/* Cabeçalho da página */}
+      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Agenda de Consultas</h1>
           <p className="text-base font-medium text-ink-3 mt-[3px]">
@@ -151,10 +151,9 @@ export default function ConsultationsPage() {
       {loading ? (
         <p className="p-8 text-center text-muted animate-pulse">A carregar agenda da clínica...</p>
       ) : (
-        /* Content Card herdando as propriedades do global.css */
         <div className="card-panel overflow-hidden">
           
-          {/* Barra superior da grelha (Mudada para bg-[var(--mmq-orange)] - Laranja da marca) */}
+          {/* Barra superior da grelha */}
           <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[var(--mmq-orange)]">
             <div className="p-3 border-r border-[rgba(255,255,255,0.12)]"></div>
             {weekDays.map((day, i) => (
@@ -167,38 +166,40 @@ export default function ConsultationsPage() {
             ))}
           </div>
 
-          {/* Corpo estruturado da Grelha */}
-          <div>
-            {hours.map(hour => (
-              <div key={hour} className="grid grid-cols-[68px_repeat(5,1fr)] border-b border-[var(--border2)] last:border-b-0">
-                {/* Coluna de Horas */}
-                <div className="p-2 text-[11px] font-bold text-muted text-right border-r border-[var(--border2)] bg-[var(--slate)] flex items-center justify-end">
-                  {hour}
-                </div>
-                
-                {/* Células de Dias */}
-                {weekDays.map((_, dayIdx) => (
-                  <div key={dayIdx} className="p-1.5 border-r border-[var(--border2)] min-h-[46px] last:border-r-0 bg-white">
-                    {(schedule[dayIdx][hour] || []).map(c => {
-                      const colorClass = medicoColorMap[c.medicos?.id] ?? DOCTOR_COLOR_CLASSES[0];
-                      return (
-                        <div
-                          key={c.id}
-                          className={`rounded-[6px] p-2 text-[11.5px] font-bold cursor-pointer transition hover:brightness-[1.04] hover:shadow-sm block ${colorClass}`}
-                          onClick={() => router.push(`/medico/consulta/${c.id}`)}
-                          title={`${c.pacientes?.users?.name ?? 'N/D'} - ${c.medicos?.users?.name ?? 'N/D'}`}
-                        >
-                          <span className="block truncate">{c.pacientes?.users?.name ?? 'N/D'}</span>
-                          <div className="text-[10px] font-medium opacity-80 mt-0.5 truncate">
-                            Dr(a). {c.medicos?.users?.name ?? 'N/D'}
-                          </div>
-                        </div>
-                      );
-                    })}
+          {/* Corpo da grelha com overflow-x-auto */}
+          <div className="overflow-x-auto">
+            <div className="min-w-[600px]">
+              {hours.map(hour => (
+                <div key={hour} className="grid grid-cols-[68px_repeat(5,1fr)] border-b border-[var(--border2)] last:border-b-0">
+                  {/* Coluna de Horas */}
+                  <div className="p-2 text-[11px] font-bold text-muted text-right border-r border-[var(--border2)] bg-[var(--slate)] flex items-center justify-end">
+                    {hour}
                   </div>
-                ))}
-              </div>
-            ))}
+                  
+                  {/* Células de Dias */}
+                  {weekDays.map((_, dayIdx) => (
+                    <div key={dayIdx} className="p-1.5 border-r border-[var(--border2)] min-h-[46px] last:border-r-0 bg-white">
+                      {(schedule[dayIdx][hour] || []).map(c => {
+                        const colorClass = medicoColorMap[c.medicos?.id] ?? DOCTOR_COLOR_CLASSES[0];
+                        return (
+                          <div
+                            key={c.id}
+                            className={`rounded-[6px] p-2 text-[11.5px] font-bold cursor-pointer transition hover:brightness-[1.04] hover:shadow-sm block ${colorClass}`}
+                            onClick={() => router.push(`/medico/consulta/${c.id}`)}
+                            title={`${c.pacientes?.users?.name ?? 'N/D'} - ${c.medicos?.users?.name ?? 'N/D'}`}
+                          >
+                            <span className="block truncate">{c.pacientes?.users?.name ?? 'N/D'}</span>
+                            <div className="text-[10px] font-medium opacity-80 mt-0.5 truncate">
+                              Dr(a). {c.medicos?.users?.name ?? 'N/D'}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

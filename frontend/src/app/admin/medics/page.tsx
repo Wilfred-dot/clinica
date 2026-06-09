@@ -161,7 +161,7 @@ export default function MedicsPage() {
               </thead>
               <tbody className="divide-y divide-[var(--border2)]">
                 {paginatedMedics.map((medico) => (
-                  <tr key={medico.id} className="cursor-pointer hover:bg-[var(--white)] transition-colors" onClick={() => router.push(`/admin/medics/${medico.id}/editar`)}>\n                    <td className="p-4 pl-5 text-sm font-bold text-[var(--ink)]">{medico.users?.name ?? '—'}</td>
+                  <tr key={medico.id} className="cursor-pointer hover:bg-[var(--white)] transition-colors" onClick={() => router.push(`/admin/medics/${medico.id}/editar`)}>                   <td className="p-4 pl-5 text-sm font-bold text-[var(--ink)]">{medico.users?.name ?? '—'}</td>
                     <td className="p-4 text-sm font-medium text-[var(--ink2)]">{medico.especialidade}</td>
                     <td className="p-4 text-sm font-medium text-ink-3">{medico.numero_ordem}</td>
                     <td className="p-4 text-sm font-semibold text-[var(--ink)]">{medico.consultasMes}</td>
