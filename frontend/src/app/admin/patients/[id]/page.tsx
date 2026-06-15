@@ -90,7 +90,7 @@ export default function PatientDetailPage() {
           </Link>
           <Link
             href="/admin/patients"
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 h-10 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 h-10 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
           >
             ← Voltar
           </Link>
@@ -105,7 +105,7 @@ export default function PatientDetailPage() {
 
       {/* Dados do paciente */}
       {paciente && (
-        <div className="bg-white rounded-[12px] border border-[var(--border2)] p-6 mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 shadow-[0_2px_4px_rgba(16,42,107,.03)]">
+        <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] p-6 mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 shadow-[0_2px_4px_rgba(16,42,107,.03)]">
           {[
             { label: 'Email', val: paciente.users?.email ?? '—' },
             { label: 'Telefone', val: paciente.telefone || '—' },
@@ -123,7 +123,7 @@ export default function PatientDetailPage() {
       )}
 
       {/* Tabela de consultas */}
-      <div className="bg-white border border-[var(--border2)] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+      <div className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
         <div className="flex items-center justify-between p-5 border-b border-[var(--border2)]">
           <h3 className="text-[15px] font-bold text-[var(--ink)]">Consultas e Atendimentos</h3>
           <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-bold bg-[var(--sky-dim)] text-[var(--sky)]">

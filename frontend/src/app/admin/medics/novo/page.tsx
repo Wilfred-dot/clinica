@@ -58,7 +58,7 @@ export default function NewMedicPage() {
         </div>
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2 text-[13.5px] font-bold text-[var(--ink)] transition hover:bg-slate hover:border-ink-4 shadow-sm"
+          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2 text-[13.5px] font-bold text-[var(--ink)] transition hover:bg-slate hover:border-ink-4 shadow-sm"
           onClick={() => router.back()}
         >
           ← Voltar
@@ -67,7 +67,7 @@ export default function NewMedicPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_2px_4px_rgba(16,42,107,.03)]"
+        className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_2px_4px_rgba(16,42,107,.03)]"
       >
         {error && (
           <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
@@ -90,7 +90,7 @@ export default function NewMedicPage() {
               onChange={e => setName(e.target.value)}
               required
               placeholder="Ex: Dra. Ana Cossa"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
           <div className="mb-4">
@@ -103,7 +103,7 @@ export default function NewMedicPage() {
               onChange={e => setEspecialidade(e.target.value)}
               required
               placeholder="Ex: Oftalmologia Geral"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
@@ -118,7 +118,7 @@ export default function NewMedicPage() {
               onChange={e => setNumeroOrdem(e.target.value)}
               required
               placeholder="OM-AAAA-XXXX"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
           <div className="mb-4">
@@ -130,7 +130,7 @@ export default function NewMedicPage() {
               value={telefone}
               onChange={e => setTelefone(e.target.value)}
               placeholder="Ex: +258 84 123 4567"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function NewMedicPage() {
             value={horarioTrabalho}
             onChange={e => setHorarioTrabalho(e.target.value)}
             placeholder="Ex: Seg-Sex 08:00-16:00"
-            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
           />
         </div>
 
@@ -163,7 +163,7 @@ export default function NewMedicPage() {
               onChange={e => setEmail(e.target.value)}
               required
               placeholder="medico@clinica.co.mz"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
           <div className="mb-4">
@@ -177,7 +177,7 @@ export default function NewMedicPage() {
               required
               placeholder="Mínimo 6 caracteres"
               minLength={6}
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
@@ -193,7 +193,7 @@ export default function NewMedicPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-5 h-12 text-sm font-bold text-ink-3 transition hover:bg-slate hover:border-ink-4"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-5 h-12 text-sm font-bold text-ink-3 transition hover:bg-slate hover:border-ink-4"
           >
             Cancelar
           </button>

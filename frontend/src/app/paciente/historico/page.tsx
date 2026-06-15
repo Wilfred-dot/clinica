@@ -43,7 +43,7 @@ export default function PacienteHistoricoPage() {
         </div>
 
         {/* Card da tabela */}
-        <div className="bg-white border border-[var(--border2)] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
+        <div className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
           {/* Cabeçalho do card */}
           <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[var(--border2)] flex-wrap">
             <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Consultas Realizadas</h3>

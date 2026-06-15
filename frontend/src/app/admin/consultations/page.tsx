@@ -178,7 +178,7 @@ export default function ConsultationsPage() {
                   
                   {/* Células de Dias */}
                   {weekDays.map((_, dayIdx) => (
-                    <div key={dayIdx} className="p-1.5 border-r border-[var(--border2)] min-h-[46px] last:border-r-0 bg-white">
+                    <div key={dayIdx} className="p-1.5 border-r border-[var(--border2)] min-h-[46px] last:border-r-0 bg-[var(--white)]">
                       {(schedule[dayIdx][hour] || []).map(c => {
                         const colorClass = medicoColorMap[c.medicos?.id] ?? DOCTOR_COLOR_CLASSES[0];
                         return (

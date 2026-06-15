@@ -74,13 +74,13 @@ export default function PatientDetailPage() {
         <div className="flex gap-2">
           <Link
             href={`/recepcionista/patients/${params.id}/editar`}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
           >
             Editar paciente
           </Link>
           <Link
             href="/recepcionista/patients"
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
           >
             ← Voltar
           </Link>
@@ -95,7 +95,7 @@ export default function PatientDetailPage() {
 
       {/* Dados do paciente */}
       {paciente && (
-        <div className="bg-white rounded-[12px] border border-[var(--border2)] p-5 mb-5 grid grid-cols-2 md:grid-cols-4 gap-4 shadow-[0_1px_3px_rgba(12,26,39,.05)]">
+        <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] p-5 mb-5 grid grid-cols-2 md:grid-cols-4 gap-4 shadow-[0_1px_3px_rgba(12,26,39,.05)]">
           {[
             { label: 'Email', val: paciente.users?.email ?? '—' },
             { label: 'Telefone', val: paciente.telefone || '—' },
@@ -113,7 +113,7 @@ export default function PatientDetailPage() {
       )}
 
       {/* Tabela de consultas */}
-      <div className="bg-white border border-[var(--border2)] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
+      <div className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
         <div className="flex items-center justify-between p-[16px_22px] border-b border-[var(--border2)]">
           <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Consultas</h3>
           <span className="inline-flex items-center gap-1.5 px-[9px] py-[3px] rounded-[20px] text-[11.5px] font-semibold bg-warn-dim text-mmq-orange">

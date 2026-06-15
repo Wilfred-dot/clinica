@@ -123,7 +123,7 @@ export default function PatientsPage() {
       </div>
 
       {/* Card da tabela */}
-      <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+      <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
         <div className="flex items-center justify-between gap-3 p-5 border-b border-[var(--border2)] flex-wrap">
           <h3 className="text-[15px] font-bold text-[var(--ink)]">Lista de Pacientes</h3>
           <div className="relative min-w-[260px]">
@@ -135,7 +135,7 @@ export default function PatientsPage() {
               placeholder="Pesquisar por nome ou contacto..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full h-10 pl-9 pr-3 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
+              className="w-full h-10 pl-9 pr-3 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
             />
           </div>
         </div>
@@ -182,13 +182,13 @@ export default function PatientsPage() {
                         <div className="flex gap-2 justify-end">
                           <Link
                             href={`/admin/patients/${patient.id}`}
-                            className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold border border-[var(--border)] bg-white text-[var(--ink)] transition hover:bg-slate"
+                            className="inline-flex items-center rounded-[6px] px-2.5 py-1.5 text-xs font-bold border border-[var(--border)] bg-[var(--white)] text-[var(--ink)] transition hover:bg-slate"
                           >
                             Histórico
                           </Link>
                           <Link
                             href={`/admin/patients/${patient.id}/editar`}
-                            className="inline-flex items-center rounded-[6px] border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-bold text-ink-3 transition hover:bg-slate"
+                            className="inline-flex items-center rounded-[6px] border border-[var(--border)] bg-[var(--white)] px-2.5 py-1.5 text-xs font-bold text-ink-3 transition hover:bg-slate"
                           >
                             Editar
                           </Link>

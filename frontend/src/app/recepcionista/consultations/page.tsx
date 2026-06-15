@@ -125,13 +125,13 @@ export default function ReceptionConsultationsPage() {
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
-            className="inline-flex items-center justify-center rounded-[8px] border border-[var(--border)] bg-white px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+            className="inline-flex items-center justify-center rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
             onClick={() => goToWeek(-1)}
           >
             ← Semana anterior
           </button>
           <button
-            className="inline-flex items-center justify-center rounded-[8px] border border-[var(--border)] bg-white px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+            className="inline-flex items-center justify-center rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 h-10 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
             onClick={() => goToWeek(1)}
           >
             Semana seguinte →
@@ -151,7 +151,7 @@ export default function ReceptionConsultationsPage() {
       {loading ? (
         <p className="text-center text-ink-4 py-10">A carregar agenda...</p>
       ) : (
-        <div className="bg-white border border-[var(--border2)] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
+        <div className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] shadow-[0_1px_3px_rgba(12,26,39,0.05)] overflow-hidden">
           {/* Cabeçalho da grelha */}
           <div className="grid grid-cols-[68px_repeat(5,1fr)] bg-[var(--ink)]">
             <div className="p-[11px_10px] text-[11px] font-bold uppercase tracking-[0.6px] text-[rgba(255,255,255,0.55)] text-center border-r border-[rgba(255,255,255,0.07)] last:border-r-0"></div>

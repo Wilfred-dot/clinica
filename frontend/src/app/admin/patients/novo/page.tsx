@@ -79,7 +79,7 @@ export default function NewPatientPage() {
           <p className="text-[13px] text-ink-3 mt-0.5 font-medium">Registar utente na base de dados</p>
         </div>
         <button
-          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
+          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
           onClick={() => router.back()}
         >
           &larr; Voltar
@@ -89,7 +89,7 @@ export default function NewPatientPage() {
       {/* Painel do formulário */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_2px_4px_rgba(16,42,107,.03)]"
+        className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_2px_4px_rgba(16,42,107,.03)]"
       >
         {error && (
           <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-[var(--danger)] text-[11.5px] font-semibold px-2.5 py-1 mb-4">
@@ -113,7 +113,7 @@ export default function NewPatientPage() {
               onChange={e => { setName(e.target.value); setFieldErrors(prev => ({ ...prev, name: '' })); }}
               required
               placeholder="Nome do paciente"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
             {fieldErrors.name && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.name}</p>}
           </div>
@@ -126,7 +126,7 @@ export default function NewPatientPage() {
               value={dataNascimento}
               onChange={e => { setDataNascimento(e.target.value); setFieldErrors(prev => ({ ...prev, dataNascimento: '' })); }}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
             {fieldErrors.dataNascimento && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.dataNascimento}</p>}
           </div>
@@ -141,7 +141,7 @@ export default function NewPatientPage() {
               <select
                 value={sexo}
                 onChange={e => setSexo(e.target.value)}
-                className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none pr-[34px]"
+                className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none pr-[34px]"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -164,7 +164,7 @@ export default function NewPatientPage() {
               onChange={e => { setTelefone(e.target.value); setFieldErrors(prev => ({ ...prev, telefone: '' })); }}
               required
               placeholder="+258 8X XXX XXXX"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
             {fieldErrors.telefone && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.telefone}</p>}
           </div>
@@ -180,7 +180,7 @@ export default function NewPatientPage() {
               value={email}
               onChange={e => { setEmail(e.target.value); setFieldErrors(prev => ({ ...prev, email: '' })); }}
               placeholder="paciente@email.com"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
             {fieldErrors.email && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.email}</p>}
           </div>
@@ -194,7 +194,7 @@ export default function NewPatientPage() {
               onChange={e => { setEndereco(e.target.value); setFieldErrors(prev => ({ ...prev, endereco: '' })); }}
               required
               placeholder="Rua, Bairro, Cidade"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
             {fieldErrors.endereco && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.endereco}</p>}
           </div>
@@ -214,7 +214,7 @@ export default function NewPatientPage() {
             value={historicoMedico}
             onChange={e => setHistoricoMedico(e.target.value)}
             placeholder="Alergias conhecidas, condições pré-existentes..."
-            className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition resize-y focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+            className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition resize-y focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
           />
         </div>
 
@@ -233,7 +233,7 @@ export default function NewPatientPage() {
             value={password}
             onChange={e => { setPassword(e.target.value); setFieldErrors(prev => ({ ...prev, password: '' })); }}
             placeholder="Deixar em branco para não criar conta"
-            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
           />
           {fieldErrors.password && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.password}</p>}
         </div>
@@ -250,7 +250,7 @@ export default function NewPatientPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-5 h-12 text-sm font-bold text-ink-3 transition hover:bg-slate hover:border-ink-4"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-5 h-12 text-sm font-bold text-ink-3 transition hover:bg-slate hover:border-ink-4"
           >
             Cancelar
           </button>

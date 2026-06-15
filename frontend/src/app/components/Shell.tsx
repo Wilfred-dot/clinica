@@ -2,6 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -42,6 +43,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
 
   const role = user?.role ?? '';
   const navItems = navMap[role] || [];
@@ -49,20 +51,20 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <div className="topbar" role="banner">
-        <div 
-          className="topbar-brand" 
-          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }} 
+        <div
+          className="topbar-brand"
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}
           onClick={() => { if (role) router.push(`/${role}`); }}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => { if (e.key === 'Enter' && role) router.push(`/${role}`); }}
           aria-label="Ir para a página inicial do painel"
         >
-          <Image 
-            src="/clinica-mmq.png" 
-            alt="Clínica MMQ Logo" 
-            width={32} 
-            height={32} 
+          <Image
+            src="/clinica-mmq.png"
+            alt="Clínica MMQ Logo"
+            width={32}
+            height={32}
             priority
           />
           <div className="topbar-brand-text">
@@ -70,9 +72,25 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             <span>Oftalmologia</span>
           </div>
         </div>
-        
+
         <div className="topbar-spacer" />
-        
+        <button
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          className="topbar-logout-btn"
+          title="Alternar tema"
+          aria-label="Alternar entre modo claro e escuro"
+        >
+          {theme === 'dark' ? (
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round">
+              <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          )}
+        </button>
+
         <div className="topbar-user">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-[var(--mmq-orange)] text-white flex items-center justify-center text-sm font-medium">
@@ -95,11 +113,11 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </div>
-        
-        <button 
-          className="topbar-logout-btn" 
-          onClick={logout} 
-          title="Sair do Sistema" 
+
+        <button
+          className="topbar-logout-btn"
+          onClick={logout}
+          title="Sair do Sistema"
           aria-label="Sair do Sistema"
           style={{ cursor: 'pointer' }}
         >
@@ -129,7 +147,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                   // Validação de rota ativa
                   const isHomeRole = item.href === `/${role}`;
                   const isActive = pathname === item.href || (!isHomeRole && pathname.startsWith(item.href + '/'));
-                  
+
                   return (
                     <Link
                       key={item.href}
@@ -148,11 +166,11 @@ export default function Shell({ children }: { children: React.ReactNode }) {
               </nav>
             </div>
           ))}
-          
+
           <div style={{ marginTop: 'auto', padding: '16px 18px 0', borderTop: '1px solid var(--border2)' }}>
-            <button 
-              className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-3 py-1.5 rounded-md text-xs font-medium" 
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '6px', cursor: 'pointer' }} 
+            <button
+              className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-3 py-1.5 rounded-md text-xs font-medium"
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '6px', cursor: 'pointer' }}
               onClick={logout}
             >
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

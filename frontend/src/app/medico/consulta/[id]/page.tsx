@@ -201,7 +201,7 @@ export default function MedicoConsultaPage() {
           </div>
 
           {/* Prescrições */}
-          <div className="bg-white rounded-xl border border-[var(--border2)] shadow-md" style={{ marginTop: 20 }}>
+          <div className="bg-[var(--white)] rounded-xl border border-[var(--border2)] shadow-md" style={{ marginTop: 20 }}>
             <div className="mb-4"><h3>Prescrições</h3></div>
             <div style={{ padding: 16 }}>
               {prescricoes.length === 0 ? (

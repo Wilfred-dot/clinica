@@ -76,7 +76,7 @@ export default function PacienteDashboard() {
         </div>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-3.5 mb-6">
           {consultas.length > 0 ? consultas.map(c => (
-            <div key={c.id} className="bg-white rounded-[12px] border border-[var(--border2)] p-4 shadow-[0_1px_3px_rgba(12,26,39,.05)] transition hover:shadow-[0_6px_24px_rgba(12,26,39,.10)]">
+            <div key={c.id} className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] p-4 shadow-[0_1px_3px_rgba(12,26,39,.05)] transition hover:shadow-[0_6px_24px_rgba(12,26,39,.10)]">
               <div className="text-[11px] font-bold text-mmq-orange uppercase tracking-[0.5px] mb-1.5">
                 {formatDate(c.data_hora)} · {formatTime(c.data_hora)}
               </div>
@@ -110,7 +110,7 @@ export default function PacienteDashboard() {
               {notificacoes.length > 0 ? notificacoes.map(n => {
                 const dotColor = n.tipo_variavel === 'confirmacao' ? 'bg-[var(--sky)]' : n.tipo_variavel === 'alerta' ? 'bg-warn' : 'bg-mmq-orange';
                 return (
-                  <div key={n.id} className="flex gap-3 items-start p-3 rounded-[8px] border border-[var(--border2)] bg-white shadow-[0_1px_3px_rgba(12,26,39,.05)]">
+                  <div key={n.id} className="flex gap-3 items-start p-3 rounded-[8px] border border-[var(--border2)] bg-[var(--white)] shadow-[0_1px_3px_rgba(12,26,39,.05)]">
                     <div className={`w-2 h-2 rounded-full mt-1 shrink-0 ${dotColor}`}></div>
                     <div>
                       <strong className="font-semibold text-[13.5px] text-[var(--ink)]">{n.mensagem}</strong>
@@ -138,7 +138,7 @@ export default function PacienteDashboard() {
                 Agendar nova consulta
               </Link>
               <Link href="/paciente/historico"
-                className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate">
+                className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2.5 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate">
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 </svg>

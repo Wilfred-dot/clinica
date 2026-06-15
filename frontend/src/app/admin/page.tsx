@@ -55,7 +55,6 @@ export default function AdminDashboard() {
     loadDashboardData();
   }, [loadDashboardData]);
 
-  // Função utilitária estática interna para evitar re-alocações desnecessárias no render
   const formatTime = (isoString: string) => {
     if (!isoString) return 'N/D';
     try {
@@ -72,9 +71,32 @@ export default function AdminDashboard() {
   const actividadeRecente = data?.actividadeRecente ?? [];
   const realizadasHoje = consultasHoje.filter(c => c.status === 'realizada').length;
 
+  if (loading) {
+    return (
+      <Shell>
+        <div className="flex items-center justify-center h-64">
+          <p className="text-ink-4">A carregar dashboard...</p>
+        </div>
+      </Shell>
+    );
+  }
+
+  if (error) {
+    return (
+      <Shell>
+        <div className="p-8 text-center">
+          <p className="text-danger">Erro ao carregar dados.</p>
+          <button onClick={loadDashboardData} className="mt-4 px-4 py-2 bg-[var(--mmq-orange)] text-white rounded-md">
+            Tentar novamente
+          </button>
+        </div>
+      </Shell>
+    );
+  }
+
   return (
     <Shell>
-      {/* Cabeçalho da página está estático para evitar Layout Shift enquanto carrega */}
+      {/* Cabeçalho da página */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
           <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Painel de Gestão</h1>
@@ -101,7 +123,7 @@ export default function AdminDashboard() {
       </div>
 
       {error ? (
-        <div className="p-12 text-center bg-white rounded-[12px] border border-[var(--danger-dim)]">
+        <div className="p-12 text-center bg-[var(--white)] rounded-[12px] border border-[var(--danger-dim)]">
           <p className="text-danger font-semibold mb-3">Erro ao estabelecer ligação com o sistema da Clínica.</p>
           <button onClick={loadDashboardData} className="inline-flex items-center gap-2 rounded-[6px] bg-[var(--ink)] px-4 py-2 text-xs font-bold text-white transition hover:bg-[var(--ink)]">
             Tentar Novamente
@@ -110,7 +132,7 @@ export default function AdminDashboard() {
       ) : loading ? (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-pulse">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-28 bg-gray-100 rounded-[12px] border border-gray-200" />
+            <div key={i} className="h-28 bg-[var(--slate)] rounded-[12px] border border-[var(--border2)]" />
           ))}
         </div>
       ) : (
@@ -118,9 +140,9 @@ export default function AdminDashboard() {
           {/* Cards de estatísticas */}
           <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-4 mb-6">
             {/* Card 1 – Total Consultas */}
-            <div className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] relative overflow-hidden">
+            <div className="bg-[var(--white)] rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[12px] bg-[var(--mmq-orange)]"></div>
-              <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-warn-dim mb-3.5">
+              <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-[var(--mmq-orange-dim)] mb-3.5">
                 <svg viewBox="0 0 24 24" width="17" height="17" stroke="var(--mmq-orange)" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
@@ -134,7 +156,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Card 2 – Pacientes Registados */}
-            <div className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] relative overflow-hidden">
+            <div className="bg-[var(--white)] rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[12px] bg-[var(--ink)]"></div>
               <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-[var(--sky-dim)] mb-3.5">
                 <svg viewBox="0 0 24 24" width="17" height="17" stroke="var(--ink)" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -150,7 +172,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Card 3 – Médicos Activos */}
-            <div className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] relative overflow-hidden">
+            <div className="bg-[var(--white)] rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[12px] bg-[var(--success)]"></div>
               <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-success-dim mb-3.5">
                 <svg viewBox="0 0 24 24" width="17" height="17" stroke="var(--success)" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -167,9 +189,9 @@ export default function AdminDashboard() {
             </div>
 
             {/* Card 4 – Consultas Hoje */}
-            <div className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] relative overflow-hidden">
+            <div className="bg-[var(--white)] rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[12px] bg-warn"></div>
-              <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-warn-dim mb-3.5">
+              <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-[var(--warn-dim)] mb-3.5">
                 <svg viewBox="0 0 24 24" width="17" height="17" stroke="var(--warn)" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
                 </svg>
@@ -190,12 +212,12 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             {/* Coluna Esquerda - Tabela de Consultas do Dia */}
-            <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+            <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
               <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[var(--border2)] flex-wrap">
                 <h3 className="text-[15px] font-bold text-[var(--ink)]">Consultas do Dia</h3>
                 <Link
                   href="/admin/consultations"
-                  className="inline-flex items-center gap-1.5 rounded-[6px] border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-bold text-[var(--ink)] transition hover:bg-slate"
+                  className="inline-flex items-center gap-1.5 rounded-[6px] border border-[var(--border)] bg-[var(--white)] px-3 py-1.5 text-xs font-bold text-[var(--ink)] transition hover:bg-[var(--slate)]"
                 >
                   Ver agenda completa
                 </Link>
@@ -203,11 +225,11 @@ export default function AdminDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                   <thead>
-                    <tr>
-                      <th className="bg-[var(--slate)] text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[12px_18px] text-left border-b border-[var(--border2)]">Paciente</th>
-                      <th className="bg-[var(--slate)] text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[12px_18px] text-left border-b border-[var(--border2)]">Médico</th>
-                      <th className="bg-[var(--slate)] text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[12px_18px] text-left border-b border-[var(--border2)]">Hora</th>
-                      <th className="bg-[var(--slate)] text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[12px_18px] text-left border-b border-[var(--border2)]">Estado</th>
+                    <tr className="bg-[var(--slate)] border-b border-[var(--border2)]">
+                      <th className="text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[12px_18px] text-left">Paciente</th>
+                      <th className="text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[12px_18px] text-left">Médico</th>
+                      <th className="text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[12px_18px] text-left">Hora</th>
+                      <th className="text-[11px] font-bold text-ink-3 uppercase tracking-[0.7px] p-[12px_18px] text-left">Estado</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -245,13 +267,13 @@ export default function AdminDashboard() {
             <div className="flex flex-col gap-6">
               
               {/* Actividade Recente */}
-              <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+              <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
                 <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[var(--border2)]">
                   <h3 className="text-[15px] font-bold text-[var(--ink)]">Actividade Recente</h3>
                 </div>
                 <div className="p-4">
                   {actividadeRecente.length > 0 ? actividadeRecente.map(a => (
-                    <div key={a.id} className="flex gap-3 items-start p-3 rounded-[8px] border border-[var(--border2)] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.01)] mb-2 last:mb-0 hover:border-[var(--border)] transition">
+                    <div key={a.id} className="flex gap-3 items-start p-3 rounded-[8px] border border-[var(--border2)] bg-[var(--white)] shadow-[0_1px_2px_rgba(0,0,0,0.01)] mb-2 last:mb-0 hover:border-[var(--border)] transition">
                       <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-[var(--mmq-orange)]"></div>
                       <div>
                         <strong className="font-semibold text-[13.5px] text-[var(--ink)]">{a.mensagem}</strong>
@@ -267,7 +289,7 @@ export default function AdminDashboard() {
               </div>
 
               {/* Acções Rápidas */}
-              <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+              <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
                 <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[var(--border2)]">
                   <h3 className="text-[15px] font-bold text-[var(--ink)]">Acções Rápidas</h3>
                 </div>
@@ -284,7 +306,7 @@ export default function AdminDashboard() {
                   
                   <Link
                     href="/admin/medics/novo"
-                    className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2.5 text-[13.5px] font-bold text-[var(--ink)] transition hover:bg-[var(--slate)] hover:border-[var(--ink)]"
+                    className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2.5 text-[13.5px] font-bold text-[var(--ink)] transition hover:bg-[var(--slate)] hover:border-[var(--ink)]"
                   >
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -294,7 +316,7 @@ export default function AdminDashboard() {
                   
                   <Link
                     href="/admin/reports"
-                    className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2.5 text-[13.5px] font-bold text-[var(--ink)] transition hover:bg-[var(--slate)] hover:border-[var(--ink)]"
+                    className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2.5 text-[13.5px] font-bold text-[var(--ink)] transition hover:bg-[var(--slate)] hover:border-[var(--ink)]"
                   >
                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                       <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />

@@ -172,7 +172,7 @@ export default function EditPatientPage() {
         </div>
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
+          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
           onClick={() => router.back()}
         >
           ← Voltar
@@ -181,7 +181,7 @@ export default function EditPatientPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="bg-white border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_2px_4px_rgba(16,42,107,.03)]"
+        className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_2px_4px_rgba(16,42,107,.03)]"
       >
         {error && (
           <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-[var(--danger)] text-[11.5px] font-semibold px-2.5 py-1 mb-4 w-full">
@@ -203,7 +203,7 @@ export default function EditPatientPage() {
               value={name}
               onChange={e => { setName(e.target.value); setFieldErrors(prev => ({ ...prev, name: '' })); }}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
             {fieldErrors.name && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.name}</p>}
           </div>
@@ -216,7 +216,7 @@ export default function EditPatientPage() {
               value={dataNascimento}
               onChange={e => { setDataNascimento(e.target.value); setFieldErrors(prev => ({ ...prev, dataNascimento: '' })); }}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
             {fieldErrors.dataNascimento && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.dataNascimento}</p>}
           </div>
@@ -231,7 +231,7 @@ export default function EditPatientPage() {
               <select
                 value={sexo}
                 onChange={e => setSexo(e.target.value)}
-                className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] appearance-none pr-[34px]"
+                className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] appearance-none pr-[34px]"
                 style={{
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
                   backgroundRepeat: 'no-repeat',
@@ -253,7 +253,7 @@ export default function EditPatientPage() {
               value={telefone}
               onChange={e => { setTelefone(e.target.value); setFieldErrors(prev => ({ ...prev, telefone: '' })); }}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)] focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
             {fieldErrors.telefone && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.telefone}</p>}
           </div>
@@ -268,7 +268,7 @@ export default function EditPatientPage() {
               type="email"
               value={email}
               onChange={e => { setEmail(e.target.value); setFieldErrors(prev => ({ ...prev, email: '' })); }}
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
             />
             {fieldErrors.email && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.email}</p>}
           </div>
@@ -281,7 +281,7 @@ export default function EditPatientPage() {
               value={endereco}
               onChange={e => { setEndereco(e.target.value); setFieldErrors(prev => ({ ...prev, endereco: '' })); }}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
             />
             {fieldErrors.endereco && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.endereco}</p>}
           </div>
@@ -299,7 +299,7 @@ export default function EditPatientPage() {
           <textarea
             value={historicoMedico}
             onChange={e => setHistoricoMedico(e.target.value)}
-            className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition resize-y focus:border-[var(--mmq-orange)]"
+            className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition resize-y focus:border-[var(--mmq-orange)]"
           />
         </div>
 
@@ -317,7 +317,7 @@ export default function EditPatientPage() {
             value={password}
             onChange={e => { setPassword(e.target.value); setFieldErrors(prev => ({ ...prev, password: '' })); }}
             placeholder="Mínimo 6 caracteres"
-            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
+            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
           />
           {fieldErrors.password && <p className="text-xs text-[var(--danger)] mt-1">{fieldErrors.password}</p>}
         </div>
@@ -334,7 +334,7 @@ export default function EditPatientPage() {
             <button
               type="button"
               onClick={() => router.back()}
-              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-5 h-12 text-sm font-bold text-ink-3 transition hover:bg-slate"
+              className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-5 h-12 text-sm font-bold text-ink-3 transition hover:bg-slate"
             >
               Cancelar
             </button>

@@ -65,7 +65,7 @@ export default function ReceptionPatientsPage() {
       </div>
 
       {/* Card da tabela */}
-      <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
+      <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
         <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[var(--border2)] flex-wrap">
           <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Lista de Pacientes</h3>
           <div className="relative min-w-[200px]">
@@ -77,7 +77,7 @@ export default function ReceptionPatientsPage() {
               placeholder="Pesquisar por nome ou contacto..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full h-10 pl-8 pr-3 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange"
+              className="w-full h-10 pl-8 pr-3 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange"
             />
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function ReceptionPatientsPage() {
                     <td className="p-[12px_18px]">
                       <Link
                         href={`/recepcionista/patients/${patient.id}`}
-                        className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold border border-[var(--border)] bg-white text-ink-2 transition hover:bg-slate"
+                        className="inline-flex items-center rounded-[6px] px-3 py-1.5 text-xs font-semibold border border-[var(--border)] bg-[var(--white)] text-ink-2 transition hover:bg-slate"
                       >
                         Histórico
                       </Link>

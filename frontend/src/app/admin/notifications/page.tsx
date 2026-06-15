@@ -65,7 +65,7 @@ export default function NotificationsPage() {
       )}
 
       {/* Card com tabela de histórico */}
-      <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
+      <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
         <div className="flex items-center justify-between p-[16px_22px] border-b border-[var(--border2)]">
           <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Histórico de notificações</h3>
         </div>

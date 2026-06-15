@@ -132,7 +132,7 @@ export default function MedicsPage() {
         </div>
       )}
 
-      <div className="bg-white border border-[var(--border2)] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
+      <div className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
         <div className="p-5 border-b border-[var(--border2)] flex flex-wrap items-center justify-between gap-4">
           <h3 className="text-[15px] font-bold text-[var(--ink)]">Lista de Médicos</h3>
           <input 
@@ -140,7 +140,7 @@ export default function MedicsPage() {
             placeholder="Pesquisar médico..." 
             value={search} 
             onChange={e => setSearch(e.target.value)} 
-            className="h-10 px-3 max-w-xs rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
+            className="h-10 px-3 max-w-xs rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] font-medium outline-none transition focus:border-[var(--mmq-orange)]"
           />
         </div>
 
@@ -173,7 +173,7 @@ export default function MedicsPage() {
                     </td>
                     <td className="p-4 pr-5 text-sm">
                       <div className="flex gap-2">
-                        <Link href={`/admin/medics/${medico.id}/editar`} className="inline-flex items-center rounded-[6px] border border-[var(--border)] bg-white px-3 py-1.5 text-[12.5px] font-bold text-ink-3 transition hover:bg-slate">
+                        <Link href={`/admin/medics/${medico.id}/editar`} className="inline-flex items-center rounded-[6px] border border-[var(--border)] bg-[var(--white)] px-3 py-1.5 text-[12.5px] font-bold text-ink-3 transition hover:bg-slate">
                           Editar
                         </Link>
                         <button

@@ -57,7 +57,7 @@ export default function ReceptionNewPatientPage() {
           <p className="text-[13px] text-ink-3 mt-1">Registar novo paciente — Recepção</p>
         </div>
         <button
-          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
           onClick={() => router.back()}
         >
           ← Voltar
@@ -67,7 +67,7 @@ export default function ReceptionNewPatientPage() {
       {/* Painel do formulário */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_1px_3px_rgba(12,26,39,0.05)]"
+        className="bg-[var(--white)] border border-[var(--border2)] rounded-[12px] p-[28px_30px] max-w-[680px] shadow-[0_1px_3px_rgba(12,26,39,0.05)]"
       >
         {/* Erro geral */}
         {error && (
@@ -92,7 +92,7 @@ export default function ReceptionNewPatientPage() {
               onChange={e => setName(e.target.value)}
               required
               placeholder="Nome do paciente"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
           <div className="mb-4">
@@ -104,7 +104,7 @@ export default function ReceptionNewPatientPage() {
               value={dataNascimento}
               onChange={e => setDataNascimento(e.target.value)}
               required
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
@@ -116,7 +116,7 @@ export default function ReceptionNewPatientPage() {
             <select
               value={sexo}
               onChange={e => setSexo(e.target.value)}
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)] appearance-none bg-no-repeat bg-[right_12px_center] pr-[34px]"
               style={{
                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8299' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               }}
@@ -136,7 +136,7 @@ export default function ReceptionNewPatientPage() {
               onChange={e => setTelefone(e.target.value)}
               required
               placeholder="+258 8X XXX XXXX"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
@@ -150,7 +150,7 @@ export default function ReceptionNewPatientPage() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="paciente@email.com"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
           <div className="mb-4">
@@ -163,7 +163,7 @@ export default function ReceptionNewPatientPage() {
               onChange={e => setEndereco(e.target.value)}
               required
               placeholder="Rua, Bairro, Cidade"
-              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+              className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
             />
           </div>
         </div>
@@ -182,7 +182,7 @@ export default function ReceptionNewPatientPage() {
             value={historicoMedico}
             onChange={e => setHistoricoMedico(e.target.value)}
             placeholder="Alergias conhecidas, condições pré-existentes..."
-            className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition resize-y focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+            className="w-full min-h-[88px] px-4 py-2.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition resize-y focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
           ></textarea>
         </div>
 
@@ -201,7 +201,7 @@ export default function ReceptionNewPatientPage() {
             value={password}
             onChange={e => setPassword(e.target.value)}
             placeholder="Deixar em branco para não criar conta"
-            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-white text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
+            className="w-full h-12 px-4 rounded-[8px] border border-[var(--border)] bg-[var(--white)] text-sm text-[var(--ink)] outline-none transition focus:border-mmq-orange focus:ring-[0_0_0_3px_rgba(255,127,0,0.1)]"
           />
         </div>
 
@@ -217,7 +217,7 @@ export default function ReceptionNewPatientPage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-5 h-12 text-sm font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-5 h-12 text-sm font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
           >
             Cancelar
           </button>

@@ -49,8 +49,6 @@
   --serif:      'DM Serif Display', serif;
 }
 
-
-
 body {
   font-family: var(--font);
   background: var(--slate);
@@ -528,7 +526,7 @@ thead th {
 }
 tbody tr { border-bottom: 1px solid var(--border2); transition: background .1s; }
 tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: #f8fafc; }
+tbody tr:hover { background: var(--slate); }
 td { padding: 14px 18px; font-size: 13.5px; color: var(--ink); vertical-align: middle; }
 
 /* ══ BADGES / ESTADOS CLINICOS ══ */
@@ -952,7 +950,7 @@ td { padding: 14px 18px; font-size: 13.5px; color: var(--ink); vertical-align: m
 }
 
 .table tbody tr:hover {
-  background: #f8fafc;
+  background: var(--slate);
 }
 
 .table td {
@@ -969,8 +967,6 @@ td { padding: 14px 18px; font-size: 13.5px; color: var(--ink); vertical-align: m
   border-radius: 50%;
   display: inline-block;
 }
-
-
 
 /* --- Form Layout --- */
 .form-panel {
@@ -1014,28 +1010,31 @@ td { padding: 14px 18px; font-size: 13.5px; color: var(--ink); vertical-align: m
   padding: 10px 14px;
   border-radius: var(--r);
   font-size: 13.5px;
-  font-weight: 500;
 }
 
-.alert-danger {
-  background: var(--danger-dim);
-  color: var(--danger);
-  border-left: 3px solid var(--danger);
-}
+/* ══ DARK MODE ══ */
+.dark {
+  --ink:         #e2eaf6;
+  --ink2:        #b8cce0;
+  --ink3:        #7a9ab8;
+  --ink4:        #4a6a85;
 
-.alert-success {
-  background: var(--success-dim);
-  color: var(--success);
-  border-left: 3px solid var(--success);
-}
+  --mmq-orange-dim: #2a1a00;
+  --mmq-orange-mid: #3a2500;
 
-/* --- Utilities --- */
-.text-muted {
-  color: var(--ink3) !important;
-}
+  --sky-dim:    #0d1f3a;
+  --slate:      #0f1621;
+  --slate2:     #172030;
+  --white:      #1a2436;
+  --border:     #2a3a4e;
+  --border2:    #1f2f42;
 
-hr {
-  border: none;
-  border-top: 1px solid var(--border2);
-  margin: 20px 0;
+  --danger-dim: #2a0d0d;
+  --warn-dim:   #2a1a00;
+  --success-dim:#0d2a1a;
+
+  --shadow-xs:  0 1px 3px rgba(0,0,0,.2);
+  --shadow-sm:  0 2px 8px rgba(0,0,0,.3);
+  --shadow-md:  0 6px 24px rgba(0,0,0,.4);
+  --shadow-lg:  0 16px 48px rgba(0,0,0,.5);
 }

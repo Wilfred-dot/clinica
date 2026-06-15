@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastContainer } from "@/components/Toast";
+import { ThemeProvider } from "next-themes";
 import { DM_Sans, DM_Serif_Display } from 'next/font/google';
 import "./globals.css";
 
@@ -24,12 +25,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt" className={`${dmSans.variable} ${dmSerif.variable}`}>
+    <html lang="pt" className={`${dmSans.variable} ${dmSerif.variable}`} suppressHydrationWarning>
       <body>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-        <ToastContainer />
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+          <ToastContainer />
+        </ThemeProvider>
       </body>
     </html>
   );

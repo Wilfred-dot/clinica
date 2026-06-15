@@ -91,7 +91,7 @@ export default function RecepcionistaDashboard() {
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
-            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate hover:border-ink-4"
             onClick={() => router.push('/recepcionista/patients')}
           >
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -114,7 +114,7 @@ export default function RecepcionistaDashboard() {
       {/* Cards de estatísticas */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4 mb-6">
         {/* Card warn - Consultas Hoje */}
-        <div className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden">
+        <div className="bg-[var(--white)] rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[12px] bg-warn"></div>
           <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-warn-dim mb-3.5">
             <svg viewBox="0 0 24 24" width="17" height="17" stroke="var(--warn)" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -125,7 +125,7 @@ export default function RecepcionistaDashboard() {
           <p className="text-xs text-ink-3 font-medium">Consultas Hoje</p>
         </div>
         {/* Card sky - Aguardando */}
-        <div className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden">
+        <div className="bg-[var(--white)] rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[12px] bg-[var(--sky)]"></div>
           <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-[var(--sky-dim)] mb-3.5">
             <svg viewBox="0 0 24 24" width="17" height="17" stroke="var(--sky)" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -136,7 +136,7 @@ export default function RecepcionistaDashboard() {
           <p className="text-xs text-ink-3 font-medium">Aguardando</p>
         </div>
         {/* Card laranja - Atendidos */}
-        <div className="bg-white rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden">
+        <div className="bg-[var(--white)] rounded-[12px] p-[20px_22px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[12px] bg-mmq-orange"></div>
           <div className="flex items-center justify-center w-[38px] h-[38px] rounded-[9px] bg-mmq-orange-dim mb-3.5">
             <svg viewBox="0 0 24 24" width="17" height="17" stroke="var(--mmq-orange)" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -151,11 +151,11 @@ export default function RecepcionistaDashboard() {
       {/* Duas colunas: Consultas + Acções Rápidas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Consultas de Hoje */}
-        <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
+        <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
           <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[var(--border2)] flex-wrap">
             <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Consultas de Hoje</h3>
             <button
-              className="inline-flex items-center gap-1.5 rounded-[6px] border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-semibold text-ink-2 transition hover:bg-slate"
+              className="inline-flex items-center gap-1.5 rounded-[6px] border border-[var(--border)] bg-[var(--white)] px-3 py-1.5 text-xs font-semibold text-ink-2 transition hover:bg-slate"
               onClick={() => router.push('/recepcionista/consultations')}
             >
               Ver todas
@@ -205,7 +205,7 @@ export default function RecepcionistaDashboard() {
         </div>
 
         {/* Acções Rápidas */}
-        <div className="bg-white rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
+        <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_1px_3px_rgba(12,26,39,.05)] overflow-hidden">
           <div className="flex items-center justify-between gap-3 p-[16px_22px] border-b border-[var(--border2)]">
             <h3 className="text-[14.5px] font-bold text-[var(--ink)]">Acções Rápidas</h3>
           </div>
@@ -220,7 +220,7 @@ export default function RecepcionistaDashboard() {
               Agendar Consulta
             </button>
             <button
-              className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
+              className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2.5 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
               onClick={() => router.push('/recepcionista/patients/novo')}
             >
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -229,7 +229,7 @@ export default function RecepcionistaDashboard() {
               Registar Paciente
             </button>
             <button
-              className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-white px-4 py-2.5 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
+              className="w-full flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2.5 text-[13.5px] font-semibold text-ink-2 transition hover:bg-slate"
               onClick={() => router.push('/recepcionista/patients')}
             >
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

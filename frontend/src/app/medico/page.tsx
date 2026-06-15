@@ -136,7 +136,7 @@ export default function MedicoDashboard() {
       </div>
 
       {/* Agenda de Hoje */}
-      <div className="bg-white rounded-xl border border-[var(--border2)] shadow-md overflow-hidden mt-6">
+      <div className="bg-[var(--white)] rounded-xl border border-[var(--border2)] shadow-md overflow-hidden mt-6">
         <div className="flex items-center justify-between p-5 border-b border-[var(--border2)]">
           <h3 className="text-base font-bold text-ink">Agenda de Hoje</h3>
           <Link href="/medico/attend" className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-3 py-1.5 rounded-md text-xs font-medium">
@@ -181,7 +181,7 @@ export default function MedicoDashboard() {
 
       {/* Últimas Fichas (opcional) */}
       {ultimasFichas.length > 0 && (
-        <div className="bg-white rounded-xl border border-[var(--border2)] shadow-md overflow-hidden mt-6">
+        <div className="bg-[var(--white)] rounded-xl border border-[var(--border2)] shadow-md overflow-hidden mt-6">
           <div className="p-5 border-b border-[var(--border2)]">
             <h3 className="text-base font-bold text-ink">Últimas Fichas</h3>
           </div>

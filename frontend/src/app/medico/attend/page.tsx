@@ -39,7 +39,7 @@ export default function MedicoAttendPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-[var(--border2)] shadow-md">
+      <div className="bg-[var(--white)] rounded-xl border border-[var(--border2)] shadow-md">
         <div className="mb-4">
           <h3>Agenda de Hoje</h3>
         </div>
