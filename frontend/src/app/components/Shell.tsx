@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState, useEffect } from 'react'; // ← ADICIONE ESTE IMPORT
 
 const adminNav = [
   { label: 'Dashboard', href: '/admin', icon: 'M3 3h7v7H3V3zm10 0h7v7h-7V3zM3 14h7v7H3v-7zm10 0h7v7h-7v-7z' },
@@ -44,6 +45,12 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  
+  // ← ADICIONE ESTAS 3 LINHAS
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const role = user?.role ?? '';
   const navItems = navMap[role] || [];
@@ -74,20 +81,27 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="topbar-spacer" />
+        
+        {/* ← MODIFIQUE ESTE BOTÃO DE TEMA */}
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           className="topbar-logout-btn"
           title="Alternar tema"
           aria-label="Alternar entre modo claro e escuro"
         >
-          {theme === 'dark' ? (
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round">
-              <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-            </svg>
+          {!mounted ? (
+            // Placeholder enquanto não está montado (mesmo tamanho do ícone)
+            <div style={{ width: '16px', height: '16px' }} />
           ) : (
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
+            theme === 'dark' ? (
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            )
           )}
         </button>
 
