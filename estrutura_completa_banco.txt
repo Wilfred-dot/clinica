@@ -1,0 +1,13 @@
+\[?1049h[22;0;0t[?1h=                                                 List of relations
+ Schema |        Name         |   Type   |      Owner      | Persistence | Acces s method |    Size    | Description 
+--------+---------------------+----------+-----------------+-------------+------ ---------+------------+-------------
+ public | consultas           | table    | clinica_usuario | permanent   | heap           | 16 kB      | 
+ public | consultas_id_seq    | sequence | clinica_usuario | permanent   |                | 8192 bytes | 
+ public | medicos             | table    | clinica_usuario | permanent   | heap           | 8192 bytes | 
+ public | medicos_id_seq      | sequence | clinica_usuario | permanent   |                | 8192 bytes | 
+ public | notificacoes        | table    | clinica_usuario | permanent   | heap           | 16 kB      | 
+ public | notificacoes_id_seq | sequence | clinica_usuario | permanent   |                | 8192 bytes | 
+ public | pacientes           | table    | clinica_usuario | permanent   | heap           | 16 kB      | 
+ public | pacientes_id_seq    | sequence | clinica_usuario | permanent   |                | 8192 bytes | 
+ public | prescricoes         | table    | clinica_usuario | permanent   | heap           | 16 kB      | 
+:[K[K:[K[K:[K[K:[K[K[K:[K
