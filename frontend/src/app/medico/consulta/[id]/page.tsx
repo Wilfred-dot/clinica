@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
+import Link from 'next/link';
 
 interface Prescricao {
   id: number;
@@ -37,6 +38,13 @@ interface Consulta {
   };
   prescricoes: Prescricao[];
 }
+
+const statusBadgeClasses: Record<string, { bg: string; text: string; dot: string }> = {
+  agendada:  { bg: 'bg-warn-dim', text: 'text-warn', dot: 'bg-warn' },
+  realizada: { bg: 'bg-success-dim', text: 'text-[var(--success)]', dot: 'bg-[var(--success)]' },
+  em_curso:  { bg: 'bg-[var(--sky-dim)]', text: 'text-[var(--sky)]', dot: 'bg-[var(--sky)]' },
+  cancelada: { bg: 'bg-[var(--danger-dim)]', text: 'text-danger', dot: 'bg-danger' },
+};
 
 export default function MedicoConsultaPage() {
   const params = useParams();
@@ -151,141 +159,312 @@ export default function MedicoConsultaPage() {
     }
   };
 
-  if (loading) return <Shell><p className="p-8">A carregar consulta...</p></Shell>;
-  if (!consulta) return <Shell><p className="p-8">Consulta não encontrada.</p></Shell>;
+  if (loading) return (
+    <Shell>
+      <div className="flex items-center justify-center h-64">
+        <p className="text-ink-4">A carregar consulta...</p>
+      </div>
+    </Shell>
+  );
+  
+  if (!consulta) return (
+    <Shell>
+      <div className="p-8 text-center">
+        <p className="text-danger">Consulta não encontrada.</p>
+        <button onClick={() => router.push('/medico/attend')} className="mt-4 px-4 py-2 bg-[var(--mmq-orange)] text-white rounded-md">
+          Voltar para agenda
+        </button>
+      </div>
+    </Shell>
+  );
 
   const patient = consulta.pacientes;
   const doctor = consulta.medicos;
+  const isRealizada = consulta.status === 'realizada';
+  const statusBadge = statusBadgeClasses[consulta.status] || { bg: 'bg-slate2', text: 'text-ink-3', dot: 'bg-ink-4' };
 
   return (
     <Shell>
-      <div className="p-6">
+      {/* Cabeçalho da página */}
+      <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-ink tracking-[-0.5px]">Atendimento</h1>
-          <p className="text-base font-medium text-ink-3 mt-[3px]">
+          <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Atendimento</h1>
+          <p className="text-[13px] text-ink-3 mt-0.5 font-medium uppercase tracking-[0.2px]">
             {patient?.users?.name} · {new Date(consulta.data_hora).toLocaleDateString('pt-MZ')} às{' '}
             {new Date(consulta.data_hora).toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit' })}
           </p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${statusBadge.bg} ${statusBadge.text}`}>
+              <span className={`inline-block w-1.5 h-1.5 rounded-full ${statusBadge.dot}`}></span>
+              {consulta.status ? consulta.status.charAt(0).toUpperCase() + consulta.status.slice(1).replace('_', ' ') : 'N/D'}
+            </span>
+          </div>
         </div>
-        <div className="ph-actions">
-          <button className="border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] hover:border-[var(--ink4)] hover:text-[var(--ink)] px-4 py-2 rounded-md font-medium" onClick={() => router.push('/medico/attend')}>← Agenda</button>
-          {consulta.status !== 'realizada' && (
-            <button className="bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] px-4 py-2 rounded-md font-medium transition shadow-[0_1px_3px_rgba(255,127,0,0.1)] hover:shadow-[0_4px_14px_rgba(255,127,0,0.25)]" onClick={handleFinalize} disabled={finalizing}>
+        <div className="flex gap-2 flex-wrap">
+          <button
+            className="inline-flex items-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 h-10 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
+            onClick={() => router.push('/medico/attend')}
+          >
+            ← Agenda
+          </button>
+          {!isRealizada && (
+            <button
+              className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[var(--mmq-orange)] px-5 h-10 text-[13.5px] font-bold text-white transition hover:bg-[var(--mmq-orange-lt)] shadow-sm"
+              onClick={handleFinalize}
+              disabled={finalizing}
+            >
               {finalizing ? 'Finalizando...' : 'Concluir Consulta'}
             </button>
           )}
         </div>
       </div>
 
-      {error && <div className="badge br" style={{ marginBottom: 16 }}>{error}</div>}
+      {error && (
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
+          <span className="w-1.5 h-1.5 rounded-full bg-danger"></span>
+          {error}
+        </div>
+      )}
 
-      <div className="ficha-layout">
-        <div>
-          <div className="patient-card">
-            <div className="pc-header">
-              <div className="pc-avatar">{patient?.users?.name?.charAt(0)?.toUpperCase() || '?'}</div>
-              <h3>{patient?.users?.name}</h3>
-              <p>
-                {patient?.data_nascimento
-                  ? `${new Date().getFullYear() - new Date(patient.data_nascimento).getFullYear()} anos`
-                  : 'Idade desconhecida'}{' '}
-                · {patient?.sexo === 'M' ? 'Masculino' : patient?.sexo === 'F' ? 'Feminino' : 'Outro'}
-              </p>
-            </div>
-            <div className="pc-body">
-              <div className="pc-row"><span className="lbl">Contacto</span><span className="val">{patient?.telefone || '—'}</span></div>
-              <div className="pc-row"><span className="lbl">Alergias</span><span className="val" style={{ color: 'var(--danger)' }}>{patient?.historico_medico || 'Nenhuma'}</span></div>
-              <div className="pc-row"><span className="lbl">Médico</span><span className="val">{doctor?.users?.name} · {doctor?.especialidade}</span></div>
-              <div className="pc-row"><span className="lbl">Estado</span><span className="val">{consulta.status}</span></div>
+      {/* Grid de Conteúdo */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+        
+        {/* Coluna Esquerda - Dados do Paciente e Prescrições */}
+        <div className="flex flex-col gap-6">
+          {/* Card do Paciente */}
+          <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden transition hover:border-[var(--mmq-orange)]">
+            <div className="p-5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-[var(--mmq-orange)] text-white flex items-center justify-center text-base font-bold flex-shrink-0">
+                  {patient?.users?.name?.charAt(0)?.toUpperCase() || '?'}
+                </div>
+                <div>
+                  <h3 className="text-[15px] font-bold text-[var(--ink)]">{patient?.users?.name}</h3>
+                  <p className="text-sm text-ink-3">
+                    {patient?.data_nascimento
+                      ? `${new Date().getFullYear() - new Date(patient.data_nascimento).getFullYear()} anos`
+                      : 'Idade desconhecida'}{' '}
+                    · {patient?.sexo === 'M' ? 'Masculino' : patient?.sexo === 'F' ? 'Feminino' : 'Outro'}
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <div className="text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px]">Contacto</div>
+                  <div className="text-sm font-medium text-[var(--ink)]">{patient?.telefone || '—'}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px]">Alergias</div>
+                  <div className="text-sm font-medium text-danger">{patient?.historico_medico || 'Nenhuma'}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px]">Médico</div>
+                  <div className="text-sm font-medium text-[var(--ink)]">{doctor?.users?.name}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px]">Especialidade</div>
+                  <div className="text-sm font-medium text-[var(--ink)]">{doctor?.especialidade}</div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Prescrições */}
-          <div className="bg-[var(--white)] rounded-xl border border-[var(--border2)] shadow-md" style={{ marginTop: 20 }}>
-            <div className="mb-4"><h3>Prescrições</h3></div>
-            <div style={{ padding: 16 }}>
+          <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden transition hover:border-[var(--mmq-orange)]">
+            <div className="flex items-center justify-between p-5 border-b border-[var(--border2)]">
+              <h3 className="text-[15px] font-bold text-[var(--ink)]">Prescrições</h3>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[12px] font-bold bg-[var(--sky-dim)] text-[var(--sky)]">
+                {prescricoes.length} registos
+              </span>
+            </div>
+            <div className="p-5">
               {prescricoes.length === 0 ? (
-                <p style={{ fontSize: 13, color: 'var(--ink4)', textAlign: 'center', padding: 16 }}>Nenhuma prescrição emitida.</p>
+                <div className="text-center py-6">
+                  <p className="text-sm font-medium text-ink-3">Nenhuma prescrição emitida.</p>
+                </div>
               ) : (
-                <table>
-                  <thead><tr><th>Medicamento</th><th>Dosagem</th><th>Instruções</th><th>Data</th></tr></thead>
-                  <tbody>
-                    {prescricoes.map(p => (
-                      <tr key={p.id}>
-                        <td><strong>{p.medicamento}</strong></td>
-                        <td>{p.dosagem}</td>
-                        <td>{p.instrucoes || '—'}</td>
-                        <td>{new Date(p.data_prescricao).toLocaleDateString('pt-MZ')}</td>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-[var(--slate)]">
+                        <th className="text-[11px] font-bold uppercase tracking-[0.6px] p-3 text-left text-ink-3">Medicamento</th>
+                        <th className="text-[11px] font-bold uppercase tracking-[0.6px] p-3 text-left text-ink-3">Dosagem</th>
+                        <th className="text-[11px] font-bold uppercase tracking-[0.6px] p-3 text-left text-ink-3">Instruções</th>
+                        <th className="text-[11px] font-bold uppercase tracking-[0.6px] p-3 text-left text-ink-3">Data</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--border2)]">
+                      {prescricoes.map(p => (
+                        <tr key={p.id} className="hover:bg-[var(--slate)] transition-colors">
+                          <td className="p-3 text-sm font-bold text-[var(--ink)]">{p.medicamento}</td>
+                          <td className="p-3 text-sm font-medium text-ink-3">{p.dosagem}</td>
+                          <td className="p-3 text-sm font-medium text-ink-3">{p.instrucoes || '—'}</td>
+                          <td className="p-3 text-sm font-medium text-ink-3">
+                            {new Date(p.data_prescricao).toLocaleDateString('pt-MZ')}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
-              {consulta.status !== 'realizada' && (
-                <div style={{ marginTop: 16, display: 'flex', gap: 8, alignItems: 'flex-end', flexWrap: 'wrap', borderTop: '1px solid var(--border2)', paddingTop: 16 }}>
-                  <div className="field" style={{ flex: 1, minWidth: 150, marginBottom: 0 }}>
-                    <label>Medicamento</label>
-                    <input type="text" value={medicamento} onChange={e => setMedicamento(e.target.value)} placeholder="Nome do medicamento" />
+
+              {!isRealizada && (
+                <div className="mt-4 pt-4 border-t border-[var(--border2)]">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">Medicamento</label>
+                      <input
+                        type="text"
+                        value={medicamento}
+                        onChange={e => setMedicamento(e.target.value)}
+                        placeholder="Nome do medicamento"
+                        className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">Dosagem</label>
+                      <input
+                        type="text"
+                        value={dosagem}
+                        onChange={e => setDosagem(e.target.value)}
+                        placeholder="Ex: 500mg 2x/dia"
+                        className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">Instruções (opcional)</label>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={instrucoes}
+                          onChange={e => setInstrucoes(e.target.value)}
+                          placeholder="Tomar após refeição"
+                          className="flex-1 px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200"
+                        />
+                        <button
+                          onClick={handleAddPrescricao}
+                          disabled={prescribing || !medicamento.trim() || !dosagem.trim()}
+                          className="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-[var(--mmq-orange)] rounded-lg hover:bg-[var(--mmq-orange-lt)] disabled:opacity-50 transition-all duration-200 shadow-sm"
+                        >
+                          {prescribing ? '...' : 'Adicionar'}
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="field" style={{ flex: 1, minWidth: 120, marginBottom: 0 }}>
-                    <label>Dosagem</label>
-                    <input type="text" value={dosagem} onChange={e => setDosagem(e.target.value)} placeholder="Ex: 500mg 2x/dia" />
-                  </div>
-                  <div className="field" style={{ flex: 1, minWidth: 150, marginBottom: 0 }}>
-                    <label>Instruções (opcional)</label>
-                    <input type="text" value={instrucoes} onChange={e => setInstrucoes(e.target.value)} placeholder="Tomar após refeição" />
-                  </div>
-                  <button className="btn btn-primary btn-sm" onClick={handleAddPrescricao} disabled={prescribing || !medicamento.trim() || !dosagem.trim()}>
-                    {prescribing ? '...' : 'Adicionar'}
-                  </button>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="clinical-card">
-          <div className="cc-section">
-            <div className="cc-title">Motivo da consulta</div>
-            <textarea value={motivo} onChange={e => setMotivo(e.target.value)} rows={3} style={{ width: '100%', padding: '10px 12px', border: '1.5px solid var(--border)', borderRadius: 'var(--r)', fontFamily: 'var(--font)', fontSize: 14, outline: 'none', resize: 'vertical' }} disabled={consulta.status === 'realizada'} />
-          </div>
-          <div className="cc-section">
-            <div className="cc-title">Acuidade Visual</div>
-            <div className="rx-grid">
-              <div className="rx-eye">
-                <div className="eye-label">Olho Direito (OD)</div>
-                <input type="text" value={acuidadeOD} onChange={e => setAcuidadeOD(e.target.value)} placeholder="Ex: 20/40" style={{ width: '100%', padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: 'var(--r)', fontFamily: 'var(--font)', fontSize: 14, outline: 'none' }} disabled={consulta.status === 'realizada'} />
+        {/* Coluna Direita - Dados Clínicos */}
+        <div className="flex flex-col gap-6">
+          <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden transition hover:border-[var(--mmq-orange)] p-5">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">Motivo da consulta</label>
+                <textarea
+                  value={motivo}
+                  onChange={e => setMotivo(e.target.value)}
+                  rows={3}
+                  disabled={isRealizada}
+                  className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 resize-y disabled:opacity-60"
+                />
               </div>
-              <div className="rx-eye">
-                <div className="eye-label">Olho Esquerdo (OE)</div>
-                <input type="text" value={acuidadeOE} onChange={e => setAcuidadeOE(e.target.value)} placeholder="Ex: 20/60" style={{ width: '100%', padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: 'var(--r)', fontFamily: 'var(--font)', fontSize: 14, outline: 'none' }} disabled={consulta.status === 'realizada'} />
+
+              <div>
+                <label className="block text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">Acuidade Visual</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-medium text-ink-3 mb-0.5">Olho Direito (OD)</label>
+                    <input
+                      type="text"
+                      value={acuidadeOD}
+                      onChange={e => setAcuidadeOD(e.target.value)}
+                      placeholder="Ex: 20/40"
+                      disabled={isRealizada}
+                      className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 disabled:opacity-60"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-medium text-ink-3 mb-0.5">Olho Esquerdo (OE)</label>
+                    <input
+                      type="text"
+                      value={acuidadeOE}
+                      onChange={e => setAcuidadeOE(e.target.value)}
+                      placeholder="Ex: 20/60"
+                      disabled={isRealizada}
+                      className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 disabled:opacity-60"
+                    />
+                  </div>
+                </div>
               </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">Pressão Intra-Ocular (mmHg)</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <input
+                    type="number"
+                    value={pressaoOD}
+                    onChange={e => setPressaoOD(e.target.value ? +e.target.value : '')}
+                    placeholder="OD"
+                    disabled={isRealizada}
+                    className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 disabled:opacity-60"
+                  />
+                  <input
+                    type="number"
+                    value={pressaoOE}
+                    onChange={e => setPressaoOE(e.target.value ? +e.target.value : '')}
+                    placeholder="OE"
+                    disabled={isRealizada}
+                    className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 disabled:opacity-60"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">Diagnóstico</label>
+                <input
+                  type="text"
+                  value={diagnostico}
+                  onChange={e => setDiagnostico(e.target.value)}
+                  placeholder="Diagnóstico"
+                  disabled={isRealizada}
+                  className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 disabled:opacity-60"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-ink-3 uppercase tracking-[0.6px] mb-1">Plano de Tratamento</label>
+                <textarea
+                  value={planoTratamento}
+                  onChange={e => setPlanoTratamento(e.target.value)}
+                  rows={3}
+                  disabled={isRealizada}
+                  className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 resize-y disabled:opacity-60"
+                />
+              </div>
+
+              {!isRealizada && (
+                <div className="flex gap-3 pt-2">
+                  <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[8px] bg-[var(--mmq-orange)] px-4 py-2.5 text-[13.5px] font-bold text-white transition hover:bg-[var(--mmq-orange-lt)] disabled:opacity-50 shadow-sm"
+                  >
+                    {saving ? 'Guardando...' : 'Guardar Dados'}
+                  </button>
+                  <button
+                    onClick={handleFinalize}
+                    disabled={finalizing}
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-[8px] border border-[var(--border)] bg-[var(--white)] px-4 py-2.5 text-[13.5px] font-bold text-ink-3 transition hover:bg-slate"
+                  >
+                    {finalizing ? 'Finalizando...' : 'Concluir'}
+                  </button>
+                </div>
+              )}
             </div>
-          </div>
-          <div className="cc-section">
-            <div className="cc-title">Pressão Intra-Ocular (mmHg)</div>
-            <div className="rx-grid">
-              <input type="number" value={pressaoOD} onChange={e => setPressaoOD(e.target.value ? +e.target.value : '')} placeholder="OD" style={{ width: '100%', padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: 'var(--r)', fontFamily: 'var(--font)', fontSize: 14, outline: 'none' }} disabled={consulta.status === 'realizada'} />
-              <input type="number" value={pressaoOE} onChange={e => setPressaoOE(e.target.value ? +e.target.value : '')} placeholder="OE" style={{ width: '100%', padding: '8px 12px', border: '1.5px solid var(--border)', borderRadius: 'var(--r)', fontFamily: 'var(--font)', fontSize: 14, outline: 'none' }} disabled={consulta.status === 'realizada'} />
-            </div>
-          </div>
-          <div className="cc-section">
-            <div className="cc-title">Diagnóstico</div>
-            <input type="text" value={diagnostico} onChange={e => setDiagnostico(e.target.value)} placeholder="Diagnóstico" style={{ width: '100%', padding: '10px 12px', border: '1.5px solid var(--border)', borderRadius: 'var(--r)', fontFamily: 'var(--font)', fontSize: 14, outline: 'none' }} disabled={consulta.status === 'realizada'} />
-          </div>
-          <div className="cc-section">
-            <div className="cc-title">Plano de Tratamento</div>
-            <textarea value={planoTratamento} onChange={e => setPlanoTratamento(e.target.value)} rows={3} style={{ width: '100%', padding: '10px 12px', border: '1.5px solid var(--border)', borderRadius: 'var(--r)', fontFamily: 'var(--font)', fontSize: 14, outline: 'none', resize: 'vertical' }} disabled={consulta.status === 'realizada'} />
-          </div>
-          <div className="cc-section" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button className="bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] px-4 py-2 rounded-md font-medium transition shadow-[0_1px_3px_rgba(255,127,0,0.1)] hover:shadow-[0_4px_14px_rgba(255,127,0,0.25)]" onClick={handleSave} disabled={saving || consulta.status === 'realizada'}>
-              {saving ? 'Guardando...' : 'Guardar Dados'}
-            </button>
-            {consulta.status !== 'realizada' && (
-              <button className="btn btn-secondary" onClick={handleFinalize} disabled={finalizing}>
-                {finalizing ? 'Finalizando...' : 'Concluir Consulta'}
-              </button>
-            )}
           </div>
         </div>
       </div>

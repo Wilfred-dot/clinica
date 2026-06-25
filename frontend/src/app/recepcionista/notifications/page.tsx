@@ -1,40 +1,38 @@
 'use client';
 
-import { useEffect, useState, useMemo, useRef, useCallback } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Shell from '@/app/components/Shell';
 import { request } from '@/lib/api';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
-interface Paciente {
+interface Notificacao {
   id: number;
-  user_id: number;
-  data_nascimento: string;
-  sexo: string;
-  telefone: string;
-  endereco: string;
-  historico_medico?: string;
-  users: {
-    name: string;
-    email: string;
-    ativo: boolean;
-  };
-  ultimo_atendimento?: string;
-  consultasMes?: number;
+  mensagem: string;
+  tipo_variavel: string;
+  data_envio: string;
+  paciente: string;
 }
 
-export default function ReceptionPatientsPage() {
+// Mapeamento dos tipos de notificação para badges coloridas
+const tipoBadge: Record<string, { bg: string; text: string; dot: string; label: string }> = {
+  lembrete_consulta: { bg: 'bg-[var(--warn-dim)]', text: 'text-[var(--warn)]', dot: 'bg-[var(--warn)]', label: 'Lembrete' },
+  confirmacao:       { bg: 'bg-[var(--success-dim)]', text: 'text-[var(--success)]', dot: 'bg-[var(--success)]', label: 'Confirmação' },
+  alerta:            { bg: 'bg-[var(--danger-dim)]', text: 'text-[var(--danger)]', dot: 'bg-[var(--danger)]', label: 'Alerta' },
+  resultado_exame:   { bg: 'bg-[var(--sky-dim)]', text: 'text-[var(--sky)]', dot: 'bg-[var(--sky)]', label: 'Resultado' },
+};
+
+export default function ReceptionNotificationsPage() {
   const router = useRouter();
-  const [patients, setPatients] = useState<Paciente[]>([]);
+  const [notificacoes, setNotificacoes] = useState<Notificacao[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [error, setError] = useState('');
   
-  const [filterStatus, setFilterStatus] = useState<string>('todos');
-  const [filterOrder, setFilterOrder] = useState<string>('nome_asc');
-  const [filterGenero, setFilterGenero] = useState<string>('todos');
-  const [filterConsultas, setFilterConsultas] = useState<string>('todos');
+  const [filterTipo, setFilterTipo] = useState<string>('todos');
+  const [filterPaciente, setFilterPaciente] = useState<string>('todos');
+  const [filterOrder, setFilterOrder] = useState<string>('data_desc');
+  const [filterMensagem, setFilterMensagem] = useState<string>('todos');
   const [showFilters, setShowFilters] = useState(false);
   
   const [displayCount, setDisplayCount] = useState(10);
@@ -42,6 +40,9 @@ export default function ReceptionPatientsPage() {
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const ITEMS_PER_LOAD = 5;
   const INITIAL_LOAD = 10;
+
+  // Modal state
+  const [modalNotificacao, setModalNotificacao] = useState<Notificacao | null>(null);
 
   // Debounce search input
   useEffect(() => {
@@ -51,114 +52,85 @@ export default function ReceptionPatientsPage() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  const fetchPatients = useCallback(() => {
+  const fetchNotificacoes = () => {
     setLoading(true);
     setError('');
-    request<{ data: Paciente[] }>('/pacientes')
-      .then(res => {
-        const dados = res.data ?? [];
-        setPatients(dados);
+    request<Notificacao[]>('/notificacoes')
+      .then(data => {
+        const dados = data ?? [];
+        setNotificacoes(dados);
         if (dados.length <= 20) {
           setDisplayCount(dados.length);
         } else {
           setDisplayCount(INITIAL_LOAD);
         }
       })
-      .catch(() => {
-        setError('Não foi possível carregar a lista de pacientes.');
-      })
+      .catch(() => setError('Não foi possível carregar as notificações'))
       .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => { fetchPatients(); }, [fetchPatients]);
-
-  // Função para calcular idade a partir da data de nascimento
-  const calcularIdade = (dataNascimento: string) => {
-    if (!dataNascimento) return null;
-    const nascimento = new Date(dataNascimento);
-    const hoje = new Date();
-    let idade = hoje.getFullYear() - nascimento.getFullYear();
-    const mes = hoje.getMonth() - nascimento.getMonth();
-    if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
-      idade--;
-    }
-    return idade;
   };
+
+  useEffect(() => { fetchNotificacoes(); }, []);
 
   const clearFilters = () => {
     setSearch('');
-    setFilterStatus('todos');
-    setFilterOrder('nome_asc');
-    setFilterGenero('todos');
-    setFilterConsultas('todos');
+    setFilterTipo('todos');
+    setFilterPaciente('todos');
+    setFilterOrder('data_desc');
+    setFilterMensagem('todos');
     setShowFilters(false);
-    if (patients.length <= 20) {
-      setDisplayCount(patients.length);
+    if (notificacoes.length <= 20) {
+      setDisplayCount(notificacoes.length);
     } else {
       setDisplayCount(INITIAL_LOAD);
     }
   };
 
-  const hasActiveFilters = filterStatus !== 'todos' || filterOrder !== 'nome_asc' || filterGenero !== 'todos' || filterConsultas !== 'todos' || search !== '';
+  const hasActiveFilters = filterTipo !== 'todos' || filterPaciente !== 'todos' || filterOrder !== 'data_desc' || filterMensagem !== 'todos' || search !== '';
+
+  // Extrair lista única de pacientes para o filtro
+  const pacientesUnicos = useMemo(() => {
+    const nomes = notificacoes.map(n => n.paciente).filter(Boolean);
+    return [...new Set(nomes)].sort();
+  }, [notificacoes]);
 
   const filtered = useMemo(() => {
-    let result = patients;
+    let result = notificacoes;
 
     const cleanSearch = debouncedSearch.toLowerCase().trim();
     if (cleanSearch) {
-      result = result.filter(p => 
-        (p.users?.name?.toLowerCase() || '').includes(cleanSearch) ||
-        (p.users?.email?.toLowerCase() || '').includes(cleanSearch) ||
-        (p.telefone?.toLowerCase() || '').includes(cleanSearch) ||
-        (p.endereco?.toLowerCase() || '').includes(cleanSearch)
+      result = result.filter(n => 
+        (n.paciente?.toLowerCase() || '').includes(cleanSearch) ||
+        (n.mensagem?.toLowerCase() || '').includes(cleanSearch) ||
+        (n.tipo_variavel?.toLowerCase() || '').includes(cleanSearch)
       );
     }
 
-    if (filterStatus !== 'todos') {
-      const isActive = filterStatus === 'activo';
-      result = result.filter(p => p.users?.ativo === isActive);
+    if (filterTipo !== 'todos') {
+      result = result.filter(n => n.tipo_variavel === filterTipo);
     }
 
-    if (filterGenero !== 'todos') {
-      result = result.filter(p => p.sexo === filterGenero);
+    if (filterPaciente !== 'todos') {
+      result = result.filter(n => n.paciente === filterPaciente);
     }
 
-    // Ordenar por consultas primeiro
-    if (filterConsultas !== 'todos') {
-      if (filterConsultas === 'mais') {
-        result = [...result].sort((a, b) => (b.consultasMes || 0) - (a.consultasMes || 0));
-      } else if (filterConsultas === 'menos') {
-        result = [...result].sort((a, b) => (a.consultasMes || 0) - (b.consultasMes || 0));
-      }
+    if (filterMensagem !== 'todos') {
+      const searchTerm = filterMensagem.toLowerCase().trim();
+      result = result.filter(n => n.mensagem?.toLowerCase().includes(searchTerm));
     }
 
-    // Aplicar ordenação por nome DEPOIS da ordenação por consultas
-    if (filterOrder === 'nome_asc') {
-      if (filterConsultas !== 'todos') {
-        result = [...result].sort((a, b) => {
-          const consultasDiff = (b.consultasMes || 0) - (a.consultasMes || 0);
-          if (consultasDiff !== 0 && filterConsultas === 'mais') return consultasDiff;
-          if (consultasDiff !== 0 && filterConsultas === 'menos') return -consultasDiff;
-          return (a.users?.name || '').localeCompare(b.users?.name || '');
-        });
-      } else {
-        result = [...result].sort((a, b) => (a.users?.name || '').localeCompare(b.users?.name || ''));
-      }
-    } else if (filterOrder === 'nome_desc') {
-      if (filterConsultas !== 'todos') {
-        result = [...result].sort((a, b) => {
-          const consultasDiff = (b.consultasMes || 0) - (a.consultasMes || 0);
-          if (consultasDiff !== 0 && filterConsultas === 'mais') return consultasDiff;
-          if (consultasDiff !== 0 && filterConsultas === 'menos') return -consultasDiff;
-          return (b.users?.name || '').localeCompare(a.users?.name || '');
-        });
-      } else {
-        result = [...result].sort((a, b) => (b.users?.name || '').localeCompare(a.users?.name || ''));
-      }
+    // Ordenação
+    if (filterOrder === 'data_asc') {
+      result = [...result].sort((a, b) => new Date(a.data_envio).getTime() - new Date(b.data_envio).getTime());
+    } else if (filterOrder === 'data_desc') {
+      result = [...result].sort((a, b) => new Date(b.data_envio).getTime() - new Date(a.data_envio).getTime());
+    } else if (filterOrder === 'paciente_asc') {
+      result = [...result].sort((a, b) => (a.paciente || '').localeCompare(b.paciente || ''));
+    } else if (filterOrder === 'paciente_desc') {
+      result = [...result].sort((a, b) => (b.paciente || '').localeCompare(a.paciente || ''));
     }
 
     return result;
-  }, [patients, debouncedSearch, filterStatus, filterOrder, filterGenero, filterConsultas]);
+  }, [notificacoes, debouncedSearch, filterTipo, filterPaciente, filterOrder, filterMensagem]);
 
   useEffect(() => {
     if (filtered.length <= 20) {
@@ -168,7 +140,7 @@ export default function ReceptionPatientsPage() {
     }
   }, [filtered.length]);
 
-  const displayedPatients = useMemo(() => {
+  const displayedNotificacoes = useMemo(() => {
     return filtered.slice(0, displayCount);
   }, [filtered, displayCount]);
 
@@ -194,61 +166,51 @@ export default function ReceptionPatientsPage() {
     return () => observer.disconnect();
   }, [hasMore, isLoadingMore, filtered.length]);
 
-  const statuses = [
-    { value: 'todos', label: 'Todos os estados' },
-    { value: 'activo', label: 'Activo' },
-    { value: 'inactivo', label: 'Inactivo' },
+  const tipos = [
+    { value: 'todos', label: 'Todos os tipos' },
+    { value: 'lembrete_consulta', label: 'Lembrete' },
+    { value: 'confirmacao', label: 'Confirmação' },
+    { value: 'alerta', label: 'Alerta' },
+    { value: 'resultado_exame', label: 'Resultado' },
   ];
 
   const orders = [
-    { value: 'nome_asc', label: 'Nome (A-Z)' },
-    { value: 'nome_desc', label: 'Nome (Z-A)' },
+    { value: 'data_desc', label: 'Data (mais recente)' },
+    { value: 'data_asc', label: 'Data (mais antiga)' },
+    { value: 'paciente_asc', label: 'Paciente (A-Z)' },
+    { value: 'paciente_desc', label: 'Paciente (Z-A)' },
   ];
 
-  const generos = [
-    { value: 'todos', label: 'Todos os géneros' },
-    { value: 'Masculino', label: 'Masculino' },
-    { value: 'Feminino', label: 'Feminino' },
+  const pacientesOptions = [
+    { value: 'todos', label: 'Todos os pacientes' },
+    ...pacientesUnicos.map(p => ({ value: p, label: p })),
   ];
-
-  const consultasFiltro = [
-    { value: 'todos', label: 'Todas as consultas' },
-    { value: 'mais', label: 'Mais consultas' },
-    { value: 'menos', label: 'Menos consultas' },
-  ];
-
-  // Função para obter o género completo
-  const getGeneroCompleto = (sexo: string) => {
-    if (!sexo) return '—';
-    if (sexo.toLowerCase() === 'masculino') return 'Masculino';
-    if (sexo.toLowerCase() === 'feminino') return 'Feminino';
-    return sexo;
-  };
 
   return (
     <Shell>
-      {/* Cabeçalho da página */}
+      {/* Cabeçalho da página - padronizado */}
       <div className="flex items-start justify-between gap-4 mb-7 flex-wrap">
         <div>
-          <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Pacientes</h1>
+          <h1 className="text-[24px] font-bold text-[var(--ink)] tracking-[-0.5px]">Lista de Notificações</h1>
           <p className="text-[13px] text-ink-3 mt-0.5 font-medium uppercase tracking-[0.2px]">
-            Recepção — Clínica MMQ Oftalmologia
+            Todas as notificações enviadas pelo sistema
           </p>
           <p className="text-[13px] text-[var(--mmq-orange)] mt-1 font-medium">
-            Mostrando {filtered.length} de {patients.length} pacientes
+            Mostrando {filtered.length} de {notificacoes.length} notificações
           </p>
         </div>
-        <Link
-          href="/recepcionista/patients/novo"
+        <button
           className="inline-flex items-center gap-1.5 justify-center rounded-[8px] bg-[var(--mmq-orange)] px-4 h-10 text-[13.5px] font-bold text-white transition hover:bg-[var(--mmq-orange-lt)] shadow-sm"
+          onClick={() => router.push('/recepcionista/notifications/novo')}
         >
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          Novo paciente
-        </Link>
+          Nova notificação
+        </button>
       </div>
 
+      {/* Erro geral */}
       {error && (
         <div className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger-dim)] text-danger text-[11.5px] font-semibold px-2.5 py-1 mb-4">
           <span className="w-1.5 h-1.5 rounded-full bg-danger"></span>
@@ -256,7 +218,7 @@ export default function ReceptionPatientsPage() {
         </div>
       )}
 
-      {/* Card da tabela */}
+      {/* Card com tabela */}
       <div className="bg-[var(--white)] rounded-[12px] border border-[var(--border2)] shadow-[0_2px_4px_rgba(16,42,107,.03)] overflow-hidden">
         <div className="p-5 border-b border-[var(--border2)]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -267,7 +229,7 @@ export default function ReceptionPatientsPage() {
               </svg>
               <input 
                 type="text" 
-                placeholder="Pesquisar paciente por nome, contacto ou endereço..." 
+                placeholder="Pesquisar notificação por paciente, tipo ou mensagem..." 
                 value={search} 
                 onChange={e => setSearch(e.target.value)} 
                 className="w-full pl-9 pr-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200"
@@ -319,46 +281,33 @@ export default function ReceptionPatientsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-ink-3 mb-1.5">Estado</label>
+                  <label className="block text-xs font-semibold text-ink-3 mb-1.5">Tipo</label>
                   <select
-                    value={filterStatus}
-                    onChange={e => setFilterStatus(e.target.value)}
+                    value={filterTipo}
+                    onChange={e => setFilterTipo(e.target.value)}
                     className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 cursor-pointer"
                   >
-                    {statuses.map(status => (
-                      <option key={status.value} value={status.value}>{status.label}</option>
+                    {tipos.map(tipo => (
+                      <option key={tipo.value} value={tipo.value}>{tipo.label}</option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-ink-3 mb-1.5">Género</label>
+                  <label className="block text-xs font-semibold text-ink-3 mb-1.5">Paciente</label>
                   <select
-                    value={filterGenero}
-                    onChange={e => setFilterGenero(e.target.value)}
+                    value={filterPaciente}
+                    onChange={e => setFilterPaciente(e.target.value)}
                     className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 cursor-pointer"
                   >
-                    {generos.map(gen => (
-                      <option key={gen.value} value={gen.value}>{gen.label}</option>
+                    {pacientesOptions.map(p => (
+                      <option key={p.value} value={p.value}>{p.label}</option>
                     ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-ink-3 mb-1.5">Consultas</label>
-                  <select
-                    value={filterConsultas}
-                    onChange={e => setFilterConsultas(e.target.value)}
-                    className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200 cursor-pointer"
-                  >
-                    {consultasFiltro.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-ink-3 mb-1.5">Ordenar por nome</label>
+                  <label className="block text-xs font-semibold text-ink-3 mb-1.5">Ordenar por</label>
                   <select
                     value={filterOrder}
                     onChange={e => setFilterOrder(e.target.value)}
@@ -368,6 +317,17 @@ export default function ReceptionPatientsPage() {
                       <option key={order.value} value={order.value}>{order.label}</option>
                     ))}
                   </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-ink-3 mb-1.5">Mensagem</label>
+                  <input
+                    type="text"
+                    placeholder="Filtrar por palavra na mensagem..."
+                    value={filterMensagem === 'todos' ? '' : filterMensagem}
+                    onChange={e => setFilterMensagem(e.target.value || 'todos')}
+                    className="w-full px-3 py-2 text-sm bg-[var(--white)] border border-[var(--border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--mmq-orange)]/20 focus:border-[var(--mmq-orange)] transition-all duration-200"
+                  />
                 </div>
               </div>
 
@@ -393,28 +353,28 @@ export default function ReceptionPatientsPage() {
               {hasActiveFilters && (
                 <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-[var(--border2)]">
                   <span className="text-xs font-medium text-ink-3">Filtros ativos:</span>
-                  {filterStatus !== 'todos' && (
+                  {filterTipo !== 'todos' && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-[var(--mmq-orange-dim)] text-[var(--mmq-orange)] rounded-full">
-                      {statuses.find(s => s.value === filterStatus)?.label}
-                      <button onClick={() => setFilterStatus('todos')} className="hover:text-danger">×</button>
+                      {tipos.find(t => t.value === filterTipo)?.label}
+                      <button onClick={() => setFilterTipo('todos')} className="hover:text-danger">×</button>
                     </span>
                   )}
-                  {filterGenero !== 'todos' && (
+                  {filterPaciente !== 'todos' && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-[var(--mmq-orange-dim)] text-[var(--mmq-orange)] rounded-full">
-                      {generos.find(g => g.value === filterGenero)?.label}
-                      <button onClick={() => setFilterGenero('todos')} className="hover:text-danger">×</button>
+                      {filterPaciente}
+                      <button onClick={() => setFilterPaciente('todos')} className="hover:text-danger">×</button>
                     </span>
                   )}
-                  {filterConsultas !== 'todos' && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-[var(--mmq-orange-dim)] text-[var(--mmq-orange)] rounded-full">
-                      {consultasFiltro.find(c => c.value === filterConsultas)?.label}
-                      <button onClick={() => setFilterConsultas('todos')} className="hover:text-danger">×</button>
-                    </span>
-                  )}
-                  {filterOrder !== 'nome_asc' && (
+                  {filterOrder !== 'data_desc' && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-[var(--mmq-orange-dim)] text-[var(--mmq-orange)] rounded-full">
                       {orders.find(o => o.value === filterOrder)?.label}
-                      <button onClick={() => setFilterOrder('nome_asc')} className="hover:text-danger">×</button>
+                      <button onClick={() => setFilterOrder('data_desc')} className="hover:text-danger">×</button>
+                    </span>
+                  )}
+                  {filterMensagem !== 'todos' && filterMensagem !== '' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs bg-[var(--mmq-orange-dim)] text-[var(--mmq-orange)] rounded-full">
+                      "{filterMensagem}"
+                      <button onClick={() => setFilterMensagem('todos')} className="hover:text-danger">×</button>
                     </span>
                   )}
                 </div>
@@ -424,85 +384,65 @@ export default function ReceptionPatientsPage() {
         </div>
 
         {loading ? (
-          <p className="p-12 text-center text-sm font-medium text-ink-3 animate-pulse">A carregar pacientes...</p>
+          <p className="p-12 text-center text-sm font-medium text-ink-3 animate-pulse">A carregar notificações...</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left">
+            <table className="w-full border-collapse table-fixed">
               <thead>
                 <tr className="border-b border-[var(--border2)] bg-[var(--slate)] sticky top-0 z-10">
-                  <th className="p-3.5 pl-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[22%]">Nome</th>
-                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[10%] whitespace-nowrap">Idade</th>
-                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[12%]">Género</th>
-                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[15%]">Contacto</th>
-                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[10%] whitespace-nowrap">Consultas</th>
-                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[10%]">Estado</th>
-                  <th className="p-3.5 pr-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 text-right w-[21%]">Ações</th>
+                  <th className="p-3.5 pl-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[20%]">Paciente</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[14%]">Tipo</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[18%] whitespace-nowrap">Data</th>
+                  <th className="p-3.5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 w-[33%]">Mensagem</th>
+                  <th className="p-3.5 pr-5 text-[11px] font-bold uppercase tracking-[0.6px] text-ink-3 text-right w-[15%]">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border2)]">
-                {displayedPatients.map((patient, index) => {
-                  const ativo = patient.users?.ativo ?? false;
-                  const idade = calcularIdade(patient.data_nascimento);
-                  const generoCompleto = getGeneroCompleto(patient.sexo);
+                {displayedNotificacoes.map((notificacao, index) => {
+                  const badge = tipoBadge[notificacao.tipo_variavel] || { 
+                    bg: 'bg-[var(--slate2)]', 
+                    text: 'text-[var(--ink3)]', 
+                    dot: 'bg-[var(--ink4)]', 
+                    label: notificacao.tipo_variavel 
+                  };
                   
                   return (
                     <tr 
-                      key={patient.id} 
-                      className="hover:bg-[var(--slate)] transition-colors cursor-pointer"
-                      onClick={() => router.push(`/recepcionista/patients/${patient.id}`)}
+                      key={notificacao.id} 
+                      className="hover:bg-[var(--slate)] transition-colors"
                       style={{
                         animation: `fadeInUp 0.3s ease-out ${Math.min(index * 0.03, 0.3)}s both`
                       }}
                     >
-                      <td className="p-4 pl-5 text-sm font-bold text-[var(--ink)] truncate">
-                        {patient.users?.name ?? 'N/D'}
+                      <td className="p-4 pl-5 text-sm font-semibold text-[var(--ink)] truncate">
+                        {notificacao.paciente}
                       </td>
-                      <td className="p-4 text-sm font-medium text-ink-3 whitespace-nowrap">
-                        {idade !== null ? `${idade} anos` : '—'}
-                      </td>
-                      <td className="p-4 text-sm font-medium text-ink-3 truncate">
-                        {generoCompleto}
-                      </td>
-                      <td className="p-4 text-sm font-medium text-ink-3 truncate">
-                        {patient.telefone || '—'}
-                      </td>
-                      <td className="p-4 text-sm font-semibold text-[var(--ink)] whitespace-nowrap text-center">
-                        {patient.consultasMes ?? 0}
-                      </td>
-                      <td className="p-4 text-sm">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11.5px] font-bold whitespace-nowrap ${
-                          ativo 
-                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                            : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                        }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${ativo ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400'}`}></span>
-                          {ativo ? 'Activo' : 'Inactivo'}
+                      <td className="p-4">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11.5px] font-bold whitespace-nowrap ${badge.bg} ${badge.text}`}>
+                          <span className={`inline-block w-1.5 h-1.5 rounded-full ${badge.dot}`}></span>
+                          {badge.label}
                         </span>
                       </td>
+                      <td className="p-4 text-sm font-medium text-ink-3 whitespace-nowrap">
+                        {new Date(notificacao.data_envio).toLocaleString('pt-MZ')}
+                      </td>
+                      <td className="p-4 text-sm font-medium text-ink-3 truncate max-w-xs">
+                        {notificacao.mensagem}
+                      </td>
                       <td className="p-4 pr-5 text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link
-                            href={`/recepcionista/patients/${patient.id}`}
-                            className="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-md border border-[var(--border)] text-[var(--ink)] hover:bg-[var(--slate)] transition-colors min-w-[80px] justify-center whitespace-nowrap"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Histórico
-                          </Link>
-                          <Link
-                            href={`/recepcionista/patients/${patient.id}/editar`}
-                            className="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-md bg-[var(--mmq-orange)] text-white hover:bg-[var(--mmq-orange-lt)] transition-colors min-w-[70px] justify-center whitespace-nowrap shadow-sm"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Editar
-                          </Link>
-                        </div>
+                        <button
+                          onClick={() => setModalNotificacao(notificacao)}
+                          className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-md border border-[var(--mmq-orange)] text-[var(--mmq-orange)] hover:bg-[var(--mmq-orange)] hover:text-white transition-colors min-w-[60px] justify-center"
+                        >
+                          Ver
+                        </button>
                       </td>
                     </tr>
                   );
                 })}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="text-center p-12 text-sm font-medium text-ink-3">
+                    <td colSpan={5} className="text-center p-12 text-sm font-medium text-ink-3">
                       <div className="flex flex-col items-center gap-4">
                         <svg className="h-10 w-10 text-ink-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M9 9v3a3 3 0 005.196 3H15a3 3 0 005.196-3V9"/>
@@ -511,7 +451,7 @@ export default function ReceptionPatientsPage() {
                           <path d="M9 22h6"/>
                           <path d="M12 2v4.01"/>
                         </svg>
-                        <p>Nenhum paciente encontrado com os filtros aplicados.</p>
+                        <p>Nenhuma notificação encontrada com os filtros aplicados.</p>
                         <button
                           onClick={clearFilters}
                           className="text-xs font-medium text-[var(--mmq-orange)] hover:underline"
@@ -533,7 +473,7 @@ export default function ReceptionPatientsPage() {
                 {isLoadingMore ? (
                   <div className="flex items-center justify-center gap-3">
                     <div className="w-5 h-5 border-2 border-[var(--mmq-orange)] border-t-transparent rounded-full animate-spin" />
-                    <span className="text-sm text-ink-3">A carregar mais pacientes...</span>
+                    <span className="text-sm text-ink-3">A carregar mais notificações...</span>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2 text-sm text-ink-3 animate-pulse">
@@ -556,6 +496,30 @@ export default function ReceptionPatientsPage() {
           </div>
         )}
       </div>
+
+      {/* Modal para ver mensagem completa - centralizado */}
+      {modalNotificacao && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-[var(--white)] rounded-xl shadow-xl p-8 max-w-2xl w-full mx-4 border border-[var(--border2)]">
+            <div className="flex flex-col items-center">
+              <h3 className="text-lg font-bold text-[var(--ink)] mb-6">Mensagem</h3>
+
+              <div className="w-full p-4 bg-[var(--slate)] rounded-lg border border-[var(--border2)] min-h-[100px]">
+                <p className="text-sm text-[var(--ink)] leading-relaxed whitespace-pre-wrap break-words text-center">
+                  {modalNotificacao.mensagem}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setModalNotificacao(null)}
+                className="mt-6 px-6 py-2 text-sm font-semibold bg-[var(--mmq-orange)] text-white rounded-lg hover:bg-[var(--mmq-orange-lt)] transition-all duration-200 shadow-sm"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes fadeInUp {

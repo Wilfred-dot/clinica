@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react'; // ← ADICIONE ESTE IMPORT
+import { useState, useEffect } from 'react';
 
 const adminNav = [
   { label: 'Dashboard', href: '/admin', icon: 'M3 3h7v7H3V3zm10 0h7v7h-7V3zM3 14h7v7H3v-7zm10 0h7v7h-7v-7z' },
@@ -27,6 +27,7 @@ const recepcionistaNav = [
   { label: 'Dashboard', href: '/recepcionista', icon: 'M3 3h7v7H3V3zm10 0h7v7h-7V3zM3 14h7v7H3v-7zm10 0h7v7h-7v-7z' },
   { label: 'Pacientes', href: '/recepcionista/patients', icon: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 7a4 4 0 100-8 4 4 0 000 8z' },
   { label: 'Consultas', href: '/recepcionista/consultations', icon: 'M3 4h18v18H3V4zM16 2v4M8 2v4M3 10h18' },
+  { label: 'Notificações', href: '/recepcionista/notifications', icon: 'M22 12h-4l-3 9L9 3l-3 9H2' },
 ];
 
 const navMap: Record<string, { label: string; href: string; icon: string }[]> = {
@@ -46,7 +47,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   
-  // ← ADICIONE ESTAS 3 LINHAS
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -82,7 +82,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
         <div className="topbar-spacer" />
         
-        {/* ← MODIFIQUE ESTE BOTÃO DE TEMA */}
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
           className="topbar-logout-btn"
@@ -90,7 +89,6 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           aria-label="Alternar entre modo claro e escuro"
         >
           {!mounted ? (
-            // Placeholder enquanto não está montado (mesmo tamanho do ícone)
             <div style={{ width: '16px', height: '16px' }} />
           ) : (
             theme === 'dark' ? (
